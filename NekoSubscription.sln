@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription", "NekoSubscription\NekoSubscription.csproj", "{5DBBED4C-6D41-4F9C-948B-6F72796D2304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Core", "NekoSubscription.Core\NekoSubscription.Core.csproj", "{7780A88E-3BAD-47ED-B027-E23CC96CADCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Entities", "NekoSubscription.Entities\NekoSubscription.Entities.csproj", "{21C53884-F818-4100-A340-A59197EBA5BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DBBED4C-6D41-4F9C-948B-6F72796D2304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBBED4C-6D41-4F9C-948B-6F72796D2304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBBED4C-6D41-4F9C-948B-6F72796D2304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DBBED4C-6D41-4F9C-948B-6F72796D2304}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7780A88E-3BAD-47ED-B027-E23CC96CADCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7780A88E-3BAD-47ED-B027-E23CC96CADCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7780A88E-3BAD-47ED-B027-E23CC96CADCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7780A88E-3BAD-47ED-B027-E23CC96CADCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C53884-F818-4100-A340-A59197EBA5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C53884-F818-4100-A340-A59197EBA5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C53884-F818-4100-A340-A59197EBA5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C53884-F818-4100-A340-A59197EBA5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
