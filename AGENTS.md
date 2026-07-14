@@ -4,6 +4,8 @@
 
 Dependency chain: `NekoSubscription` -> `NekoSubscription.Core` -> `NekoSubscription.Entities`
 
+- **`NekoSubscription.Entities`** only holds core domain models for the subscription management business (e.g., subscription plans, billing, user entitlements). Logging, configuration, infrastructure, or other cross-cutting models do not belong here.
+
 ## Key Conventions
 
 - **No XAML.** Views are written in C# using `Avalonia.Markup.Declarative` (fluent API). There are no `.axaml` files.
