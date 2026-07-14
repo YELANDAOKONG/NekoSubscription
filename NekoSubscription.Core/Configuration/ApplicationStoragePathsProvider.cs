@@ -10,17 +10,24 @@ public sealed class ApplicationStoragePathsProvider : IApplicationStoragePathsPr
     private const string ApplicationDirectoryName = "NekoSubscription";
     private const string ConfigurationDatabaseFileName = "configuration.db";
     private const string DataDatabaseFileName = "data.db";
+    private const string LogsDirectoryName = "logs";
+    private const string LatestLogFileName = "latest.log";
+    private const string CrashReportsDirectoryName = "crashes";
 
     public ApplicationStoragePaths GetPaths()
     {
         var dataRootDirectory = GetDataRootDirectory();
         var applicationDataDirectory = Path.Combine(dataRootDirectory, ApplicationDirectoryName);
+        var logsDirectory = Path.Combine(applicationDataDirectory, LogsDirectoryName);
 
         return new ApplicationStoragePaths(
             dataRootDirectory,
             applicationDataDirectory,
             Path.Combine(applicationDataDirectory, ConfigurationDatabaseFileName),
-            Path.Combine(applicationDataDirectory, DataDatabaseFileName));
+            Path.Combine(applicationDataDirectory, DataDatabaseFileName),
+            logsDirectory,
+            Path.Combine(logsDirectory, LatestLogFileName),
+            Path.Combine(applicationDataDirectory, CrashReportsDirectoryName));
     }
 
     private static string GetDataRootDirectory()

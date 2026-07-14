@@ -4,4 +4,7 @@ public sealed record ApplicationStoragePaths(
     string DataRootDirectory,
     string ApplicationDataDirectory,
     string ConfigurationDatabasePath,
-    string DataDatabasePath);
+    string DataDatabasePath,
+    string LogsDirectory,
+    string LatestLogPath,
+    string CrashReportsDirectory);
