@@ -1,6 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
+using Avalonia.Themes.Fluent;
 using NekoSubscription.ViewModels;
 using NekoSubscription.Views;
 
@@ -10,7 +10,9 @@ public partial class App : Application
 {
     public override void Initialize()
     {
-        AvaloniaXamlLoader.Load(this);
+        RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Default;
+        DataTemplates.Add(new ViewLocator());
+        Styles.Add(new FluentTheme());
     }
 
     public override void OnFrameworkInitializationCompleted()
