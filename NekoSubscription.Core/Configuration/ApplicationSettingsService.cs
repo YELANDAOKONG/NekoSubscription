@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NekoSubscription.Core.Configuration;
 
-public sealed class ApplicationSettingsService : IApplicationSettingsService, IAsyncDisposable
+public sealed class ApplicationSettingsService : IApplicationSettingsService, IDisposable
 {
     private readonly SemaphoreSlim _initializationLock = new(1, 1);
     private readonly ApplicationStoragePaths _paths;
@@ -89,10 +89,9 @@ public sealed class ApplicationSettingsService : IApplicationSettingsService, IA
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public ValueTask DisposeAsync()
+    public void Dispose()
     {
         _initializationLock.Dispose();
-        return ValueTask.CompletedTask;
     }
 
     private ConfigurationDbContext CreateContext() => new(_options);
