@@ -62,6 +62,16 @@ public partial class App : Application
                 exception,
                 "Failed to load application settings. Defaults remain active.");
         }
+
+        try
+        {
+            await _runtime.Subscriptions.InitializeAsync();
+            _runtime.Logger.Information("Subscription database initialized.");
+        }
+        catch (Exception exception)
+        {
+            _runtime.Logger.Error(exception, "Failed to initialize the subscription database.");
+        }
     }
 
     private void ApplySettings(ApplicationSettings settings)
