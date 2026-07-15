@@ -86,9 +86,9 @@ public sealed class CustomField
     {
         var normalizedUrl = NormalizeRequired(value, MaximumUrlValueLength, nameof(value));
 
-        if (!Uri.TryCreate(normalizedUrl, UriKind.Absolute, out _))
+        if (!IsHttpUrl(normalizedUrl))
         {
-            throw new ArgumentException("The custom field URL must be absolute.", nameof(value));
+            throw new ArgumentException("The custom field URL must use HTTP or HTTPS.", nameof(value));
         }
 
         return new CustomField(name, CustomFieldType.Url, sortOrder)
@@ -112,5 +112,11 @@ public sealed class CustomField
         }
 
         return normalizedValue;
+    }
+
+    private static bool IsHttpUrl(string value)
+    {
+        return Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
+            (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }

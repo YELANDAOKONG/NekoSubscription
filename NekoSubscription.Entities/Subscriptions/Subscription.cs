@@ -270,12 +270,18 @@ public abstract class Subscription
             MaximumManagementUrlLength,
             nameof(managementUrl));
 
-        if (normalizedUrl is not null && !Uri.TryCreate(normalizedUrl, UriKind.Absolute, out _))
+        if (normalizedUrl is not null && !IsHttpUrl(normalizedUrl))
         {
-            throw new ArgumentException("The management URL must be absolute.", nameof(managementUrl));
+            throw new ArgumentException("The management URL must use HTTP or HTTPS.", nameof(managementUrl));
         }
 
         return normalizedUrl;
+    }
+
+    private static bool IsHttpUrl(string value)
+    {
+        return Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
+            (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
     private void EnsureBundleRelationshipHasNoCycle(Subscription sourceSubscription)
