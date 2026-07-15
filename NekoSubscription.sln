@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Core", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Entities", "NekoSubscription.Entities\NekoSubscription.Entities.csproj", "{21C53884-F818-4100-A340-A59197EBA5BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Entities.Tests", "NekoSubscription.Entities.Tests\NekoSubscription.Entities.Tests.csproj", "{5D7FE5F4-0780-4666-B5A7-F4820AF52AAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoSubscription.Core.Tests", "NekoSubscription.Core.Tests\NekoSubscription.Core.Tests.csproj", "{194560D7-2DCA-4015-859B-BF528C6EECBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{21C53884-F818-4100-A340-A59197EBA5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21C53884-F818-4100-A340-A59197EBA5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21C53884-F818-4100-A340-A59197EBA5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D7FE5F4-0780-4666-B5A7-F4820AF52AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D7FE5F4-0780-4666-B5A7-F4820AF52AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D7FE5F4-0780-4666-B5A7-F4820AF52AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D7FE5F4-0780-4666-B5A7-F4820AF52AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{194560D7-2DCA-4015-859B-BF528C6EECBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{194560D7-2DCA-4015-859B-BF528C6EECBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{194560D7-2DCA-4015-859B-BF528C6EECBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{194560D7-2DCA-4015-859B-BF528C6EECBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
