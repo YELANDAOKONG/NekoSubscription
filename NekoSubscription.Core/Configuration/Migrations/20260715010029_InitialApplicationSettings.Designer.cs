@@ -11,8 +11,8 @@ using NekoSubscription.Core.Configuration;
 namespace NekoSubscription.Core.Configuration.Migrations
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20260714191505_InitialConfigurationStorage")]
-    partial class InitialConfigurationStorage
+    [Migration("20260715010029_InitialApplicationSettings")]
+    partial class InitialApplicationSettings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,22 +20,27 @@ namespace NekoSubscription.Core.Configuration.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
 
-            modelBuilder.Entity("NekoSubscription.Core.Configuration.SettingEntry", b =>
+            modelBuilder.Entity("NekoSubscription.Core.Configuration.ApplicationSettings", b =>
                 {
-                    b.Property<string>("Key")
-                        .HasMaxLength(256)
+                    b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CultureName")
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("MinimumLogLevel")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Theme")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("UpdatedAtUtc")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.HasKey("Id");
 
-                    b.HasKey("Key");
-
-                    b.ToTable("Settings", (string)null);
+                    b.ToTable("ApplicationSettings", (string)null);
                 });
 #pragma warning restore 612, 618
         }

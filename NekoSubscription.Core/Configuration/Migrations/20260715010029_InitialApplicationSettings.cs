@@ -6,22 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NekoSubscription.Core.Configuration.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialConfigurationStorage : Migration
+    public partial class InitialApplicationSettings : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Settings",
+                name: "ApplicationSettings",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false),
+                    Theme = table.Column<int>(type: "INTEGER", nullable: false),
+                    CultureName = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
+                    MinimumLogLevel = table.Column<int>(type: "INTEGER", nullable: false),
                     UpdatedAtUtc = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Settings", x => x.Key);
+                    table.PrimaryKey("PK_ApplicationSettings", x => x.Id);
                 });
         }
 
@@ -29,7 +31,7 @@ namespace NekoSubscription.Core.Configuration.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Settings");
+                name: "ApplicationSettings");
         }
     }
 }

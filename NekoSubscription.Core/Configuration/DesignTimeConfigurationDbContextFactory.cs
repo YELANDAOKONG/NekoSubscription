@@ -1,3 +1,5 @@
+using System.IO;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -9,6 +11,7 @@ public sealed class DesignTimeConfigurationDbContextFactory : IDesignTimeDbConte
     {
         var pathsProvider = new ApplicationStoragePathsProvider();
         var paths = pathsProvider.GetPaths();
+        Directory.CreateDirectory(paths.ApplicationDataDirectory);
         var options = ConfigurationDbContextOptions.Create(paths.ConfigurationDatabasePath);
 
         return new ConfigurationDbContext(options);

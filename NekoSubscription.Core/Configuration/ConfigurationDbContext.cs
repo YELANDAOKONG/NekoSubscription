@@ -4,17 +4,20 @@ namespace NekoSubscription.Core.Configuration;
 
 public sealed class ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options) : DbContext(options)
 {
-    public DbSet<SettingEntry> Settings => Set<SettingEntry>();
+    public DbSet<ApplicationSettings> Settings => Set<ApplicationSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        var settings = modelBuilder.Entity<SettingEntry>();
-        settings.ToTable("Settings");
-        settings.HasKey(setting => setting.Key);
-        settings.Property(setting => setting.Key).HasMaxLength(SettingEntry.MaximumKeyLength);
-        settings.Property(setting => setting.Value).IsRequired();
+        var settings = modelBuilder.Entity<ApplicationSettings>();
+        settings.ToTable("ApplicationSettings");
+        settings.HasKey(setting => setting.Id);
+        settings.Property(setting => setting.Id).ValueGeneratedNever();
+        settings.Property(setting => setting.Theme).IsRequired();
+        settings.Property(setting => setting.CultureName)
+            .HasMaxLength(ApplicationSettings.MaximumCultureNameLength);
+        settings.Property(setting => setting.MinimumLogLevel).IsRequired();
         settings.Property(setting => setting.UpdatedAtUtc).IsRequired();
     }
 }
