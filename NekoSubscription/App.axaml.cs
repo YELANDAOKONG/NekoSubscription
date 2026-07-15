@@ -8,6 +8,7 @@ using Avalonia.Themes.Fluent;
 
 using Serilog;
 
+using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
 using NekoSubscription.ViewModels;
 using NekoSubscription.Views;
@@ -34,24 +35,29 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel(),
-            };
-        }
-
-        base.OnFrameworkInitializationCompleted();
-
-        if (_runtime is null)
-        {
+            base.OnFrameworkInitializationCompleted();
             return;
         }
 
+        if (_runtime is null)
+        {
+            throw new InvalidOperationException("The application runtime has not been configured.");
+        }
+
+        var viewModel = new MainViewModel(
+            _runtime.Subscriptions,
+            _runtime.Settings,
+            new CashFlowProjector(),
+            _runtime.Logger);
+        desktop.MainWindow = new MainWindow(viewModel);
+        base.OnFrameworkInitializationCompleted();
+
+        var settings = new ApplicationSettings();
         try
         {
-            var settings = await _runtime.Settings.GetAsync();
+            settings = await _runtime.Settings.GetAsync();
             ApplySettings(settings);
             _runtime.Logging.MinimumLevel = settings.MinimumLogLevel;
             _runtime.Logger.Information("Application settings loaded.");
@@ -72,6 +78,8 @@ public partial class App : Application
         {
             _runtime.Logger.Error(exception, "Failed to initialize the subscription database.");
         }
+
+        await viewModel.InitializeAsync(settings);
     }
 
     private void ApplySettings(ApplicationSettings settings)

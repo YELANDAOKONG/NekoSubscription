@@ -15,6 +15,10 @@ public sealed class ConfigurationDbContext(DbContextOptions<ConfigurationDbConte
         settings.HasKey(setting => setting.Id);
         settings.Property(setting => setting.Id).ValueGeneratedNever();
         settings.Property(setting => setting.Theme).IsRequired();
+        settings.Property(setting => setting.VisualStyle).IsRequired();
+        settings.Property(setting => setting.AcrylicOpacity)
+            .HasDefaultValue(ApplicationSettings.DefaultAcrylicOpacity)
+            .IsRequired();
         settings.Property(setting => setting.CultureName)
             .HasMaxLength(ApplicationSettings.MaximumCultureNameLength);
         settings.Property(setting => setting.MinimumLogLevel).IsRequired();

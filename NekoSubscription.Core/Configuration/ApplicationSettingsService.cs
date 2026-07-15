@@ -23,6 +23,14 @@ public sealed class ApplicationSettingsService : IApplicationSettingsService, ID
         _options = ConfigurationDbContextOptions.Create(_paths.ConfigurationDatabasePath);
     }
 
+    public ApplicationSettingsService(ApplicationStoragePaths paths)
+    {
+        ArgumentNullException.ThrowIfNull(paths);
+
+        _paths = paths;
+        _options = ConfigurationDbContextOptions.Create(_paths.ConfigurationDatabasePath);
+    }
+
     public async Task<ApplicationSettings> GetAsync(CancellationToken cancellationToken = default)
     {
         await EnsureInitializedAsync(cancellationToken).ConfigureAwait(false);
@@ -50,6 +58,24 @@ public sealed class ApplicationSettingsService : IApplicationSettingsService, ID
                 nameof(settings),
                 settings.Theme,
                 "The application theme is invalid.");
+        }
+
+        if (!Enum.IsDefined(settings.VisualStyle))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(settings),
+                settings.VisualStyle,
+                "The application visual style is invalid.");
+        }
+
+        if (!double.IsFinite(settings.AcrylicOpacity) ||
+            settings.AcrylicOpacity is < ApplicationSettings.MinimumAcrylicOpacity or
+                > ApplicationSettings.MaximumAcrylicOpacity)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(settings),
+                settings.AcrylicOpacity,
+                $"The acrylic opacity must be between {ApplicationSettings.MinimumAcrylicOpacity} and {ApplicationSettings.MaximumAcrylicOpacity}.");
         }
 
         if (!Enum.IsDefined(settings.MinimumLogLevel))
@@ -81,6 +107,8 @@ public sealed class ApplicationSettingsService : IApplicationSettingsService, ID
         else
         {
             persistedSettings.Theme = settings.Theme;
+            persistedSettings.VisualStyle = settings.VisualStyle;
+            persistedSettings.AcrylicOpacity = settings.AcrylicOpacity;
             persistedSettings.CultureName = settings.CultureName;
             persistedSettings.MinimumLogLevel = settings.MinimumLogLevel;
             persistedSettings.MarkUpdated(updatedAtUtc);
