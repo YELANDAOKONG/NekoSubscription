@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,20 +10,12 @@ using Serilog;
 using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
 using NekoSubscription.Core.Subscriptions;
+using NekoSubscription.Localization;
 
 namespace NekoSubscription.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private const int ProjectionDayCount = 90;
-
-    private readonly CashFlowProjector _cashFlowProjector;
-    private readonly ILogger _logger;
-    private readonly IApplicationSettingsService _settingsService;
-    private readonly ISubscriptionService _subscriptionService;
-    private ApplicationSettings _settings = new();
-    private bool _isApplyingSettings;
-
     public MainViewModel(
         ISubscriptionService subscriptionService,
         IApplicationSettingsService settingsService,
@@ -37,197 +27,121 @@ public partial class MainViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(cashFlowProjector);
         ArgumentNullException.ThrowIfNull(logger);
 
-        _subscriptionService = subscriptionService;
-        _settingsService = settingsService;
-        _cashFlowProjector = cashFlowProjector;
-        _logger = logger;
-        VisualStyles = Enum.GetValues<ApplicationVisualStyle>();
+        Dashboard = new DashboardViewModel(cashFlowProjector);
+        Subscriptions = new SubscriptionsViewModel(subscriptionService, logger);
+        Settings = new SettingsViewModel(settingsService, logger);
+        CurrentPage = Dashboard;
+
+        Subscriptions.SnapshotChanged += Dashboard.Update;
+        Subscriptions.StatusChanged += SetStatus;
+        Settings.StatusChanged += SetStatus;
+        Settings.AppearanceChanged += OnAppearanceChanged;
+        Settings.CultureChanged += OnCultureChanged;
+        Subscriptions.PropertyChanged += OnChildPropertyChanged;
+        Settings.PropertyChanged += OnChildPropertyChanged;
+
+        RefreshPageMetadata();
     }
 
     public event EventHandler? AppearanceChanged;
 
-    public ObservableCollection<SubscriptionListItemViewModel> Subscriptions { get; } = [];
+    public event EventHandler? LanguageChanged;
 
-    public ObservableCollection<CurrencyTotalViewModel> CurrencyTotals { get; } = [];
+    public DashboardViewModel Dashboard { get; }
 
-    public IReadOnlyList<ApplicationVisualStyle> VisualStyles { get; }
+    public SubscriptionsViewModel Subscriptions { get; }
 
-    public bool IsAcrylicSelected => SelectedVisualStyle == ApplicationVisualStyle.Acrylic;
+    public SettingsViewModel Settings { get; }
 
-    public string AcrylicOpacityLabel => $"{AcrylicOpacity:P0}";
+    public bool IsDashboardSelected => CurrentPage == Dashboard;
 
-    public bool HasSelectedSubscription => SelectedSubscription is not null;
+    public bool IsSubscriptionsSelected => CurrentPage == Subscriptions;
 
-    public string ArchiveActionLabel => SelectedSubscription?.IsArchived == true
-        ? "Restore from archive"
-        : "Archive";
+    public bool IsSettingsSelected => CurrentPage == Settings;
 
-    [ObservableProperty]
-    public partial bool IncludeArchived { get; set; }
+    public bool IsBusy => Subscriptions.IsBusy || Settings.IsBusy;
 
     [ObservableProperty]
-    public partial bool IsBusy { get; set; }
+    public partial ViewModelBase CurrentPage { get; private set; }
 
     [ObservableProperty]
-    public partial string StatusMessage { get; set; } = "Loading subscriptions...";
+    public partial string PageSubtitle { get; private set; } = string.Empty;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasSelectedSubscription))]
-    [NotifyPropertyChangedFor(nameof(ArchiveActionLabel))]
-    public partial SubscriptionListItemViewModel? SelectedSubscription { get; set; }
+    public partial string PageTitle { get; private set; } = string.Empty;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsAcrylicSelected))]
-    public partial ApplicationVisualStyle SelectedVisualStyle { get; set; } = ApplicationVisualStyle.Standard;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(AcrylicOpacityLabel))]
-    public partial double AcrylicOpacity { get; set; } = ApplicationSettings.DefaultAcrylicOpacity;
+    public partial string StatusMessage { get; private set; } = AppResources.Get("Status_Starting");
 
     public async Task InitializeAsync(ApplicationSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        _settings = settings;
-        _isApplyingSettings = true;
-        SelectedVisualStyle = settings.VisualStyle;
-        AcrylicOpacity = settings.AcrylicOpacity;
-        _isApplyingSettings = false;
-        RaiseAppearanceChanged();
-
-        await RefreshCoreAsync();
+        Settings.Initialize(settings);
+        Subscriptions.RefreshLocalization();
+        RefreshPageMetadata();
+        LanguageChanged?.Invoke(this, EventArgs.Empty);
+        await Subscriptions.RefreshAsync();
     }
 
     [RelayCommand]
-    private Task RefreshAsync() => RefreshCoreAsync();
+    private void ShowDashboard() => Navigate(Dashboard);
 
     [RelayCommand]
-    private async Task ToggleArchiveAsync()
-    {
-        if (SelectedSubscription is not { } selectedSubscription || IsBusy)
-        {
-            return;
-        }
-
-        IsBusy = true;
-
-        try
-        {
-            var changed = selectedSubscription.IsArchived
-                ? await _subscriptionService.RestoreSubscriptionFromArchiveAsync(selectedSubscription.Id)
-                : await _subscriptionService.ArchiveSubscriptionAsync(selectedSubscription.Id);
-            StatusMessage = changed ? "Subscription archive state updated." : "Subscription was not found.";
-        }
-        catch (Exception exception)
-        {
-            _logger.Error(exception, "Failed to update the subscription archive state.");
-            StatusMessage = "Unable to update the subscription archive state.";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-
-        await RefreshCoreAsync();
-    }
+    private void ShowSubscriptions() => Navigate(Subscriptions);
 
     [RelayCommand]
-    private async Task SaveAppearanceAsync()
+    private void ShowSettings() => Navigate(Settings);
+
+    private void Navigate(ViewModelBase page)
     {
-        if (IsBusy)
+        CurrentPage = page;
+        RefreshPageMetadata();
+        OnPropertyChanged(nameof(IsDashboardSelected));
+        OnPropertyChanged(nameof(IsSubscriptionsSelected));
+        OnPropertyChanged(nameof(IsSettingsSelected));
+    }
+
+    private void RefreshPageMetadata()
+    {
+        if (CurrentPage == Dashboard)
         {
+            PageTitle = AppResources.Get("Nav_Overview");
+            PageSubtitle = AppResources.Get("Page_OverviewSubtitle");
             return;
         }
 
-        IsBusy = true;
-
-        try
+        if (CurrentPage == Subscriptions)
         {
-            _settings.VisualStyle = SelectedVisualStyle;
-            _settings.AcrylicOpacity = AcrylicOpacity;
-            await _settingsService.SaveAsync(_settings);
-            StatusMessage = "Appearance settings saved.";
-        }
-        catch (Exception exception)
-        {
-            _logger.Error(exception, "Failed to save appearance settings.");
-            StatusMessage = "Unable to save appearance settings.";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    partial void OnSelectedVisualStyleChanged(ApplicationVisualStyle value)
-    {
-        RaiseAppearanceChanged();
-    }
-
-    partial void OnAcrylicOpacityChanged(double value)
-    {
-        RaiseAppearanceChanged();
-    }
-
-    private async Task RefreshCoreAsync()
-    {
-        if (IsBusy)
-        {
+            PageTitle = AppResources.Get("Nav_Subscriptions");
+            PageSubtitle = AppResources.Get("Page_SubscriptionsSubtitle");
             return;
         }
 
-        IsBusy = true;
-        StatusMessage = "Loading subscriptions...";
-
-        try
-        {
-            var subscriptions = await _subscriptionService.GetSubscriptionsAsync(
-                new SubscriptionQuery(IncludeArchived: IncludeArchived));
-            ReplaceItems(
-                Subscriptions,
-                subscriptions.Select(SubscriptionListItemViewModel.FromSubscription));
-
-            var projectionStartsOn = DateOnly.FromDateTime(DateTime.Today);
-            var projectionEndsOn = projectionStartsOn.AddDays(ProjectionDayCount - 1);
-            var visibleSubscriptions = subscriptions.Where(subscription => !subscription.IsArchived);
-            var projection = _cashFlowProjector.Project(
-                visibleSubscriptions,
-                projectionStartsOn,
-                projectionEndsOn);
-            ReplaceItems(
-                CurrencyTotals,
-                projection.CurrencyTotals.Select(CurrencyTotalViewModel.FromTotal));
-
-            StatusMessage = $"{Subscriptions.Count} subscriptions shown; {projection.Items.Count} payments projected for the next {ProjectionDayCount} days.";
-        }
-        catch (Exception exception)
-        {
-            _logger.Error(exception, "Failed to load subscriptions and cash flow projection.");
-            StatusMessage = "Unable to load subscriptions.";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        PageTitle = AppResources.Get("Nav_Settings");
+        PageSubtitle = AppResources.Get("Page_SettingsSubtitle");
     }
 
-    private static void ReplaceItems<T>(ObservableCollection<T> target, IEnumerable<T> items)
-    {
-        target.Clear();
-
-        foreach (var item in items)
-        {
-            target.Add(item);
-        }
-    }
-
-    private void RaiseAppearanceChanged()
-    {
-        if (_isApplyingSettings)
-        {
-            return;
-        }
-
+    private void OnAppearanceChanged(object? sender, EventArgs e) =>
         AppearanceChanged?.Invoke(this, EventArgs.Empty);
+
+    private async void OnCultureChanged(object? sender, EventArgs e)
+    {
+        Subscriptions.RefreshLocalization();
+        RefreshPageMetadata();
+        StatusMessage = AppResources.Get("Status_Starting");
+        LanguageChanged?.Invoke(this, EventArgs.Empty);
+        await Subscriptions.RefreshAsync();
     }
+
+    private void OnChildPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SubscriptionsViewModel.IsBusy) ||
+            e.PropertyName == nameof(SettingsViewModel.IsBusy))
+        {
+            OnPropertyChanged(nameof(IsBusy));
+        }
+    }
+
+    private void SetStatus(string message) => StatusMessage = message;
 }

@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Styling;
@@ -10,6 +8,7 @@ using Serilog;
 
 using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
+using NekoSubscription.Localization;
 using NekoSubscription.ViewModels;
 using NekoSubscription.Views;
 
@@ -28,6 +27,8 @@ public partial class App : Application
     public override void Initialize()
     {
         _runtime?.StartAvaloniaDiagnostics();
+        AppResources.SetCulture(null);
+        AppResources.ValidateResources();
         RequestedThemeVariant = ThemeVariant.Default;
         DataTemplates.Add(new ViewLocator());
         Styles.Add(new FluentTheme());
@@ -92,10 +93,6 @@ public partial class App : Application
             _ => throw new ArgumentOutOfRangeException(nameof(settings), settings.Theme, "The application theme is invalid.")
         };
 
-        var culture = settings.CultureName is null
-            ? null
-            : CultureInfo.GetCultureInfo(settings.CultureName);
-        CultureInfo.DefaultThreadCurrentCulture = culture;
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        AppResources.SetCulture(settings.CultureName);
     }
 }

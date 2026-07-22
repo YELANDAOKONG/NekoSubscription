@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="App_Name" xml:space="preserve"><value>NekoSubscription</value></data>
+  <data name="Brand_LocalPlanner" xml:space="preserve"><value>本機訂閱規劃</value></data>
+  <data name="Brand_LocalFirst" xml:space="preserve"><value>本機優先</value></data>
+  <data name="Brand_LocalDataStays" xml:space="preserve"><value>你的資料只保存在此裝置上。</value></data>
+  <data name="Nav_Overview" xml:space="preserve"><value>總覽</value></data>
+  <data name="Nav_OverviewSubtitle" xml:space="preserve"><value>現金流與續訂</value></data>
+  <data name="Nav_Subscriptions" xml:space="preserve"><value>訂閱</value></data>
+  <data name="Nav_SubscriptionsSubtitle" xml:space="preserve"><value>瀏覽與管理</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>設定</value></data>
+  <data name="Nav_SettingsSubtitle" xml:space="preserve"><value>語言與外觀</value></data>
+  <data name="Page_OverviewSubtitle" xml:space="preserve"><value>一覽訂閱、近期扣款與預算預測。</value></data>
+  <data name="Page_SubscriptionsSubtitle" xml:space="preserve"><value>搜尋、篩選、查看並管理每一項定期支出。</value></data>
+  <data name="Page_SettingsSubtitle" xml:space="preserve"><value>調整工作區的語言、主題與視覺材質。</value></data>
+  <data name="Status_Starting" xml:space="preserve"><value>正在啟動 NekoSubscription...</value></data>
+  <data name="Dashboard_Eyebrow" xml:space="preserve"><value>你的私人訂閱工作區</value></data>
+  <data name="Dashboard_HeroTitle" xml:space="preserve"><value>從容掌握每一次續訂。</value></data>
+  <data name="Dashboard_HeroDescription" xml:space="preserve"><value>NekoSubscription 在本機完成規劃，並保留各幣別原值，不進行隱性換算。</value></data>
+  <data name="Dashboard_NextPayment" xml:space="preserve"><value>下次扣款</value></data>
+  <data name="Dashboard_MetricActive" xml:space="preserve"><value>使用中</value></data>
+  <data name="Dashboard_MetricActiveCaption" xml:space="preserve"><value>目前有效訂閱</value></data>
+  <data name="Dashboard_MetricTrials" xml:space="preserve"><value>試用</value></data>
+  <data name="Dashboard_MetricTrialsCaption" xml:space="preserve"><value>需要留意</value></data>
+  <data name="Dashboard_MetricPayments" xml:space="preserve"><value>90 天扣款</value></data>
+  <data name="Dashboard_MetricPaymentsCaption" xml:space="preserve"><value>預計扣款次數</value></data>
+  <data name="Dashboard_MetricArchived" xml:space="preserve"><value>已封存</value></data>
+  <data name="Dashboard_MetricArchivedCaption" xml:space="preserve"><value>隱藏記錄</value></data>
+  <data name="Dashboard_CashFlowTitle" xml:space="preserve"><value>90 天現金流</value></data>
+  <data name="Dashboard_CashFlowDescription" xml:space="preserve"><value>固定與預估支出依原始幣別分別彙總。</value></data>
+  <data name="Dashboard_EmptyCashTitle" xml:space="preserve"><value>暫無預計扣款</value></data>
+  <data name="Dashboard_EmptyCashDescription" xml:space="preserve"><value>確認有效訂閱並設定下次扣款日期後，預測將顯示在這裡。</value></data>
+  <data name="Dashboard_UpcomingTitle" xml:space="preserve"><value>即將到期</value></data>
+  <data name="Dashboard_UpcomingDescription" xml:space="preserve"><value>所有可見訂閱中最近的預定扣款日期。</value></data>
+  <data name="Dashboard_EmptyUpcomingTitle" xml:space="preserve"><value>近期沒有扣款</value></data>
+  <data name="Dashboard_EmptyUpcomingDescription" xml:space="preserve"><value>設定帳單日期後，即將扣款的訂閱會顯示在這裡。</value></data>
+  <data name="Dashboard_CurrencyUnavailable" xml:space="preserve"><value>幣別彙總無法使用</value></data>
+  <data name="Common_SubscriptionUnavailable" xml:space="preserve"><value>訂閱無法使用</value></data>
+  <data name="Common_NotScheduled" xml:space="preserve"><value>未排程</value></data>
+  <data name="Common_NothingScheduled" xml:space="preserve"><value>暫無排程</value></data>
+  <data name="Column_Currency" xml:space="preserve"><value>幣別</value></data>
+  <data name="CurrencyKind_Iso4217" xml:space="preserve"><value>ISO 4217</value></data>
+  <data name="CurrencyKind_Custom" xml:space="preserve"><value>自訂</value></data>
+  <data name="Column_Fixed" xml:space="preserve"><value>固定</value></data>
+  <data name="Column_Estimated" xml:space="preserve"><value>預估</value></data>
+  <data name="Column_Total" xml:space="preserve"><value>合計</value></data>
+  <data name="Column_Service" xml:space="preserve"><value>服務</value></data>
+  <data name="Column_Category" xml:space="preserve"><value>分類</value></data>
+  <data name="Column_Status" xml:space="preserve"><value>狀態</value></data>
+  <data name="Column_Amount" xml:space="preserve"><value>金額</value></data>
+  <data name="Column_NextBilling" xml:space="preserve"><value>下次扣款</value></data>
+  <data name="Subscriptions_SearchPlaceholder" xml:space="preserve"><value>搜尋服務、供應商、帳號或狀態</value></data>
+  <data name="Subscriptions_ShowArchived" xml:space="preserve"><value>顯示已封存</value></data>
+  <data name="Subscriptions_Refresh" xml:space="preserve"><value>重新整理</value></data>
+  <data name="Subscriptions_All" xml:space="preserve"><value>全部訂閱</value></data>
+  <data name="Subscriptions_CountOne" xml:space="preserve"><value>1 項訂閱</value></data>
+  <data name="Subscriptions_CountMany" xml:space="preserve"><value>{0} 項訂閱</value></data>
+  <data name="Subscriptions_EmptyTitle" xml:space="preserve"><value>沒有符合的訂閱</value></data>
+  <data name="Subscriptions_EmptyDescription" xml:space="preserve"><value>請調整搜尋或分類篩選。已封存訂閱預設保持隱藏。</value></data>
+  <data name="Subscriptions_Selected" xml:space="preserve"><value>已選訂閱</value></data>
+  <data name="Subscriptions_Schedule" xml:space="preserve"><value>帳單週期</value></data>
+  <data name="Subscriptions_Importance" xml:space="preserve"><value>重要程度</value></data>
+  <data name="Subscriptions_Details" xml:space="preserve"><value>詳細資訊</value></data>
+  <data name="Subscriptions_Archive" xml:space="preserve"><value>封存訂閱</value></data>
+  <data name="Subscriptions_Restore" xml:space="preserve"><value>還原訂閱</value></data>
+  <data name="Status_RefreshingSubscriptions" xml:space="preserve"><value>正在重新整理訂閱...</value></data>
+  <data name="Status_SubscriptionsLoaded" xml:space="preserve"><value>已載入 {0} 項訂閱。</value></data>
+  <data name="Status_LoadSubscriptionsFailed" xml:space="preserve"><value>無法載入訂閱，請重試。</value></data>
+  <data name="Status_ArchiveUpdated" xml:space="preserve"><value>訂閱封存狀態已更新。</value></data>
+  <data name="Status_SubscriptionMissing" xml:space="preserve"><value>所選訂閱已不存在。</value></data>
+  <data name="Status_ArchiveUpdateFailed" xml:space="preserve"><value>無法更新訂閱封存狀態。</value></data>
+  <data name="Status_SettingsSaved" xml:space="preserve"><value>設定已儲存。</value></data>
+  <data name="Status_SettingsSaveFailed" xml:space="preserve"><value>無法儲存設定。</value></data>
+  <data name="Filter_AllCategories" xml:space="preserve"><value>全部分類</value></data>
+  <data name="Category_Ordinary" xml:space="preserve"><value>訂閱</value></data>
+  <data name="Category_OrdinaryPlural" xml:space="preserve"><value>一般訂閱</value></data>
+  <data name="Category_PhoneNumber" xml:space="preserve"><value>電話號碼</value></data>
+  <data name="Category_PhoneNumberPlural" xml:space="preserve"><value>電話號碼</value></data>
+  <data name="Category_Domain" xml:space="preserve"><value>網域</value></data>
+  <data name="Category_DomainPlural" xml:space="preserve"><value>網域</value></data>
+  <data name="Category_CloudService" xml:space="preserve"><value>雲端服務</value></data>
+  <data name="Category_CloudServicePlural" xml:space="preserve"><value>雲端服務</value></data>
+  <data name="Category_Custom" xml:space="preserve"><value>自訂</value></data>
+  <data name="Details_NoAccount" xml:space="preserve"><value>未指定帳號</value></data>
+  <data name="Details_NoNotes" xml:space="preserve"><value>尚未新增備註</value></data>
+  <data name="Details_NoManagementLink" xml:space="preserve"><value>沒有管理連結</value></data>
+  <data name="Details_Archived" xml:space="preserve"><value>已封存</value></data>
+  <data name="Details_Visible" xml:space="preserve"><value>可見</value></data>
+  <data name="Confirmation_Confirmed" xml:space="preserve"><value>已確認</value></data>
+  <data name="Confirmation_Inactive" xml:space="preserve"><value>未啟用</value></data>
+  <data name="Confirmation_Unconfirmed" xml:space="preserve"><value>未確認</value></data>
+  <data name="Common_Unknown" xml:space="preserve"><value>未知</value></data>
+  <data name="Lifecycle_Unknown" xml:space="preserve"><value>狀態未知</value></data>
+  <data name="Lifecycle_Trial" xml:space="preserve"><value>試用</value></data>
+  <data name="Lifecycle_Active" xml:space="preserve"><value>使用中</value></data>
+  <data name="Lifecycle_Paused" xml:space="preserve"><value>已暫停</value></data>
+  <data name="Lifecycle_CancellationScheduled" xml:space="preserve"><value>預定取消</value></data>
+  <data name="Lifecycle_Cancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="Lifecycle_Expired" xml:space="preserve"><value>已過期</value></data>
+  <data name="Importance_Low" xml:space="preserve"><value>低</value></data>
+  <data name="Importance_Normal" xml:space="preserve"><value>一般</value></data>
+  <data name="Importance_Important" xml:space="preserve"><value>重要</value></data>
+  <data name="Importance_Essential" xml:space="preserve"><value>必要</value></data>
+  <data name="Schedule_OneTime" xml:space="preserve"><value>單次付款</value></data>
+  <data name="Schedule_Manual" xml:space="preserve"><value>手動付款</value></data>
+  <data name="Schedule_EveryOne" xml:space="preserve"><value>每{0}</value></data>
+  <data name="Schedule_EveryMany" xml:space="preserve"><value>每 {0} {1}</value></data>
+  <data name="Interval_Day" xml:space="preserve"><value>天</value></data>
+  <data name="Interval_Days" xml:space="preserve"><value>天</value></data>
+  <data name="Interval_Week" xml:space="preserve"><value>週</value></data>
+  <data name="Interval_Weeks" xml:space="preserve"><value>週</value></data>
+  <data name="Interval_Month" xml:space="preserve"><value>月</value></data>
+  <data name="Interval_Months" xml:space="preserve"><value>個月</value></data>
+  <data name="Interval_Year" xml:space="preserve"><value>年</value></data>
+  <data name="Interval_Years" xml:space="preserve"><value>年</value></data>
+  <data name="Details_Phone" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="Details_DomainExpires" xml:space="preserve"><value>{0} · {1} 到期</value></data>
+  <data name="Details_CloudBilling" xml:space="preserve"><value>{0} 計費</value></data>
+  <data name="CloudBilling_Fixed" xml:space="preserve"><value>固定</value></data>
+  <data name="CloudBilling_UsageBasedEstimate" xml:space="preserve"><value>用量預估</value></data>
+  <data name="Details_CustomFields" xml:space="preserve"><value>{0} 個自訂欄位</value></data>
+  <data name="Details_Ordinary" xml:space="preserve"><value>一般訂閱</value></data>
+  <data name="Details_Generic" xml:space="preserve"><value>訂閱詳細資訊</value></data>
+  <data name="Settings_LanguageTitle" xml:space="preserve"><value>顯示語言</value></data>
+  <data name="Settings_LanguageDescription" xml:space="preserve"><value>選擇應用程式介面使用的語言。</value></data>
+  <data name="Language_English" xml:space="preserve"><value>English</value></data>
+  <data name="Language_SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Language_TraditionalChinese" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="Settings_ColorThemeTitle" xml:space="preserve"><value>色彩主題</value></data>
+  <data name="Settings_ColorThemeDescription" xml:space="preserve"><value>跟隨作業系統，或固定使用淺色或深色主題。</value></data>
+  <data name="Theme_System" xml:space="preserve"><value>跟隨系統</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>淺色</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>深色</value></data>
+  <data name="Settings_WindowMaterialTitle" xml:space="preserve"><value>視窗材質</value></data>
+  <data name="Settings_WindowMaterialDescription" xml:space="preserve"><value>標準模式使用不透明工作區；壓克力模式會與視窗後方的桌面融合。</value></data>
+  <data name="Settings_VisualStyle" xml:space="preserve"><value>視覺樣式</value></data>
+  <data name="VisualStyle_Standard" xml:space="preserve"><value>標準</value></data>
+  <data name="VisualStyle_Acrylic" xml:space="preserve"><value>壓克力</value></data>
+  <data name="Settings_AcrylicOpacity" xml:space="preserve"><value>壓克力不透明度</value></data>
+  <data name="Settings_LocalFirstTitle" xml:space="preserve"><value>本機優先設計</value></data>
+  <data name="Settings_LocalFirstDescription" xml:space="preserve"><value>訂閱記錄與設定保存在本機應用程式資料目錄中，現金流計算也完全在此裝置上完成。</value></data>
+  <data name="Settings_ChangesPreview" xml:space="preserve"><value>變更會立即預覽</value></data>
+  <data name="Settings_SaveDescription" xml:space="preserve"><value>儲存後，下次啟動應用程式時將繼續使用相同設定。</value></data>
+  <data name="Settings_SaveChanges" xml:space="preserve"><value>儲存變更</value></data>
+</root>
