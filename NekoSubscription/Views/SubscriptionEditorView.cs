@@ -14,7 +14,7 @@ public sealed class SubscriptionEditorView : UserControl
 {
     public SubscriptionEditorView()
     {
-        Content = new ScrollViewer
+        var form = new ScrollViewer
         {
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
@@ -32,10 +32,19 @@ public sealed class SubscriptionEditorView : UserControl
                 BuildPhoneSection(),
                 BuildDomainSection(),
                 BuildCloudSection(),
-                BuildNotesSection(),
-                BuildError(),
-                BuildActions())
+                BuildNotesSection())
         };
+        form.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SubscriptionEditorViewModel.IsReady)));
+
+        Content = new Grid
+        {
+            RowDefinitions = new RowDefinitions("*,Auto")
+        }
+        .Children(
+            form.Grid_Row(0),
+            BuildFooter().Grid_Row(1));
     }
 
     private static Control BuildHeader()
@@ -311,11 +320,17 @@ public sealed class SubscriptionEditorView : UserControl
         cancel.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionEditorViewModel.CancelCommand)));
+        cancel.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SubscriptionEditorViewModel.IsReady)));
 
         var save = UiFactory.PrimaryButton(AppResources.Get("Common_Save"));
         save.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionEditorViewModel.SaveCommand)));
+        save.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SubscriptionEditorViewModel.IsReady)));
 
         return new StackPanel
         {
@@ -324,6 +339,34 @@ public sealed class SubscriptionEditorView : UserControl
             Spacing = 10
         }
         .Children(cancel, save);
+    }
+
+    private static Control BuildFooter()
+    {
+        var progress = new ProgressBar
+        {
+            Height = 2,
+            IsIndeterminate = true
+        };
+        progress.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionEditorViewModel.IsBusy)));
+
+        return new Border
+        {
+            Background = UiPalette.Surface,
+            BorderBrush = UiPalette.Border,
+            BorderThickness = new Thickness(0, 1, 0, 0),
+            Padding = new Thickness(12, 10, 20, 12),
+            Child = new StackPanel
+            {
+                Spacing = 8
+            }
+            .Children(
+                BuildError(),
+                progress,
+                BuildActions())
+        };
     }
 
     private static Border BuildSection(string title, params Control[] fields)
@@ -344,18 +387,24 @@ public sealed class SubscriptionEditorView : UserControl
 
     private static Control BuildField(string label, Control editor)
     {
+        Control labelControl = string.IsNullOrEmpty(label)
+            ? new Border()
+            : new Label
+            {
+                Content = label,
+                Target = editor,
+                FontWeight = FontWeight.Medium,
+                Padding = new Thickness(0),
+                VerticalContentAlignment = VerticalAlignment.Center
+            };
+
         return new Grid
         {
             ColumnDefinitions = new ColumnDefinitions("190,*"),
             ColumnSpacing = 14
         }
         .Children(
-            new TextBlock
-            {
-                Text = label,
-                FontWeight = FontWeight.Medium,
-                VerticalAlignment = VerticalAlignment.Center
-            },
+            labelControl,
             editor.Grid_Column(1));
     }
 

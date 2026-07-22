@@ -98,8 +98,10 @@ public sealed class DashboardView : UserControl
     {
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("*,*,*,*"),
-            ColumnSpacing = 12
+            ColumnDefinitions = new ColumnDefinitions("*,*"),
+            RowDefinitions = new RowDefinitions("Auto,Auto"),
+            ColumnSpacing = 12,
+            RowSpacing = 12
         }
         .Children(
             BuildMetricCard(
@@ -119,13 +121,15 @@ public sealed class DashboardView : UserControl
                     nameof(DashboardViewModel.ProjectedPaymentCount),
                     AppResources.Get("Dashboard_MetricPaymentsCaption"),
                     UiPalette.Accent)
-                .Grid_Column(2),
+                .Grid_Column(0)
+                .Grid_Row(1),
             BuildMetricCard(
                     AppResources.Get("Dashboard_MetricArchived"),
                     nameof(DashboardViewModel.ArchivedSubscriptionCount),
                     AppResources.Get("Dashboard_MetricArchivedCaption"),
                     UiPalette.Border)
-                .Grid_Column(3));
+                .Grid_Column(1)
+                .Grid_Row(1));
     }
 
     private static Border BuildMetricCard(string title, string valuePath, string caption, IBrush accent)
@@ -156,13 +160,15 @@ public sealed class DashboardView : UserControl
                     new TextBlock
                     {
                         Text = title,
-                        FontWeight = FontWeight.SemiBold
+                        FontWeight = FontWeight.SemiBold,
+                        TextWrapping = TextWrapping.Wrap
                     },
                     new TextBlock
                     {
                         Text = caption,
                         FontSize = 12,
-                        Opacity = 0.62
+                        Opacity = 0.62,
+                        TextWrapping = TextWrapping.Wrap
                     })
                 .Grid_Row(2)));
     }

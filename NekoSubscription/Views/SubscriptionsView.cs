@@ -105,15 +105,23 @@ public sealed class SubscriptionsView : UserControl
         return UiFactory.Card(
             new Grid
             {
-                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto,Auto,Auto"),
-                ColumnSpacing = 10
+                ColumnDefinitions = new ColumnDefinitions("*,Auto"),
+                RowDefinitions = new RowDefinitions("Auto,Auto"),
+                ColumnSpacing = 10,
+                RowSpacing = 10
             }
             .Children(
                 searchBox.Grid_Column(0),
-                categoryFilter.Grid_Column(1),
-                includeArchived.Grid_Column(2),
-                refreshButton.Grid_Column(3),
-                addButton.Grid_Column(4)),
+                addButton.Grid_Column(1),
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Spacing = 10
+                }
+                .Children(categoryFilter, includeArchived, refreshButton)
+                .Grid_ColumnSpan(2)
+                .Grid_Row(1)),
             new Thickness(12));
     }
 

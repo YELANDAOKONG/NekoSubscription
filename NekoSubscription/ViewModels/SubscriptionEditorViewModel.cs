@@ -75,6 +75,8 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
 
     public bool IsPhoneNumber => SelectedCategoryOption.Value == SubscriptionCategory.PhoneNumber;
 
+    public bool IsReady => !IsBusy;
+
     public bool IsRecurring => SelectedBillingCadenceOption.Value == BillingCadence.Recurring;
 
     public string Title => AppResources.Get(IsEditing
@@ -113,6 +115,7 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
     public partial decimal IntervalCount { get; set; } = 1;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsReady))]
     public partial bool IsBusy { get; private set; }
 
     [ObservableProperty]
