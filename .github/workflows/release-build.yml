@@ -1,0 +1,43 @@
+name: Release Build
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    name: Build - ${{ matrix.os }} (${{ matrix.configuration }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        configuration: [Debug, Release]
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-x64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore NekoSubscription.sln
+
+      - name: Publish project
+        run: dotnet publish NekoSubscription/NekoSubscription.csproj -c ${{ matrix.configuration }} -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o ./publish
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NekoSubscription-${{ matrix.os }}-${{ matrix.configuration }}
+          path: ./publish/
