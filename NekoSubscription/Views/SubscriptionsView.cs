@@ -16,7 +16,26 @@ public sealed class SubscriptionsView : UserControl
 {
     public SubscriptionsView()
     {
-        Content = new Grid
+        var workspace = BuildWorkspace();
+        workspace.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasNoEditor)));
+
+        var editor = new ContentControl();
+        editor.Bind(
+            ContentControl.ContentProperty,
+            new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
+        editor.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasEditor)));
+
+        Content = new Grid()
+            .Children(workspace, editor);
+    }
+
+    private static Grid BuildWorkspace()
+    {
+        return new Grid
         {
             RowDefinitions = new RowDefinitions("Auto,*,Auto"),
             RowSpacing = 14,
@@ -78,17 +97,23 @@ public sealed class SubscriptionsView : UserControl
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RefreshCommand)));
 
+        var addButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"));
+        addButton.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.AddSubscriptionCommand)));
+
         return UiFactory.Card(
             new Grid
             {
-                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto,Auto"),
+                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto,Auto,Auto"),
                 ColumnSpacing = 10
             }
             .Children(
                 searchBox.Grid_Column(0),
                 categoryFilter.Grid_Column(1),
                 includeArchived.Grid_Column(2),
-                refreshButton.Grid_Column(3)),
+                refreshButton.Grid_Column(3),
+                addButton.Grid_Column(4)),
             new Thickness(12));
     }
 
@@ -258,6 +283,28 @@ public sealed class SubscriptionsView : UserControl
 
     private static Control BuildDetails()
     {
+        var editButton = new Button
+        {
+            Content = AppResources.Get("Subscriptions_Edit")
+        };
+        editButton.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.EditSubscriptionCommand)));
+        editButton.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
+
+        var deleteButton = new Button
+        {
+            Content = AppResources.Get("Subscriptions_Delete")
+        };
+        deleteButton.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.RequestDeleteSubscriptionCommand)));
+        deleteButton.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
+
         var archiveButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Archive"));
         archiveButton.Bind(
             ContentControl.ContentProperty,
@@ -296,13 +343,59 @@ public sealed class SubscriptionsView : UserControl
                         $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.SpecializedDetailsLabel)}",
                         $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ManagementUrlLabel)}")
                     .Grid_Column(3),
-                archiveButton
-                    .VerticalAlignment(VerticalAlignment.Center)
+                new StackPanel
+                {
+                    Spacing = 7,
+                    VerticalAlignment = VerticalAlignment.Center
+                }
+                .Children(editButton, archiveButton, deleteButton)
                     .Grid_Column(4)));
         details.Bind(
             IsVisibleProperty,
             new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
-        return details;
+
+        var cancelDeleteButton = new Button
+        {
+            Content = AppResources.Get("Common_Cancel")
+        };
+        cancelDeleteButton.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.CancelDeleteSubscriptionCommand)));
+
+        var confirmDeleteButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_ConfirmDelete"));
+        confirmDeleteButton.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.ConfirmDeleteSubscriptionCommand)));
+
+        var confirmation = new Border
+        {
+            Background = UiPalette.DangerSurface,
+            CornerRadius = new CornerRadius(12),
+            Padding = new Thickness(14),
+            Child = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"),
+                ColumnSpacing = 10
+            }
+            .Children(
+                new TextBlock
+                {
+                    Text = AppResources.Get("Subscriptions_DeleteConfirmation"),
+                    TextWrapping = TextWrapping.Wrap,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
+                cancelDeleteButton.Grid_Column(1),
+                confirmDeleteButton.Grid_Column(2))
+        };
+        confirmation.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.IsDeleteConfirmationVisible)));
+
+        return new StackPanel
+        {
+            Spacing = 8
+        }
+        .Children(details, confirmation);
     }
 
     private static Control BuildDetailValue(string label, string primaryPath, string secondaryPath)

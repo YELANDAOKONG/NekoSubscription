@@ -43,6 +43,10 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     public bool HasNoResults => !HasResults;
 
+    public bool HasEditor => CurrentEditor is not null;
+
+    public bool HasNoEditor => !HasEditor;
+
     public bool HasSelectedSubscription => SelectedSubscription is not null;
 
     public string ResultSummary => Subscriptions.Count == 1
@@ -58,6 +62,14 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial bool IsBusy { get; private set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasEditor))]
+    [NotifyPropertyChangedFor(nameof(HasNoEditor))]
+    public partial SubscriptionEditorViewModel? CurrentEditor { get; private set; }
+
+    [ObservableProperty]
+    public partial bool IsDeleteConfirmationVisible { get; private set; }
 
     [ObservableProperty]
     public partial string SearchText { get; set; } = string.Empty;
@@ -86,6 +98,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
             AppResources.Get("Category_Custom"),
             SubscriptionCategory.Custom));
         SelectedCategoryFilter = CategoryFilters.First(filter => filter.Category == selectedCategory);
+        CurrentEditor?.RefreshLocalization();
         OnPropertyChanged(nameof(ResultSummary));
         OnPropertyChanged(nameof(ArchiveActionLabel));
     }
@@ -129,6 +142,104 @@ public partial class SubscriptionsViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddSubscription()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        CurrentEditor = SubscriptionEditorViewModel.CreateNew(
+            _subscriptionService,
+            _logger,
+            OnEditorSavedAsync,
+            CloseEditor);
+    }
+
+    [RelayCommand]
+    private async Task EditSubscriptionAsync()
+    {
+        if (SelectedSubscription is not { } selectedSubscription || IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var subscription = await _subscriptionService.GetSubscriptionAsync(selectedSubscription.Id);
+            if (subscription is null)
+            {
+                StatusChanged?.Invoke(AppResources.Get("Status_SubscriptionMissing"));
+                return;
+            }
+
+            CurrentEditor = SubscriptionEditorViewModel.CreateForEdit(
+                _subscriptionService,
+                _logger,
+                OnEditorSavedAsync,
+                CloseEditor,
+                subscription);
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to load a subscription for editing.");
+            StatusChanged?.Invoke(AppResources.Get("Status_EditSubscriptionFailed"));
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private void RequestDeleteSubscription()
+    {
+        if (SelectedSubscription is not null && !IsBusy)
+        {
+            IsDeleteConfirmationVisible = true;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelDeleteSubscription() => IsDeleteConfirmationVisible = false;
+
+    [RelayCommand]
+    private async Task ConfirmDeleteSubscriptionAsync()
+    {
+        if (SelectedSubscription is not { } selectedSubscription || IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        IsDeleteConfirmationVisible = false;
+
+        try
+        {
+            var deleted = await _subscriptionService.SoftDeleteSubscriptionAsync(selectedSubscription.Id);
+            if (!deleted)
+            {
+                StatusChanged?.Invoke(AppResources.Get("Status_SubscriptionMissing"));
+                return;
+            }
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to soft-delete a subscription.");
+            StatusChanged?.Invoke(AppResources.Get("Status_DeleteSubscriptionFailed"));
+            return;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        await RefreshAsync();
+        StatusChanged?.Invoke(AppResources.Get("Status_SubscriptionDeleted"));
+    }
+
+    [RelayCommand]
     private async Task ToggleArchiveAsync()
     {
         if (SelectedSubscription is not { } selectedSubscription || IsBusy)
@@ -165,6 +276,23 @@ public partial class SubscriptionsViewModel : ViewModelBase
     partial void OnSearchTextChanged(string value) => ApplyFilters();
 
     partial void OnSelectedCategoryFilterChanged(SubscriptionCategoryFilter value) => ApplyFilters();
+
+    partial void OnSelectedSubscriptionChanged(SubscriptionListItemViewModel? value)
+    {
+        IsDeleteConfirmationVisible = false;
+    }
+
+    private async Task OnEditorSavedAsync()
+    {
+        var statusKey = CurrentEditor?.IsEditing == true
+            ? "Status_SubscriptionUpdated"
+            : "Status_SubscriptionAdded";
+        CloseEditor();
+        await RefreshAsync();
+        StatusChanged?.Invoke(AppResources.Get(statusKey));
+    }
+
+    private void CloseEditor() => CurrentEditor = null;
 
     private void ApplyFilters()
     {

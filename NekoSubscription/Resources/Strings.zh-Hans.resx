@@ -56,6 +56,11 @@
   <data name="Subscriptions_SearchPlaceholder" xml:space="preserve"><value>搜索服务、提供商、账户或状态</value></data>
   <data name="Subscriptions_ShowArchived" xml:space="preserve"><value>显示已归档</value></data>
   <data name="Subscriptions_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Subscriptions_Add" xml:space="preserve"><value>添加订阅</value></data>
+  <data name="Subscriptions_Edit" xml:space="preserve"><value>编辑</value></data>
+  <data name="Subscriptions_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Subscriptions_ConfirmDelete" xml:space="preserve"><value>删除订阅</value></data>
+  <data name="Subscriptions_DeleteConfirmation" xml:space="preserve"><value>确定删除所选订阅？删除后它不会出现在普通视图和计算中。</value></data>
   <data name="Subscriptions_All" xml:space="preserve"><value>全部订阅</value></data>
   <data name="Subscriptions_CountOne" xml:space="preserve"><value>1 项订阅</value></data>
   <data name="Subscriptions_CountMany" xml:space="preserve"><value>{0} 项订阅</value></data>
@@ -73,6 +78,11 @@
   <data name="Status_ArchiveUpdated" xml:space="preserve"><value>订阅归档状态已更新。</value></data>
   <data name="Status_SubscriptionMissing" xml:space="preserve"><value>所选订阅已不存在。</value></data>
   <data name="Status_ArchiveUpdateFailed" xml:space="preserve"><value>无法更新订阅归档状态。</value></data>
+  <data name="Status_SubscriptionAdded" xml:space="preserve"><value>订阅已添加。</value></data>
+  <data name="Status_SubscriptionUpdated" xml:space="preserve"><value>订阅已更新。</value></data>
+  <data name="Status_SubscriptionDeleted" xml:space="preserve"><value>订阅已删除。</value></data>
+  <data name="Status_EditSubscriptionFailed" xml:space="preserve"><value>无法打开订阅进行编辑。</value></data>
+  <data name="Status_DeleteSubscriptionFailed" xml:space="preserve"><value>无法删除订阅。</value></data>
   <data name="Status_SettingsSaved" xml:space="preserve"><value>设置已保存。</value></data>
   <data name="Status_SettingsSaveFailed" xml:space="preserve"><value>无法保存设置。</value></data>
   <data name="Filter_AllCategories" xml:space="preserve"><value>全部分类</value></data>
@@ -125,8 +135,60 @@
   <data name="Details_CustomFields" xml:space="preserve"><value>{0} 个自定义字段</value></data>
   <data name="Details_Ordinary" xml:space="preserve"><value>普通订阅</value></data>
   <data name="Details_Generic" xml:space="preserve"><value>订阅详细信息</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Schedule_Recurring" xml:space="preserve"><value>定期</value></data>
+  <data name="PhoneType_Mobile" xml:space="preserve"><value>手机</value></data>
+  <data name="PhoneType_Landline" xml:space="preserve"><value>固定电话</value></data>
+  <data name="PhoneType_Voip" xml:space="preserve"><value>网络电话</value></data>
+  <data name="PhoneType_DataOnly" xml:space="preserve"><value>仅数据</value></data>
+  <data name="PhoneType_Other" xml:space="preserve"><value>其他</value></data>
+  <data name="Editor_AddTitle" xml:space="preserve"><value>添加订阅</value></data>
+  <data name="Editor_EditTitle" xml:space="preserve"><value>编辑订阅</value></data>
+  <data name="Editor_Description" xml:space="preserve"><value>记录服务信息、账单周期、状态及类型专属信息。</value></data>
+  <data name="Editor_IdentitySection" xml:space="preserve"><value>基本信息</value></data>
+  <data name="Editor_BillingSection" xml:space="preserve"><value>账单</value></data>
+  <data name="Editor_StatusSection" xml:space="preserve"><value>状态</value></data>
+  <data name="Editor_PhoneSection" xml:space="preserve"><value>电话号码信息</value></data>
+  <data name="Editor_DomainSection" xml:space="preserve"><value>域名信息</value></data>
+  <data name="Editor_CloudSection" xml:space="preserve"><value>云服务信息</value></data>
+  <data name="Editor_NotesSection" xml:space="preserve"><value>备注与管理</value></data>
+  <data name="Editor_Category" xml:space="preserve"><value>类别</value></data>
+  <data name="Editor_Provider" xml:space="preserve"><value>提供商</value></data>
+  <data name="Editor_Service" xml:space="preserve"><value>服务</value></data>
+  <data name="Editor_Plan" xml:space="preserve"><value>套餐（可选）</value></data>
+  <data name="Editor_Account" xml:space="preserve"><value>账户（可选）</value></data>
+  <data name="Editor_Amount" xml:space="preserve"><value>金额</value></data>
+  <data name="Editor_CurrencyCode" xml:space="preserve"><value>货币代码</value></data>
+  <data name="Editor_CurrencyKind" xml:space="preserve"><value>货币类型</value></data>
+  <data name="Editor_Cadence" xml:space="preserve"><value>账单频率</value></data>
+  <data name="Editor_Interval" xml:space="preserve"><value>账单间隔</value></data>
+  <data name="Editor_StartDate" xml:space="preserve"><value>开始日期</value></data>
+  <data name="Editor_NextBillingDate" xml:space="preserve"><value>下次账单日期</value></data>
+  <data name="Editor_EndDate" xml:space="preserve"><value>结束日期</value></data>
+  <data name="Editor_AutomaticallyRenews" xml:space="preserve"><value>自动续订</value></data>
+  <data name="Editor_Confirmation" xml:space="preserve"><value>确认状态</value></data>
+  <data name="Editor_Lifecycle" xml:space="preserve"><value>生命周期</value></data>
+  <data name="Editor_Importance" xml:space="preserve"><value>重要程度</value></data>
+  <data name="Editor_PhoneNumber" xml:space="preserve"><value>电话号码</value></data>
+  <data name="Editor_PhoneType" xml:space="preserve"><value>号码类型</value></data>
+  <data name="Editor_Carrier" xml:space="preserve"><value>运营商</value></data>
+  <data name="Editor_Region" xml:space="preserve"><value>地区（可选）</value></data>
+  <data name="Editor_Prepaid" xml:space="preserve"><value>预付费服务</value></data>
+  <data name="Editor_DomainName" xml:space="preserve"><value>域名</value></data>
+  <data name="Editor_RegisteredDate" xml:space="preserve"><value>注册日期</value></data>
+  <data name="Editor_ExpirationDate" xml:space="preserve"><value>到期日期</value></data>
+  <data name="Editor_CloudBillingMode" xml:space="preserve"><value>计费模式</value></data>
+  <data name="Editor_Tenant" xml:space="preserve"><value>租户标识</value></data>
+  <data name="Editor_Project" xml:space="preserve"><value>项目标识</value></data>
+  <data name="Editor_Notes" xml:space="preserve"><value>备注</value></data>
+  <data name="Editor_ManagementUrl" xml:space="preserve"><value>管理链接</value></data>
+  <data name="Editor_SubscriptionMissing" xml:space="preserve"><value>此订阅已不存在。</value></data>
+  <data name="Editor_ValidationFailed" xml:space="preserve"><value>请检查必填项、账单间隔、日期、货币及链接。</value></data>
+  <data name="Editor_SaveFailed" xml:space="preserve"><value>无法保存订阅，请重试。</value></data>
   <data name="Settings_LanguageTitle" xml:space="preserve"><value>显示语言</value></data>
   <data name="Settings_LanguageDescription" xml:space="preserve"><value>选择应用界面使用的语言。</value></data>
+  <data name="Language_Automatic" xml:space="preserve"><value>自动（跟随系统）</value></data>
   <data name="Language_English" xml:space="preserve"><value>English</value></data>
   <data name="Language_SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
   <data name="Language_TraditionalChinese" xml:space="preserve"><value>繁體中文</value></data>

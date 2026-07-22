@@ -56,6 +56,11 @@
   <data name="Subscriptions_SearchPlaceholder" xml:space="preserve"><value>Search service, provider, account, or status</value></data>
   <data name="Subscriptions_ShowArchived" xml:space="preserve"><value>Show archived</value></data>
   <data name="Subscriptions_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Subscriptions_Add" xml:space="preserve"><value>Add subscription</value></data>
+  <data name="Subscriptions_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Subscriptions_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Subscriptions_ConfirmDelete" xml:space="preserve"><value>Delete subscription</value></data>
+  <data name="Subscriptions_DeleteConfirmation" xml:space="preserve"><value>Delete the selected subscription? It will be removed from normal views and calculations.</value></data>
   <data name="Subscriptions_All" xml:space="preserve"><value>All subscriptions</value></data>
   <data name="Subscriptions_CountOne" xml:space="preserve"><value>1 subscription</value></data>
   <data name="Subscriptions_CountMany" xml:space="preserve"><value>{0} subscriptions</value></data>
@@ -73,6 +78,11 @@
   <data name="Status_ArchiveUpdated" xml:space="preserve"><value>Subscription archive state updated.</value></data>
   <data name="Status_SubscriptionMissing" xml:space="preserve"><value>The selected subscription no longer exists.</value></data>
   <data name="Status_ArchiveUpdateFailed" xml:space="preserve"><value>Unable to update the subscription archive state.</value></data>
+  <data name="Status_SubscriptionAdded" xml:space="preserve"><value>Subscription added.</value></data>
+  <data name="Status_SubscriptionUpdated" xml:space="preserve"><value>Subscription updated.</value></data>
+  <data name="Status_SubscriptionDeleted" xml:space="preserve"><value>Subscription deleted.</value></data>
+  <data name="Status_EditSubscriptionFailed" xml:space="preserve"><value>Unable to open the subscription for editing.</value></data>
+  <data name="Status_DeleteSubscriptionFailed" xml:space="preserve"><value>Unable to delete the subscription.</value></data>
   <data name="Status_SettingsSaved" xml:space="preserve"><value>Settings saved.</value></data>
   <data name="Status_SettingsSaveFailed" xml:space="preserve"><value>Unable to save settings.</value></data>
   <data name="Filter_AllCategories" xml:space="preserve"><value>All categories</value></data>
@@ -125,8 +135,60 @@
   <data name="Details_CustomFields" xml:space="preserve"><value>{0} custom fields</value></data>
   <data name="Details_Ordinary" xml:space="preserve"><value>Standard subscription</value></data>
   <data name="Details_Generic" xml:space="preserve"><value>Subscription details</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Schedule_Recurring" xml:space="preserve"><value>Recurring</value></data>
+  <data name="PhoneType_Mobile" xml:space="preserve"><value>Mobile</value></data>
+  <data name="PhoneType_Landline" xml:space="preserve"><value>Landline</value></data>
+  <data name="PhoneType_Voip" xml:space="preserve"><value>Voice over IP</value></data>
+  <data name="PhoneType_DataOnly" xml:space="preserve"><value>Data only</value></data>
+  <data name="PhoneType_Other" xml:space="preserve"><value>Other</value></data>
+  <data name="Editor_AddTitle" xml:space="preserve"><value>Add subscription</value></data>
+  <data name="Editor_EditTitle" xml:space="preserve"><value>Edit subscription</value></data>
+  <data name="Editor_Description" xml:space="preserve"><value>Record the service identity, billing schedule, status, and type-specific details.</value></data>
+  <data name="Editor_IdentitySection" xml:space="preserve"><value>Identity</value></data>
+  <data name="Editor_BillingSection" xml:space="preserve"><value>Billing</value></data>
+  <data name="Editor_StatusSection" xml:space="preserve"><value>Status</value></data>
+  <data name="Editor_PhoneSection" xml:space="preserve"><value>Phone number details</value></data>
+  <data name="Editor_DomainSection" xml:space="preserve"><value>Domain details</value></data>
+  <data name="Editor_CloudSection" xml:space="preserve"><value>Cloud service details</value></data>
+  <data name="Editor_NotesSection" xml:space="preserve"><value>Notes and management</value></data>
+  <data name="Editor_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Editor_Provider" xml:space="preserve"><value>Provider</value></data>
+  <data name="Editor_Service" xml:space="preserve"><value>Service</value></data>
+  <data name="Editor_Plan" xml:space="preserve"><value>Plan (optional)</value></data>
+  <data name="Editor_Account" xml:space="preserve"><value>Account (optional)</value></data>
+  <data name="Editor_Amount" xml:space="preserve"><value>Amount</value></data>
+  <data name="Editor_CurrencyCode" xml:space="preserve"><value>Currency code</value></data>
+  <data name="Editor_CurrencyKind" xml:space="preserve"><value>Currency type</value></data>
+  <data name="Editor_Cadence" xml:space="preserve"><value>Billing cadence</value></data>
+  <data name="Editor_Interval" xml:space="preserve"><value>Billing interval</value></data>
+  <data name="Editor_StartDate" xml:space="preserve"><value>Start date</value></data>
+  <data name="Editor_NextBillingDate" xml:space="preserve"><value>Next billing date</value></data>
+  <data name="Editor_EndDate" xml:space="preserve"><value>End date</value></data>
+  <data name="Editor_AutomaticallyRenews" xml:space="preserve"><value>Renews automatically</value></data>
+  <data name="Editor_Confirmation" xml:space="preserve"><value>Confirmation</value></data>
+  <data name="Editor_Lifecycle" xml:space="preserve"><value>Lifecycle</value></data>
+  <data name="Editor_Importance" xml:space="preserve"><value>Importance</value></data>
+  <data name="Editor_PhoneNumber" xml:space="preserve"><value>Phone number</value></data>
+  <data name="Editor_PhoneType" xml:space="preserve"><value>Phone type</value></data>
+  <data name="Editor_Carrier" xml:space="preserve"><value>Carrier</value></data>
+  <data name="Editor_Region" xml:space="preserve"><value>Region (optional)</value></data>
+  <data name="Editor_Prepaid" xml:space="preserve"><value>Prepaid service</value></data>
+  <data name="Editor_DomainName" xml:space="preserve"><value>Domain name</value></data>
+  <data name="Editor_RegisteredDate" xml:space="preserve"><value>Registered date</value></data>
+  <data name="Editor_ExpirationDate" xml:space="preserve"><value>Expiration date</value></data>
+  <data name="Editor_CloudBillingMode" xml:space="preserve"><value>Billing mode</value></data>
+  <data name="Editor_Tenant" xml:space="preserve"><value>Tenant identifier</value></data>
+  <data name="Editor_Project" xml:space="preserve"><value>Project identifier</value></data>
+  <data name="Editor_Notes" xml:space="preserve"><value>Notes</value></data>
+  <data name="Editor_ManagementUrl" xml:space="preserve"><value>Management URL</value></data>
+  <data name="Editor_SubscriptionMissing" xml:space="preserve"><value>This subscription no longer exists.</value></data>
+  <data name="Editor_ValidationFailed" xml:space="preserve"><value>Check the required fields, billing interval, dates, currency, and URL.</value></data>
+  <data name="Editor_SaveFailed" xml:space="preserve"><value>Unable to save the subscription. Try again.</value></data>
   <data name="Settings_LanguageTitle" xml:space="preserve"><value>Display language</value></data>
   <data name="Settings_LanguageDescription" xml:space="preserve"><value>Choose the language used throughout the application.</value></data>
+  <data name="Language_Automatic" xml:space="preserve"><value>Automatic (system)</value></data>
   <data name="Language_English" xml:space="preserve"><value>English</value></data>
   <data name="Language_SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
   <data name="Language_TraditionalChinese" xml:space="preserve"><value>繁體中文</value></data>

@@ -52,6 +52,21 @@ public sealed class ApplicationSettingsServiceTests : IDisposable
         Assert.Equal(0.64, persistedSettings.AcrylicOpacity);
     }
 
+    [Fact]
+    public async Task SaveAsync_RoundTripsAutomaticCulturePreference()
+    {
+        using var service = new ApplicationSettingsService(_paths);
+        var settings = new ApplicationSettings
+        {
+            CultureName = null
+        };
+
+        await service.SaveAsync(settings);
+        var persistedSettings = await service.GetAsync();
+
+        Assert.Null(persistedSettings.CultureName);
+    }
+
     [Theory]
     [InlineData(0.19)]
     [InlineData(1.01)]

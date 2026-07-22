@@ -15,7 +15,10 @@ internal static class AppResources
         "NekoSubscription.Resources.Strings",
         typeof(AppResources).Assembly);
 
-    public static string CurrentCultureName { get; private set; } = EnglishCultureName;
+    private static readonly string SystemCultureName = ResolveSupportedCulture(
+        CultureInfo.CurrentUICulture);
+
+    public static string CurrentCultureName { get; private set; } = SystemCultureName;
 
     public static string Get(string key)
     {
@@ -56,18 +59,23 @@ internal static class AppResources
 
     private static string ResolveSupportedCultureName(string? cultureName)
     {
-        CultureInfo culture;
+        if (string.IsNullOrWhiteSpace(cultureName))
+        {
+            return SystemCultureName;
+        }
+
         try
         {
-            culture = string.IsNullOrWhiteSpace(cultureName)
-                ? CultureInfo.CurrentUICulture
-                : CultureInfo.GetCultureInfo(cultureName);
+            return ResolveSupportedCulture(CultureInfo.GetCultureInfo(cultureName));
         }
         catch (CultureNotFoundException)
         {
             return EnglishCultureName;
         }
+    }
 
+    private static string ResolveSupportedCulture(CultureInfo culture)
+    {
         if (!culture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase))
         {
             return EnglishCultureName;

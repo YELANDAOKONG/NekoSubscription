@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Threading;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -30,7 +32,7 @@ public partial class SettingsViewModel : ViewModelBase
         RefreshLocalizedOptions(
             ApplicationTheme.System,
             ApplicationVisualStyle.Standard,
-            AppResources.CurrentCultureName);
+            null);
     }
 
     public event EventHandler? AppearanceChanged;
@@ -43,7 +45,7 @@ public partial class SettingsViewModel : ViewModelBase
 
     public ObservableCollection<SelectionOption<ApplicationVisualStyle>> VisualStyles { get; } = [];
 
-    public ObservableCollection<SelectionOption<string>> Languages { get; } = [];
+    public ObservableCollection<SelectionOption<string?>> Languages { get; } = [];
 
     public ApplicationTheme SelectedTheme => SelectedThemeOption.Value;
 
@@ -63,7 +65,7 @@ public partial class SettingsViewModel : ViewModelBase
     public partial bool IsBusy { get; private set; }
 
     [ObservableProperty]
-    public partial SelectionOption<string> SelectedLanguageOption { get; set; } = null!;
+    public partial SelectionOption<string?> SelectedLanguageOption { get; set; } = null!;
 
     [ObservableProperty]
     public partial SelectionOption<ApplicationTheme> SelectedThemeOption { get; set; } = null!;
@@ -81,7 +83,7 @@ public partial class SettingsViewModel : ViewModelBase
         RefreshLocalizedOptions(
             settings.Theme,
             settings.VisualStyle,
-            AppResources.CurrentCultureName);
+            settings.CultureName);
         HasUnsavedChanges = false;
         _isApplyingSettings = false;
         AppearanceChanged?.Invoke(this, EventArgs.Empty);
@@ -124,7 +126,7 @@ public partial class SettingsViewModel : ViewModelBase
         MarkAppearanceChanged();
     }
 
-    partial void OnSelectedLanguageOptionChanged(SelectionOption<string> value)
+    partial void OnSelectedLanguageOptionChanged(SelectionOption<string?> value)
     {
         if (_isApplyingSettings || value is null)
         {
@@ -132,9 +134,15 @@ public partial class SettingsViewModel : ViewModelBase
         }
 
         AppResources.SetCulture(value.Value);
-        RefreshLocalizedOptions(SelectedTheme, SelectedVisualStyle, value.Value);
         HasUnsavedChanges = true;
-        CultureChanged?.Invoke(this, EventArgs.Empty);
+
+        // Avalonia is still committing the ComboBox selection here. Replacing its
+        // items on the next dispatcher turn keeps the selection model consistent.
+        Dispatcher.UIThread.Post(() =>
+        {
+            RefreshLocalizedOptions(SelectedTheme, SelectedVisualStyle, value.Value);
+            CultureChanged?.Invoke(this, EventArgs.Empty);
+        });
     }
 
     partial void OnSelectedThemeOptionChanged(SelectionOption<ApplicationTheme> value)
@@ -153,7 +161,7 @@ public partial class SettingsViewModel : ViewModelBase
     private void RefreshLocalizedOptions(
         ApplicationTheme selectedTheme,
         ApplicationVisualStyle selectedVisualStyle,
-        string selectedCultureName)
+        string? selectedCultureName)
     {
         var wasApplyingSettings = _isApplyingSettings;
         _isApplyingSettings = true;
@@ -178,13 +186,16 @@ public partial class SettingsViewModel : ViewModelBase
         ReplaceOptions(
             Languages,
             [
-                new SelectionOption<string>(
+                new SelectionOption<string?>(
+                    AppResources.Get("Language_Automatic"),
+                    null),
+                new SelectionOption<string?>(
                     AppResources.Get("Language_English"),
                     AppResources.EnglishCultureName),
-                new SelectionOption<string>(
+                new SelectionOption<string?>(
                     AppResources.Get("Language_SimplifiedChinese"),
                     AppResources.SimplifiedChineseCultureName),
-                new SelectionOption<string>(
+                new SelectionOption<string?>(
                     AppResources.Get("Language_TraditionalChinese"),
                     AppResources.TraditionalChineseCultureName)
             ]);
