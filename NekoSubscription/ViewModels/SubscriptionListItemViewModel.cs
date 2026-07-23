@@ -24,6 +24,7 @@ public sealed record SubscriptionListItemViewModel(
     string NotesLabel,
     string ManagementUrlLabel,
     string SpecializedDetailsLabel,
+    bool ParticipatesInBudget,
     bool IsArchived)
 {
     public string ArchiveStateLabel => IsArchived
@@ -41,6 +42,10 @@ public sealed record SubscriptionListItemViewModel(
             StatusLabel.Contains(searchText, StringComparison.CurrentCultureIgnoreCase) ||
             LifecycleLabel.Contains(searchText, StringComparison.CurrentCultureIgnoreCase);
     }
+
+    public string BudgetStateLabel => ParticipatesInBudget
+        ? AppResources.Get("Forecast_IncludedInBudget")
+        : AppResources.Get("Forecast_ExcludedFromBudget");
 
     public static SubscriptionListItemViewModel FromSubscription(Subscription subscription)
     {
@@ -71,6 +76,7 @@ public sealed record SubscriptionListItemViewModel(
             subscription.Notes ?? AppResources.Get("Details_NoNotes"),
             subscription.ManagementUrl ?? AppResources.Get("Details_NoManagementLink"),
             FormatSpecializedDetails(subscription),
+            subscription.ParticipatesInBudget,
             subscription.IsArchived);
     }
 

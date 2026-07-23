@@ -26,11 +26,11 @@
   <data name="Dashboard_MetricActiveCaption" xml:space="preserve"><value>目前有效訂閱</value></data>
   <data name="Dashboard_MetricTrials" xml:space="preserve"><value>試用</value></data>
   <data name="Dashboard_MetricTrialsCaption" xml:space="preserve"><value>需要留意</value></data>
-  <data name="Dashboard_MetricPayments" xml:space="preserve"><value>90 天扣款</value></data>
+  <data name="Dashboard_MetricPayments" xml:space="preserve"><value>預定扣款</value></data>
   <data name="Dashboard_MetricPaymentsCaption" xml:space="preserve"><value>預計扣款次數</value></data>
   <data name="Dashboard_MetricArchived" xml:space="preserve"><value>已封存</value></data>
   <data name="Dashboard_MetricArchivedCaption" xml:space="preserve"><value>隱藏記錄</value></data>
-  <data name="Dashboard_CashFlowTitle" xml:space="preserve"><value>90 天現金流</value></data>
+  <data name="Dashboard_CashFlowTitle" xml:space="preserve"><value>現金流預估</value></data>
   <data name="Dashboard_CashFlowDescription" xml:space="preserve"><value>固定與預估支出依原始幣別分別彙總。</value></data>
   <data name="Dashboard_EmptyCashTitle" xml:space="preserve"><value>暫無預計扣款</value></data>
   <data name="Dashboard_EmptyCashDescription" xml:space="preserve"><value>確認有效訂閱並設定下次扣款日期後，預測將顯示在這裡。</value></data>
@@ -208,4 +208,45 @@
   <data name="Settings_ChangesPreview" xml:space="preserve"><value>變更會立即預覽</value></data>
   <data name="Settings_SaveDescription" xml:space="preserve"><value>儲存後，下次啟動應用程式時將繼續使用相同設定。</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>儲存變更</value></data>
+  <data name="Nav_Calendar" xml:space="preserve"><value>日曆</value></data>
+  <data name="Nav_CalendarSubtitle" xml:space="preserve"><value>每月扣款檢視</value></data>
+  <data name="Page_CalendarSubtitle" xml:space="preserve"><value>在完整月曆中查看所有預定扣款與估算扣款。</value></data>
+  <data name="Forecast_Title" xml:space="preserve"><value>支出預估</value></data>
+  <data name="Forecast_PeriodLabel" xml:space="preserve"><value>未來 {0} 天的預計扣款，依原始幣別分別統計。</value></data>
+  <data name="Forecast_DayOption" xml:space="preserve"><value>{0} 天</value></data>
+  <data name="Forecast_ExcludedSubscriptions" xml:space="preserve"><value>有 {0} 項可見訂閱因確認狀態並非「已確認有效」而未計入預估。</value></data>
+  <data name="Forecast_Fixed" xml:space="preserve"><value>固定</value></data>
+  <data name="Forecast_Estimated" xml:space="preserve"><value>估算</value></data>
+  <data name="Forecast_CashFlowTitle" xml:space="preserve"><value>依幣別預估</value></data>
+  <data name="Forecast_UpcomingDescription" xml:space="preserve"><value>所選預估期間內最近的扣款。</value></data>
+  <data name="Forecast_IncludedInBudget" xml:space="preserve"><value>已計入預估</value></data>
+  <data name="Forecast_ExcludedFromBudget" xml:space="preserve"><value>未計入預估</value></data>
+  <data name="Calendar_Today" xml:space="preserve"><value>今天</value></data>
+  <data name="Calendar_MondayShort" xml:space="preserve"><value>週一</value></data>
+  <data name="Calendar_TuesdayShort" xml:space="preserve"><value>週二</value></data>
+  <data name="Calendar_WednesdayShort" xml:space="preserve"><value>週三</value></data>
+  <data name="Calendar_ThursdayShort" xml:space="preserve"><value>週四</value></data>
+  <data name="Calendar_FridayShort" xml:space="preserve"><value>週五</value></data>
+  <data name="Calendar_SaturdayShort" xml:space="preserve"><value>週六</value></data>
+  <data name="Calendar_SundayShort" xml:space="preserve"><value>週日</value></data>
+  <data name="Calendar_AdditionalPayments" xml:space="preserve"><value>另有 {0} 項</value></data>
+  <data name="Calendar_SelectedDaySummary" xml:space="preserve"><value>{0} 筆扣款</value></data>
+  <data name="Calendar_EstimatedPaymentCompact" xml:space="preserve"><value>估算 {0} · {1}</value></data>
+  <data name="Calendar_NoPayments" xml:space="preserve"><value>當天沒有預定扣款。</value></data>
+  <data name="Calendar_ViewSubscription" xml:space="preserve"><value>查看訂閱</value></data>
+  <data name="Subscriptions_SelectTitle" xml:space="preserve"><value>選擇一項訂閱</value></data>
+  <data name="Subscriptions_SelectDescription" xml:space="preserve"><value>從列表中選擇訂閱，查看帳單、狀態和管理資訊。</value></data>
+  <data name="Editor_ProgressiveDescription" xml:space="preserve"><value>依分區完成資訊，所有變更將一起儲存。</value></data>
+  <data name="Editor_BasicsTab" xml:space="preserve"><value>基本資訊</value></data>
+  <data name="Editor_BillingTab" xml:space="preserve"><value>帳單</value></data>
+  <data name="Editor_StatusTab" xml:space="preserve"><value>狀態</value></data>
+  <data name="Editor_DetailsTab" xml:space="preserve"><value>詳細資訊</value></data>
+  <data name="Editor_BasicsHint" xml:space="preserve"><value>記錄服務及其所屬帳號。</value></data>
+  <data name="Editor_BillingHint" xml:space="preserve"><value>設定金額、重複週期以及應顯示在預估中的下次扣款日期。</value></data>
+  <data name="Editor_StatusHint" xml:space="preserve"><value>控制訂閱是否有效，以及是否參與支出計算。</value></data>
+  <data name="Editor_DetailsHint" xml:space="preserve"><value>補充類別專屬資訊、備註和管理連結。</value></data>
+  <data name="Editor_CategoryLockedHint" xml:space="preserve"><value>類別決定訂閱的資料模型，因此建立後不能變更。</value></data>
+  <data name="Editor_ForecastInclusionHint" xml:space="preserve"><value>只有確認狀態為「已確認有效」的訂閱才會進入預估和日曆。</value></data>
+  <data name="Editor_Renewal" xml:space="preserve"><value>續訂</value></data>
+  <data name="Editor_BillingType" xml:space="preserve"><value>計費類型</value></data>
 </root>

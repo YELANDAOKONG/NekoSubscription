@@ -26,11 +26,11 @@
   <data name="Dashboard_MetricActiveCaption" xml:space="preserve"><value>currently running</value></data>
   <data name="Dashboard_MetricTrials" xml:space="preserve"><value>Trials</value></data>
   <data name="Dashboard_MetricTrialsCaption" xml:space="preserve"><value>need attention</value></data>
-  <data name="Dashboard_MetricPayments" xml:space="preserve"><value>90-day payments</value></data>
+  <data name="Dashboard_MetricPayments" xml:space="preserve"><value>Scheduled payments</value></data>
   <data name="Dashboard_MetricPaymentsCaption" xml:space="preserve"><value>projected charges</value></data>
   <data name="Dashboard_MetricArchived" xml:space="preserve"><value>Archived</value></data>
   <data name="Dashboard_MetricArchivedCaption" xml:space="preserve"><value>hidden records</value></data>
-  <data name="Dashboard_CashFlowTitle" xml:space="preserve"><value>90-day cash flow</value></data>
+  <data name="Dashboard_CashFlowTitle" xml:space="preserve"><value>Cash-flow forecast</value></data>
   <data name="Dashboard_CashFlowDescription" xml:space="preserve"><value>Fixed and estimated charges remain grouped by their original currency.</value></data>
   <data name="Dashboard_EmptyCashTitle" xml:space="preserve"><value>No projected payments</value></data>
   <data name="Dashboard_EmptyCashDescription" xml:space="preserve"><value>Confirm an active subscription and schedule its next billing date to populate the forecast.</value></data>
@@ -208,4 +208,45 @@
   <data name="Settings_ChangesPreview" xml:space="preserve"><value>Changes preview immediately</value></data>
   <data name="Settings_SaveDescription" xml:space="preserve"><value>Save to use the same settings the next time the app starts.</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>Save changes</value></data>
+  <data name="Nav_Calendar" xml:space="preserve"><value>Calendar</value></data>
+  <data name="Nav_CalendarSubtitle" xml:space="preserve"><value>Monthly billing view</value></data>
+  <data name="Page_CalendarSubtitle" xml:space="preserve"><value>Review every scheduled and estimated payment on a full monthly calendar.</value></data>
+  <data name="Forecast_Title" xml:space="preserve"><value>Spending forecast</value></data>
+  <data name="Forecast_PeriodLabel" xml:space="preserve"><value>Projected payments for the next {0} days, grouped by original currency.</value></data>
+  <data name="Forecast_DayOption" xml:space="preserve"><value>{0} days</value></data>
+  <data name="Forecast_ExcludedSubscriptions" xml:space="preserve"><value>{0} visible subscription(s) are not included because their confirmation status is not active.</value></data>
+  <data name="Forecast_Fixed" xml:space="preserve"><value>Fixed</value></data>
+  <data name="Forecast_Estimated" xml:space="preserve"><value>Estimated</value></data>
+  <data name="Forecast_CashFlowTitle" xml:space="preserve"><value>Forecast by currency</value></data>
+  <data name="Forecast_UpcomingDescription" xml:space="preserve"><value>The nearest payments within the selected forecast period.</value></data>
+  <data name="Forecast_IncludedInBudget" xml:space="preserve"><value>Included in forecast</value></data>
+  <data name="Forecast_ExcludedFromBudget" xml:space="preserve"><value>Not included in forecast</value></data>
+  <data name="Calendar_Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Calendar_MondayShort" xml:space="preserve"><value>Mon</value></data>
+  <data name="Calendar_TuesdayShort" xml:space="preserve"><value>Tue</value></data>
+  <data name="Calendar_WednesdayShort" xml:space="preserve"><value>Wed</value></data>
+  <data name="Calendar_ThursdayShort" xml:space="preserve"><value>Thu</value></data>
+  <data name="Calendar_FridayShort" xml:space="preserve"><value>Fri</value></data>
+  <data name="Calendar_SaturdayShort" xml:space="preserve"><value>Sat</value></data>
+  <data name="Calendar_SundayShort" xml:space="preserve"><value>Sun</value></data>
+  <data name="Calendar_AdditionalPayments" xml:space="preserve"><value>+{0} more</value></data>
+  <data name="Calendar_SelectedDaySummary" xml:space="preserve"><value>{0} payment(s)</value></data>
+  <data name="Calendar_EstimatedPaymentCompact" xml:space="preserve"><value>Est. {0} · {1}</value></data>
+  <data name="Calendar_NoPayments" xml:space="preserve"><value>No payments are scheduled for this day.</value></data>
+  <data name="Calendar_ViewSubscription" xml:space="preserve"><value>View subscription</value></data>
+  <data name="Subscriptions_SelectTitle" xml:space="preserve"><value>Select a subscription</value></data>
+  <data name="Subscriptions_SelectDescription" xml:space="preserve"><value>Choose an item from the list to review its billing, status, and management details.</value></data>
+  <data name="Editor_ProgressiveDescription" xml:space="preserve"><value>Complete each focused section. Changes are saved together.</value></data>
+  <data name="Editor_BasicsTab" xml:space="preserve"><value>Basics</value></data>
+  <data name="Editor_BillingTab" xml:space="preserve"><value>Billing</value></data>
+  <data name="Editor_StatusTab" xml:space="preserve"><value>Status</value></data>
+  <data name="Editor_DetailsTab" xml:space="preserve"><value>Details</value></data>
+  <data name="Editor_BasicsHint" xml:space="preserve"><value>Identify the service and the account that owns it.</value></data>
+  <data name="Editor_BillingHint" xml:space="preserve"><value>Define the amount, recurrence, and the next date that should appear in forecasts.</value></data>
+  <data name="Editor_StatusHint" xml:space="preserve"><value>Control whether the subscription is active and included in spending calculations.</value></data>
+  <data name="Editor_DetailsHint" xml:space="preserve"><value>Add category-specific information, notes, and a management link.</value></data>
+  <data name="Editor_CategoryLockedHint" xml:space="preserve"><value>The category cannot be changed after creation because it determines the subscription data model.</value></data>
+  <data name="Editor_ForecastInclusionHint" xml:space="preserve"><value>Only subscriptions with the confirmation status “Confirmed active” are included in forecasts and the calendar.</value></data>
+  <data name="Editor_Renewal" xml:space="preserve"><value>Renewal</value></data>
+  <data name="Editor_BillingType" xml:space="preserve"><value>Billing type</value></data>
 </root>

@@ -49,6 +49,10 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     public bool HasSelectedSubscription => SelectedSubscription is not null;
 
+    public bool HasSelectedSubscriptionWithoutEditor => HasSelectedSubscription && !HasEditor;
+
+    public bool HasEmptyDetails => !HasSelectedSubscription && !HasEditor;
+
     public string ResultSummary => Subscriptions.Count == 1
         ? AppResources.Get("Subscriptions_CountOne")
         : AppResources.Format("Subscriptions_CountMany", Subscriptions.Count);
@@ -66,6 +70,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasEditor))]
     [NotifyPropertyChangedFor(nameof(HasNoEditor))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedSubscriptionWithoutEditor))]
+    [NotifyPropertyChangedFor(nameof(HasEmptyDetails))]
     public partial SubscriptionEditorViewModel? CurrentEditor { get; private set; }
 
     [ObservableProperty]
@@ -103,8 +109,21 @@ public partial class SubscriptionsViewModel : ViewModelBase
         OnPropertyChanged(nameof(ArchiveActionLabel));
     }
 
+    public void SelectSubscription(Guid subscriptionId)
+    {
+        SearchText = string.Empty;
+        SelectedCategoryFilter = CategoryFilters[0];
+        IncludeArchived = _allSubscriptions.Any(subscription =>
+            subscription.Id == subscriptionId && subscription.IsArchived);
+        ApplyFilters();
+        SelectedSubscription = Subscriptions.FirstOrDefault(subscription =>
+            subscription.Id == subscriptionId);
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelectedSubscription))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedSubscriptionWithoutEditor))]
+    [NotifyPropertyChangedFor(nameof(HasEmptyDetails))]
     [NotifyPropertyChangedFor(nameof(ArchiveActionLabel))]
     public partial SubscriptionListItemViewModel? SelectedSubscription { get; set; }
 
@@ -311,8 +330,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
         }
 
         SelectedSubscription = selectedId is { } id
-            ? Subscriptions.FirstOrDefault(subscription => subscription.Id == id)
-            : null;
+            ? Subscriptions.FirstOrDefault(subscription => subscription.Id == id) ?? Subscriptions.FirstOrDefault()
+            : Subscriptions.FirstOrDefault();
         OnPropertyChanged(nameof(HasResults));
         OnPropertyChanged(nameof(HasNoResults));
         OnPropertyChanged(nameof(ResultSummary));

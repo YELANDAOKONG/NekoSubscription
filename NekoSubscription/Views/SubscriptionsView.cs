@@ -16,35 +16,15 @@ public sealed class SubscriptionsView : UserControl
 {
     public SubscriptionsView()
     {
-        var workspace = BuildWorkspace();
-        workspace.Bind(
-            IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasNoEditor)));
-
-        var editor = new ContentControl();
-        editor.Bind(
-            ContentControl.ContentProperty,
-            new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
-        editor.Bind(
-            IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasEditor)));
-
-        Content = new Grid()
-            .Children(workspace, editor);
-    }
-
-    private static Grid BuildWorkspace()
-    {
-        return new Grid
+        Content = new Grid
         {
-            RowDefinitions = new RowDefinitions("Auto,*,Auto"),
-            RowSpacing = 14,
-            Margin = new Thickness(0, 0, 8, 8)
+            RowDefinitions = new RowDefinitions("Auto,*"),
+            RowSpacing = 12,
+            Margin = new Thickness(0, 0, 8, 14)
         }
         .Children(
             BuildToolbar().Grid_Row(0),
-            BuildSubscriptionList().Grid_Row(1),
-            BuildDetails().Grid_Row(2));
+            BuildWorkspace().Grid_Row(1));
     }
 
     private static Control BuildToolbar()
@@ -52,8 +32,7 @@ public sealed class SubscriptionsView : UserControl
         var searchBox = new TextBox
         {
             PlaceholderText = AppResources.Get("Subscriptions_SearchPlaceholder"),
-            MinWidth = 260,
-            HorizontalAlignment = HorizontalAlignment.Stretch
+            MinWidth = 240
         };
         searchBox.Bind(
             TextBox.TextProperty,
@@ -64,7 +43,7 @@ public sealed class SubscriptionsView : UserControl
 
         var categoryFilter = new ComboBox
         {
-            MinWidth = 160
+            MinWidth = 150
         };
         categoryFilter.Bind(
             ItemsControl.ItemsSourceProperty,
@@ -88,41 +67,44 @@ public sealed class SubscriptionsView : UserControl
                 Mode = BindingMode.TwoWay
             });
 
-        var refreshButton = new Button
+        var refresh = new Button
         {
-            Content = AppResources.Get("Subscriptions_Refresh"),
-            MinWidth = 90
+            Content = AppResources.Get("Subscriptions_Refresh")
         };
-        refreshButton.Bind(
+        refresh.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RefreshCommand)));
 
-        var addButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"));
-        addButton.Bind(
+        var add = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"));
+        add.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.AddSubscriptionCommand)));
 
         return UiFactory.Card(
             new Grid
             {
-                ColumnDefinitions = new ColumnDefinitions("*,Auto"),
-                RowDefinitions = new RowDefinitions("Auto,Auto"),
-                ColumnSpacing = 10,
-                RowSpacing = 10
+                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto,Auto,Auto"),
+                ColumnSpacing = 9
             }
             .Children(
-                searchBox.Grid_Column(0),
-                addButton.Grid_Column(1),
-                new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Spacing = 10
-                }
-                .Children(categoryFilter, includeArchived, refreshButton)
-                .Grid_ColumnSpan(2)
-                .Grid_Row(1)),
-            new Thickness(12));
+                searchBox,
+                categoryFilter.Grid_Column(1),
+                includeArchived.Grid_Column(2),
+                refresh.Grid_Column(3),
+                add.Grid_Column(4)),
+            new Thickness(11));
+    }
+
+    private static Control BuildWorkspace()
+    {
+        return new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("0.9*,1.15*"),
+            ColumnSpacing = 12
+        }
+        .Children(
+            BuildSubscriptionList().Grid_Column(0),
+            BuildRightPane().Grid_Column(1));
     }
 
     private static Control BuildSubscriptionList()
@@ -143,63 +125,35 @@ public sealed class SubscriptionsView : UserControl
                 Mode = BindingMode.TwoWay
             });
 
-        var emptyState = UiFactory.EmptyState(
+        var empty = UiFactory.EmptyState(
             AppResources.Get("Subscriptions_EmptyTitle"),
             AppResources.Get("Subscriptions_EmptyDescription"));
-        emptyState.Bind(
+        empty.Bind(
             IsVisibleProperty,
             new Binding(nameof(SubscriptionsViewModel.HasNoResults)));
-
-        var body = new Grid()
-            .Children(list, emptyState);
 
         return UiFactory.Card(
             new Grid
             {
-                RowDefinitions = new RowDefinitions("Auto,Auto,*"),
+                RowDefinitions = new RowDefinitions("Auto,*"),
                 RowSpacing = 10
             }
             .Children(
-                BuildListTitle().Grid_Row(0),
-                BuildColumnHeaders().Grid_Row(1),
-                body.Grid_Row(2)),
-            new Thickness(14));
-    }
-
-    private static Control BuildListTitle()
-    {
-        return new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitions("*,Auto")
-        }
-        .Children(
-            UiFactory.SectionTitle(AppResources.Get("Subscriptions_All")),
-            UiFactory.BoundText(
-                    nameof(SubscriptionsViewModel.ResultSummary),
-                    12,
-                    opacity: 0.62)
-                .Grid_Column(1));
-    }
-
-    private static Control BuildColumnHeaders()
-    {
-        return new Border
-        {
-            Background = UiPalette.SurfaceStrong,
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(10, 7),
-            Child = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitions("2.2*,1.15*,1.05*,1*,1*"),
-                ColumnSpacing = 12
-            }
-            .Children(
-                BuildColumnHeader(AppResources.Get("Column_Service")).Grid_Column(0),
-                BuildColumnHeader(AppResources.Get("Column_Category")).Grid_Column(1),
-                BuildColumnHeader(AppResources.Get("Column_Status")).Grid_Column(2),
-                BuildColumnHeader(AppResources.Get("Column_Amount")).Grid_Column(3),
-                BuildColumnHeader(AppResources.Get("Column_NextBilling")).Grid_Column(4))
-        };
+                new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitions("*,Auto")
+                }
+                .Children(
+                    UiFactory.SectionTitle(AppResources.Get("Subscriptions_All")),
+                    UiFactory.BoundText(
+                            nameof(SubscriptionsViewModel.ResultSummary),
+                            11,
+                            opacity: 0.62)
+                        .Grid_Column(1)),
+                new Grid()
+                    .Children(list, empty)
+                    .Grid_Row(1)),
+            new Thickness(13));
     }
 
     private static Control BuildSubscriptionRow(SubscriptionListItemViewModel? subscription)
@@ -211,52 +165,36 @@ public sealed class SubscriptionsView : UserControl
 
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("2.2*,1.15*,1.05*,1*,1*"),
-            ColumnSpacing = 12,
+            ColumnDefinitions = new ColumnDefinitions("*,Auto"),
+            RowDefinitions = new RowDefinitions("Auto,Auto"),
+            ColumnSpacing = 10,
+            RowSpacing = 3,
             Margin = new Thickness(4, 8)
         }
         .Children(
-            new StackPanel
-            {
-                Spacing = 2
-            }
-            .Children(
-                new TextBlock
-                {
-                    Text = subscription.ServiceLabel,
-                    FontWeight = FontWeight.SemiBold,
-                    TextTrimming = TextTrimming.CharacterEllipsis
-                },
-                new TextBlock
-                {
-                    Text = $"{subscription.ProviderLabel} · {subscription.AccountLabel}",
-                    FontSize = 12,
-                    Opacity = 0.62,
-                    TextTrimming = TextTrimming.CharacterEllipsis
-                })
-            .Grid_Column(0),
             new TextBlock
             {
-                Text = subscription.CategoryLabel,
-                VerticalAlignment = VerticalAlignment.Center,
+                Text = subscription.ServiceLabel,
+                FontWeight = FontWeight.SemiBold,
                 TextTrimming = TextTrimming.CharacterEllipsis
-            }
-            .Grid_Column(1),
-            BuildStatus(subscription)
-                .Grid_Column(2),
+            },
             new TextBlock
             {
                 Text = subscription.AmountLabel,
-                FontWeight = FontWeight.Medium,
-                VerticalAlignment = VerticalAlignment.Center
+                FontWeight = FontWeight.Medium
             }
-            .Grid_Column(3),
+            .Grid_Column(1),
             new TextBlock
             {
-                Text = subscription.NextBillingLabel,
-                VerticalAlignment = VerticalAlignment.Center
+                Text = $"{subscription.ProviderLabel} · {subscription.NextBillingLabel}",
+                FontSize = 11,
+                Opacity = 0.62,
+                TextTrimming = TextTrimming.CharacterEllipsis
             }
-            .Grid_Column(4));
+            .Grid_Row(1),
+            BuildStatus(subscription)
+                .Grid_Column(1)
+                .Grid_Row(1));
     }
 
     private static Control BuildStatus(SubscriptionListItemViewModel subscription)
@@ -274,141 +212,179 @@ public sealed class SubscriptionsView : UserControl
         {
             Background = background,
             CornerRadius = new CornerRadius(999),
-            Padding = new Thickness(8, 4),
-            HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Center,
+            Padding = new Thickness(7, 2),
+            HorizontalAlignment = HorizontalAlignment.Right,
             Child = new TextBlock
             {
                 Text = subscription.IsArchived
                     ? AppResources.Get("Details_Archived")
                     : subscription.LifecycleLabel,
-                FontSize = 11,
-                FontWeight = FontWeight.Medium,
-                TextTrimming = TextTrimming.CharacterEllipsis
+                FontSize = 9,
+                FontWeight = FontWeight.Medium
             }
         };
+    }
+
+    private static Control BuildRightPane()
+    {
+        var editor = new ContentControl();
+        editor.Bind(
+            ContentControl.ContentProperty,
+            new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
+        editor.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasEditor)));
+
+        var details = new ScrollViewer
+        {
+            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
+            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            Content = BuildDetails()
+        };
+        details.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscriptionWithoutEditor)));
+
+        var empty = UiFactory.EmptyState(
+            AppResources.Get("Subscriptions_SelectTitle"),
+            AppResources.Get("Subscriptions_SelectDescription"));
+        empty.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.HasEmptyDetails)));
+
+        return new Grid()
+            .Children(editor, details, empty);
     }
 
     private static Control BuildDetails()
     {
-        var editButton = new Button
-        {
-            Content = AppResources.Get("Subscriptions_Edit")
-        };
-        editButton.Bind(
+        var edit = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Edit"));
+        edit.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.EditSubscriptionCommand)));
-        editButton.Bind(
-            IsEnabledProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
 
-        var deleteButton = new Button
+        var archive = new Button();
+        archive.Bind(
+            ContentControl.ContentProperty,
+            new Binding(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
+        archive.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.ToggleArchiveCommand)));
+
+        var delete = new Button
         {
             Content = AppResources.Get("Subscriptions_Delete")
         };
-        deleteButton.Bind(
+        delete.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RequestDeleteSubscriptionCommand)));
-        deleteButton.Bind(
-            IsEnabledProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
 
-        var archiveButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Archive"));
-        archiveButton.Bind(
-            ContentControl.ContentProperty,
-            new Binding(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
-        archiveButton.Bind(
-            Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.ToggleArchiveCommand)));
-        archiveButton.Bind(
-            IsEnabledProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
-
-        var details = UiFactory.Card(
-            new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitions("2*,1.2*,1.2*,1.2*,Auto"),
-                ColumnSpacing = 18
-            }
-            .Children(
-                BuildDetailValue(
-                        AppResources.Get("Subscriptions_Selected"),
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ServiceLabel)}",
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ProviderLabel)}")
-                    .Grid_Column(0),
-                BuildDetailValue(
-                        AppResources.Get("Subscriptions_Schedule"),
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ScheduleLabel)}",
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.NextBillingLabel)}")
-                    .Grid_Column(1),
-                BuildDetailValue(
-                        AppResources.Get("Subscriptions_Importance"),
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ImportanceLabel)}",
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.StatusLabel)}")
-                    .Grid_Column(2),
-                BuildDetailValue(
-                        AppResources.Get("Subscriptions_Details"),
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.SpecializedDetailsLabel)}",
-                        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{nameof(SubscriptionListItemViewModel.ManagementUrlLabel)}")
-                    .Grid_Column(3),
+        return new StackPanel
+        {
+            Spacing = 10,
+            Margin = new Thickness(0, 0, 4, 12)
+        }
+        .Children(
+            UiFactory.Card(
                 new StackPanel
                 {
-                    Spacing = 7,
-                    VerticalAlignment = VerticalAlignment.Center
+                    Spacing = 18
                 }
-                .Children(editButton, archiveButton, deleteButton)
-                    .Grid_Column(4)));
-        details.Bind(
-            IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscription)));
-
-        var cancelDeleteButton = new Button
-        {
-            Content = AppResources.Get("Common_Cancel")
-        };
-        cancelDeleteButton.Bind(
-            Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.CancelDeleteSubscriptionCommand)));
-
-        var confirmDeleteButton = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_ConfirmDelete"));
-        confirmDeleteButton.Bind(
-            Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.ConfirmDeleteSubscriptionCommand)));
-
-        var confirmation = new Border
-        {
-            Background = UiPalette.DangerSurface,
-            CornerRadius = new CornerRadius(12),
-            Padding = new Thickness(14),
-            Child = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"),
-                ColumnSpacing = 10
-            }
-            .Children(
-                new TextBlock
-                {
-                    Text = AppResources.Get("Subscriptions_DeleteConfirmation"),
-                    TextWrapping = TextWrapping.Wrap,
-                    VerticalAlignment = VerticalAlignment.Center
-                },
-                cancelDeleteButton.Grid_Column(1),
-                confirmDeleteButton.Grid_Column(2))
-        };
-        confirmation.Bind(
-            IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.IsDeleteConfirmationVisible)));
-
-        return new StackPanel
-        {
-            Spacing = 8
-        }
-        .Children(details, confirmation);
+                .Children(
+                    new Grid
+                    {
+                        ColumnDefinitions = new ColumnDefinitions("*,Auto"),
+                        ColumnSpacing = 14
+                    }
+                    .Children(
+                        new StackPanel
+                        {
+                            Spacing = 3
+                        }
+                        .Children(
+                            UiFactory.BoundText(
+                                SelectedPath(nameof(SubscriptionListItemViewModel.ServiceLabel)),
+                                22,
+                                FontWeight.SemiBold,
+                                textWrapping: TextWrapping.Wrap),
+                            UiFactory.BoundText(
+                                SelectedPath(nameof(SubscriptionListItemViewModel.ProviderLabel)),
+                                12,
+                                opacity: 0.62)),
+                        new StackPanel
+                        {
+                            Spacing = 6,
+                            HorizontalAlignment = HorizontalAlignment.Right
+                        }
+                        .Children(
+                            UiFactory.BoundText(
+                                SelectedPath(nameof(SubscriptionListItemViewModel.AmountLabel)),
+                                20,
+                                FontWeight.SemiBold),
+                            BuildBoundPill(
+                                SelectedPath(nameof(SubscriptionListItemViewModel.BudgetStateLabel))))
+                        .Grid_Column(1)),
+                    BuildDetailGrid(),
+                    new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        Spacing = 8
+                    }
+                    .Children(edit, archive, delete))),
+            BuildDeleteConfirmation());
     }
 
-    private static Control BuildDetailValue(string label, string primaryPath, string secondaryPath)
+    private static Control BuildDetailGrid()
     {
-        return new StackPanel
+        return new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("*,*"),
+            RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto"),
+            ColumnSpacing = 18,
+            RowSpacing = 14
+        }
+        .Children(
+            BuildDetailValue(
+                    AppResources.Get("Subscriptions_Schedule"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.ScheduleLabel)),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.NextBillingLabel)))
+                .Grid_Column(0)
+                .Grid_Row(0),
+            BuildDetailValue(
+                    AppResources.Get("Column_Status"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.LifecycleLabel)),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.StatusLabel)))
+                .Grid_Column(1)
+                .Grid_Row(0),
+            BuildDetailValue(
+                    AppResources.Get("Subscriptions_Importance"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.ImportanceLabel)),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.CategoryLabel)))
+                .Grid_Column(0)
+                .Grid_Row(1),
+            BuildDetailValue(
+                    AppResources.Get("Editor_Account"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.AccountLabel)),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.ArchiveStateLabel)))
+                .Grid_Column(1)
+                .Grid_Row(1),
+            BuildDetailValue(
+                    AppResources.Get("Subscriptions_Details"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.SpecializedDetailsLabel)),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.ManagementUrlLabel)))
+                .Grid_ColumnSpan(2)
+                .Grid_Row(2),
+            BuildDetailValue(
+                    AppResources.Get("Editor_Notes"),
+                    SelectedPath(nameof(SubscriptionListItemViewModel.NotesLabel)),
+                    null)
+                .Grid_ColumnSpan(2)
+                .Grid_Row(3));
+    }
+
+    private static Control BuildDetailValue(string label, string primaryPath, string? secondaryPath)
+    {
+        var values = new StackPanel
         {
             Spacing = 3
         }
@@ -420,18 +396,77 @@ public sealed class SubscriptionsView : UserControl
                 FontWeight = FontWeight.Bold,
                 Opacity = 0.56
             },
-            UiFactory.BoundText(primaryPath, 13, FontWeight.SemiBold, textWrapping: TextWrapping.Wrap),
-            UiFactory.BoundText(secondaryPath, 11, opacity: 0.62, textWrapping: TextWrapping.Wrap));
+            UiFactory.BoundText(
+                primaryPath,
+                13,
+                FontWeight.SemiBold,
+                textWrapping: TextWrapping.Wrap));
+
+        if (secondaryPath is not null)
+        {
+            values.Children.Add(UiFactory.BoundText(
+                secondaryPath,
+                11,
+                opacity: 0.62,
+                textWrapping: TextWrapping.Wrap));
+        }
+
+        return values;
     }
 
-    private static TextBlock BuildColumnHeader(string text)
+    private static Control BuildBoundPill(string propertyPath)
     {
-        return new TextBlock
+        return new Border
         {
-            Text = text.ToUpperInvariant(),
-            FontSize = 10,
-            FontWeight = FontWeight.Bold,
-            Opacity = 0.58
+            Background = UiPalette.AccentSurface,
+            CornerRadius = new CornerRadius(999),
+            Padding = new Thickness(8, 4),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Child = UiFactory.BoundText(propertyPath, 10, FontWeight.Medium)
         };
     }
+
+    private static Control BuildDeleteConfirmation()
+    {
+        var cancel = new Button
+        {
+            Content = AppResources.Get("Common_Cancel")
+        };
+        cancel.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.CancelDeleteSubscriptionCommand)));
+
+        var confirm = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_ConfirmDelete"));
+        confirm.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SubscriptionsViewModel.ConfirmDeleteSubscriptionCommand)));
+
+        var confirmation = new Border
+        {
+            Background = UiPalette.DangerSurface,
+            CornerRadius = new CornerRadius(12),
+            Padding = new Thickness(13),
+            Child = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"),
+                ColumnSpacing = 8
+            }
+            .Children(
+                new TextBlock
+                {
+                    Text = AppResources.Get("Subscriptions_DeleteConfirmation"),
+                    TextWrapping = TextWrapping.Wrap,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
+                cancel.Grid_Column(1),
+                confirm.Grid_Column(2))
+        };
+        confirmation.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SubscriptionsViewModel.IsDeleteConfirmationVisible)));
+        return confirmation;
+    }
+
+    private static string SelectedPath(string propertyName) =>
+        $"{nameof(SubscriptionsViewModel.SelectedSubscription)}.{propertyName}";
 }

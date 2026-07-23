@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ using Serilog;
 using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
 using NekoSubscription.Core.Subscriptions;
+using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
 
 namespace NekoSubscription.ViewModels;
@@ -28,12 +30,14 @@ public partial class MainViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(logger);
 
         Dashboard = new DashboardViewModel(cashFlowProjector);
+        Calendar = new CalendarViewModel(cashFlowProjector);
         Subscriptions = new SubscriptionsViewModel(subscriptionService, logger);
         Settings = new SettingsViewModel(settingsService, logger);
         CurrentPage = Dashboard;
 
-        Subscriptions.SnapshotChanged += Dashboard.Update;
+        Subscriptions.SnapshotChanged += OnSnapshotChanged;
         Subscriptions.StatusChanged += SetStatus;
+        Calendar.SubscriptionRequested += OnCalendarSubscriptionRequested;
         Settings.StatusChanged += SetStatus;
         Settings.AppearanceChanged += OnAppearanceChanged;
         Settings.CultureChanged += OnCultureChanged;
@@ -49,11 +53,15 @@ public partial class MainViewModel : ViewModelBase
 
     public DashboardViewModel Dashboard { get; }
 
+    public CalendarViewModel Calendar { get; }
+
     public SubscriptionsViewModel Subscriptions { get; }
 
     public SettingsViewModel Settings { get; }
 
     public bool IsDashboardSelected => CurrentPage == Dashboard;
+
+    public bool IsCalendarSelected => CurrentPage == Calendar;
 
     public bool IsSubscriptionsSelected => CurrentPage == Subscriptions;
 
@@ -88,6 +96,9 @@ public partial class MainViewModel : ViewModelBase
     private void ShowDashboard() => Navigate(Dashboard);
 
     [RelayCommand]
+    private void ShowCalendar() => Navigate(Calendar);
+
+    [RelayCommand]
     private void ShowSubscriptions() => Navigate(Subscriptions);
 
     [RelayCommand]
@@ -98,6 +109,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentPage = page;
         RefreshPageMetadata();
         OnPropertyChanged(nameof(IsDashboardSelected));
+        OnPropertyChanged(nameof(IsCalendarSelected));
         OnPropertyChanged(nameof(IsSubscriptionsSelected));
         OnPropertyChanged(nameof(IsSettingsSelected));
     }
@@ -118,6 +130,13 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
+        if (CurrentPage == Calendar)
+        {
+            PageTitle = AppResources.Get("Nav_Calendar");
+            PageSubtitle = AppResources.Get("Page_CalendarSubtitle");
+            return;
+        }
+
         PageTitle = AppResources.Get("Nav_Settings");
         PageSubtitle = AppResources.Get("Page_SettingsSubtitle");
     }
@@ -128,6 +147,8 @@ public partial class MainViewModel : ViewModelBase
     private async void OnCultureChanged(object? sender, EventArgs e)
     {
         Subscriptions.RefreshLocalization();
+        Dashboard.RefreshLocalization();
+        Calendar.RefreshLocalization();
         RefreshPageMetadata();
         StatusMessage = AppResources.Get("Status_Starting");
         LanguageChanged?.Invoke(this, EventArgs.Empty);
@@ -144,4 +165,16 @@ public partial class MainViewModel : ViewModelBase
     }
 
     private void SetStatus(string message) => StatusMessage = message;
+
+    private void OnCalendarSubscriptionRequested(Guid subscriptionId)
+    {
+        Subscriptions.SelectSubscription(subscriptionId);
+        Navigate(Subscriptions);
+    }
+
+    private void OnSnapshotChanged(IReadOnlyList<Subscription> subscriptions)
+    {
+        Dashboard.Update(subscriptions);
+        Calendar.Update(subscriptions);
+    }
 }

@@ -176,6 +176,12 @@ public partial class MainWindow : Window
                 nameof(MainViewModel.IsDashboardSelected),
                 nameof(MainViewModel.ShowDashboardCommand)),
             BuildNavigationButton(
+                AppResources.Get("Nav_Calendar"),
+                AppResources.Get("Nav_CalendarSubtitle"),
+                "C",
+                nameof(MainViewModel.IsCalendarSelected),
+                nameof(MainViewModel.ShowCalendarCommand)),
+            BuildNavigationButton(
                 AppResources.Get("Nav_Subscriptions"),
                 AppResources.Get("Nav_SubscriptionsSubtitle"),
                 "S",
