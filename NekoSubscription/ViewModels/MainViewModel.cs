@@ -10,9 +10,11 @@ using Serilog;
 
 using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
+using NekoSubscription.Core.DataManagement;
 using NekoSubscription.Core.Subscriptions;
 using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
+using NekoSubscription.Services;
 
 namespace NekoSubscription.ViewModels;
 
@@ -21,18 +23,27 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         ISubscriptionService subscriptionService,
         IApplicationSettingsService settingsService,
+        IDataManagementService dataManagementService,
+        IDataFileDialogService fileDialogService,
         CashFlowProjector cashFlowProjector,
         ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(subscriptionService);
         ArgumentNullException.ThrowIfNull(settingsService);
+        ArgumentNullException.ThrowIfNull(dataManagementService);
+        ArgumentNullException.ThrowIfNull(fileDialogService);
         ArgumentNullException.ThrowIfNull(cashFlowProjector);
         ArgumentNullException.ThrowIfNull(logger);
 
         Dashboard = new DashboardViewModel(cashFlowProjector);
         Calendar = new CalendarViewModel(cashFlowProjector);
         Subscriptions = new SubscriptionsViewModel(subscriptionService, logger);
-        Settings = new SettingsViewModel(settingsService, logger);
+        Settings = new SettingsViewModel(
+            settingsService,
+            dataManagementService,
+            fileDialogService,
+            logger,
+            Subscriptions.RefreshAsync);
         CurrentPage = Dashboard;
 
         Subscriptions.SnapshotChanged += OnSnapshotChanged;

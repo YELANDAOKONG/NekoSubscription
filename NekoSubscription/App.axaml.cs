@@ -9,6 +9,7 @@ using Serilog;
 using NekoSubscription.Core.CashFlow;
 using NekoSubscription.Core.Configuration;
 using NekoSubscription.Localization;
+using NekoSubscription.Services;
 using NekoSubscription.ViewModels;
 using NekoSubscription.Views;
 
@@ -50,6 +51,8 @@ public partial class App : Application
         var viewModel = new MainViewModel(
             _runtime.Subscriptions,
             _runtime.Settings,
+            _runtime.DataManagement,
+            new DesktopDataFileDialogService(),
             new CashFlowProjector(),
             _runtime.Logger);
         desktop.MainWindow = new MainWindow(viewModel);

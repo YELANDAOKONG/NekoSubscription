@@ -208,6 +208,39 @@
   <data name="Settings_ChangesPreview" xml:space="preserve"><value>變更會立即預覽</value></data>
   <data name="Settings_SaveDescription" xml:space="preserve"><value>儲存後，下次啟動應用程式時將繼續使用相同設定。</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>儲存變更</value></data>
+  <data name="Settings_DataManagementTitle" xml:space="preserve"><value>資料管理</value></data>
+  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>備份所有本機資料庫、從標準 13 欄 CSV 匯入訂閱，或清空訂閱資料並保留應用程式設定。</value></data>
+  <data name="Settings_BackupData" xml:space="preserve"><value>備份資料</value></data>
+  <data name="Settings_ImportCsv" xml:space="preserve"><value>匯入 CSV</value></data>
+  <data name="Settings_ClearData" xml:space="preserve"><value>清空資料</value></data>
+  <data name="Settings_ConfirmImport" xml:space="preserve"><value>確認匯入</value></data>
+  <data name="Settings_BackupAndClear" xml:space="preserve"><value>備份並清空</value></data>
+  <data name="Settings_ConfirmClear" xml:space="preserve"><value>不備份，直接清空</value></data>
+  <data name="Settings_ClearConfirmationTitle" xml:space="preserve"><value>清空所有訂閱資料？</value></data>
+  <data name="Settings_ClearConfirmationDescription" xml:space="preserve"><value>此操作會永久刪除訂閱、標籤和付款資料。應用程式設定、記錄檔和資料庫結構會保留。</value></data>
+  <data name="Settings_ImportPreviewSummary" xml:space="preserve"><value>{0} 列有效，{1} 個錯誤，{2} 個警告。表頭文字會被忽略，欄位依欄位位置配對。</value></data>
+  <data name="Settings_ImportIssueLine" xml:space="preserve"><value>第 {0} 列：{1}</value></data>
+  <data name="Settings_BackupDialogTitle" xml:space="preserve"><value>備份 NekoSubscription 資料</value></data>
+  <data name="Settings_BackupFileType" xml:space="preserve"><value>NekoSubscription 備份</value></data>
+  <data name="Settings_ImportDialogTitle" xml:space="preserve"><value>從 CSV 匯入訂閱</value></data>
+  <data name="Status_DataBackupCreated" xml:space="preserve"><value>資料備份已建立。</value></data>
+  <data name="Status_DataBackupFailed" xml:space="preserve"><value>無法建立資料備份。</value></data>
+  <data name="Status_CsvPreviewFailed" xml:space="preserve"><value>無法讀取或驗證 CSV 檔案。</value></data>
+  <data name="Status_CsvImportCompleted" xml:space="preserve"><value>已匯入 {0} 項訂閱。</value></data>
+  <data name="Status_CsvImportFailed" xml:space="preserve"><value>無法匯入 CSV，未新增任何資料。</value></data>
+  <data name="Status_DataCleared" xml:space="preserve"><value>已清空 {0} 項訂閱。</value></data>
+  <data name="Status_ClearDataFailed" xml:space="preserve"><value>無法清空訂閱資料。</value></data>
+  <data name="ImportIssue_MalformedCsv" xml:space="preserve"><value>CSV 引號或分隔符格式錯誤</value></data>
+  <data name="ImportIssue_InvalidColumnCount" xml:space="preserve"><value>必須剛好包含 13 欄</value></data>
+  <data name="ImportIssue_MissingProvider" xml:space="preserve"><value>服務名稱不能為空</value></data>
+  <data name="ImportIssue_InvalidAmountOrCurrency" xml:space="preserve"><value>費用和幣別必須同時有效或同時留空</value></data>
+  <data name="ImportIssue_InvalidBillingPeriod" xml:space="preserve"><value>付款週期必須為 D、W、M、Q、HY 或 Y</value></data>
+  <data name="ImportIssue_InvalidDate" xml:space="preserve"><value>日期必須使用 M/d/yyyy 或 yyyy-MM-dd 格式</value></data>
+  <data name="ImportIssue_InvalidDateOrder" xml:space="preserve"><value>失效或下次扣款日期不能早於生效日期</value></data>
+  <data name="ImportIssue_InvalidSubscriptionMarker" xml:space="preserve"><value>訂閱標記必須為 TRUE、FALSE、1 或 0</value></data>
+  <data name="ImportIssue_InvalidPaymentChannel" xml:space="preserve"><value>不支援此付款方式代碼</value></data>
+  <data name="ImportIssue_MissingPaymentAccount" xml:space="preserve"><value>此付款方式需要付款帳戶</value></data>
+  <data name="ImportIssue_DuplicateRow" xml:space="preserve"><value>可能是重複列，但仍會匯入</value></data>
   <data name="Nav_Calendar" xml:space="preserve"><value>日曆</value></data>
   <data name="Nav_CalendarSubtitle" xml:space="preserve"><value>每月扣款檢視</value></data>
   <data name="Page_CalendarSubtitle" xml:space="preserve"><value>在完整月曆中查看所有預定扣款與估算扣款。</value></data>

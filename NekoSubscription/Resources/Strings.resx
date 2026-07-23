@@ -208,6 +208,39 @@
   <data name="Settings_ChangesPreview" xml:space="preserve"><value>Changes preview immediately</value></data>
   <data name="Settings_SaveDescription" xml:space="preserve"><value>Save to use the same settings the next time the app starts.</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>Save changes</value></data>
+  <data name="Settings_DataManagementTitle" xml:space="preserve"><value>Data management</value></data>
+  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>Back up all local databases, import subscriptions from the standard 13-column CSV format, or clear subscription data while keeping application settings.</value></data>
+  <data name="Settings_BackupData" xml:space="preserve"><value>Back up data</value></data>
+  <data name="Settings_ImportCsv" xml:space="preserve"><value>Import CSV</value></data>
+  <data name="Settings_ClearData" xml:space="preserve"><value>Clear data</value></data>
+  <data name="Settings_ConfirmImport" xml:space="preserve"><value>Import</value></data>
+  <data name="Settings_BackupAndClear" xml:space="preserve"><value>Back up and clear</value></data>
+  <data name="Settings_ConfirmClear" xml:space="preserve"><value>Clear without backup</value></data>
+  <data name="Settings_ClearConfirmationTitle" xml:space="preserve"><value>Clear all subscription data?</value></data>
+  <data name="Settings_ClearConfirmationDescription" xml:space="preserve"><value>This permanently removes subscriptions, tags, and payment profiles. Application settings, logs, and database structure are kept.</value></data>
+  <data name="Settings_ImportPreviewSummary" xml:space="preserve"><value>{0} valid row(s), {1} error(s), and {2} warning(s). The header text is ignored; columns are matched by position.</value></data>
+  <data name="Settings_ImportIssueLine" xml:space="preserve"><value>Row {0}: {1}</value></data>
+  <data name="Settings_BackupDialogTitle" xml:space="preserve"><value>Back up NekoSubscription data</value></data>
+  <data name="Settings_BackupFileType" xml:space="preserve"><value>NekoSubscription backup</value></data>
+  <data name="Settings_ImportDialogTitle" xml:space="preserve"><value>Import subscriptions from CSV</value></data>
+  <data name="Status_DataBackupCreated" xml:space="preserve"><value>Data backup created.</value></data>
+  <data name="Status_DataBackupFailed" xml:space="preserve"><value>Unable to create the data backup.</value></data>
+  <data name="Status_CsvPreviewFailed" xml:space="preserve"><value>Unable to read or validate the CSV file.</value></data>
+  <data name="Status_CsvImportCompleted" xml:space="preserve"><value>Imported {0} subscription(s).</value></data>
+  <data name="Status_CsvImportFailed" xml:space="preserve"><value>Unable to import the CSV file. No rows were added.</value></data>
+  <data name="Status_DataCleared" xml:space="preserve"><value>Cleared {0} subscription(s).</value></data>
+  <data name="Status_ClearDataFailed" xml:space="preserve"><value>Unable to clear subscription data.</value></data>
+  <data name="ImportIssue_MalformedCsv" xml:space="preserve"><value>malformed CSV quoting or delimiters</value></data>
+  <data name="ImportIssue_InvalidColumnCount" xml:space="preserve"><value>expected exactly 13 columns</value></data>
+  <data name="ImportIssue_MissingProvider" xml:space="preserve"><value>service provider is required</value></data>
+  <data name="ImportIssue_InvalidAmountOrCurrency" xml:space="preserve"><value>amount and currency must both be valid or both be empty</value></data>
+  <data name="ImportIssue_InvalidBillingPeriod" xml:space="preserve"><value>billing period must be D, W, M, Q, HY, or Y</value></data>
+  <data name="ImportIssue_InvalidDate" xml:space="preserve"><value>date must use M/d/yyyy or yyyy-MM-dd</value></data>
+  <data name="ImportIssue_InvalidDateOrder" xml:space="preserve"><value>next billing date cannot be earlier than the effective date</value></data>
+  <data name="ImportIssue_InvalidSubscriptionMarker" xml:space="preserve"><value>subscription marker must be TRUE, FALSE, 1, or 0</value></data>
+  <data name="ImportIssue_InvalidPaymentChannel" xml:space="preserve"><value>payment channel code is not supported</value></data>
+  <data name="ImportIssue_MissingPaymentAccount" xml:space="preserve"><value>this payment channel requires a payment account</value></data>
+  <data name="ImportIssue_DuplicateRow" xml:space="preserve"><value>probable duplicate row; it will still be imported</value></data>
   <data name="Nav_Calendar" xml:space="preserve"><value>Calendar</value></data>
   <data name="Nav_CalendarSubtitle" xml:space="preserve"><value>Monthly billing view</value></data>
   <data name="Page_CalendarSubtitle" xml:space="preserve"><value>Review every scheduled and estimated payment on a full monthly calendar.</value></data>

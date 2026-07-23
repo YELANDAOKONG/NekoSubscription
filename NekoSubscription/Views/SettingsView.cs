@@ -30,6 +30,7 @@ public sealed class SettingsView : UserControl
                 BuildLanguageCard(),
                 BuildAppearanceCard(),
                 BuildMaterialCard(),
+                BuildDataManagementCard(),
                 BuildPrivacyCard(),
                 BuildSaveBar())
         };
@@ -202,6 +203,177 @@ public sealed class SettingsView : UserControl
                         TextWrapping = TextWrapping.Wrap
                     })
                 .Grid_Column(1)));
+    }
+
+    private static Control BuildDataManagementCard()
+    {
+        var backup = new Button
+        {
+            Content = AppResources.Get("Settings_BackupData")
+        };
+        backup.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.BackupDataCommand)));
+
+        var import = UiFactory.PrimaryButton(AppResources.Get("Settings_ImportCsv"));
+        import.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.SelectImportCsvCommand)));
+
+        var clear = new Button
+        {
+            Content = AppResources.Get("Settings_ClearData")
+        };
+        clear.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.RequestClearDataCommand)));
+
+        return UiFactory.Card(
+            new StackPanel
+            {
+                Spacing = 14
+            }
+            .Children(
+                BuildSettingsHeading(
+                    AppResources.Get("Settings_DataManagementTitle"),
+                    AppResources.Get("Settings_DataManagementDescription")),
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Spacing = 8
+                }
+                .Children(backup, import, clear),
+                BuildImportPreview(),
+                BuildClearConfirmation()));
+    }
+
+    private static Control BuildImportPreview()
+    {
+        var cancel = new Button
+        {
+            Content = AppResources.Get("Common_Cancel")
+        };
+        cancel.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.CancelImportCommand)));
+
+        var confirm = UiFactory.PrimaryButton(AppResources.Get("Settings_ConfirmImport"));
+        confirm.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.ConfirmImportCommand)));
+        confirm.Bind(
+            IsEnabledProperty,
+            new Binding(nameof(SettingsViewModel.CanImport)));
+
+        var issues = UiFactory.BoundText(
+            nameof(SettingsViewModel.ImportIssueSummary),
+            11,
+            opacity: 0.72,
+            textWrapping: TextWrapping.Wrap);
+        issues.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SettingsViewModel.HasImportIssues)));
+
+        var preview = new Border
+        {
+            Background = UiPalette.AccentSurface,
+            CornerRadius = new CornerRadius(10),
+            Padding = new Thickness(12),
+            Child = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,Auto"),
+                ColumnSpacing = 12
+            }
+            .Children(
+                new StackPanel
+                {
+                    Spacing = 5
+                }
+                .Children(
+                    UiFactory.BoundText(
+                        nameof(SettingsViewModel.ImportPreviewMessage),
+                        13,
+                        FontWeight.SemiBold,
+                        textWrapping: TextWrapping.Wrap),
+                    issues),
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Spacing = 8,
+                    VerticalAlignment = VerticalAlignment.Top
+                }
+                .Children(cancel, confirm)
+                .Grid_Column(1))
+        };
+        preview.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SettingsViewModel.HasImportPreview)));
+        return preview;
+    }
+
+    private static Control BuildClearConfirmation()
+    {
+        var cancel = new Button
+        {
+            Content = AppResources.Get("Common_Cancel")
+        };
+        cancel.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.CancelClearDataCommand)));
+
+        var backupAndClear = new Button
+        {
+            Content = AppResources.Get("Settings_BackupAndClear")
+        };
+        backupAndClear.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.BackupAndClearDataCommand)));
+
+        var confirm = UiFactory.PrimaryButton(AppResources.Get("Settings_ConfirmClear"));
+        confirm.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.ConfirmClearDataCommand)));
+
+        var confirmation = new Border
+        {
+            Background = UiPalette.DangerSurface,
+            CornerRadius = new CornerRadius(10),
+            Padding = new Thickness(12),
+            Child = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,Auto"),
+                ColumnSpacing = 12
+            }
+            .Children(
+                new StackPanel
+                {
+                    Spacing = 3
+                }
+                .Children(
+                    new TextBlock
+                    {
+                        Text = AppResources.Get("Settings_ClearConfirmationTitle"),
+                        FontWeight = FontWeight.SemiBold
+                    },
+                    new TextBlock
+                    {
+                        Text = AppResources.Get("Settings_ClearConfirmationDescription"),
+                        Opacity = 0.72,
+                        TextWrapping = TextWrapping.Wrap
+                    }),
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Spacing = 8,
+                    VerticalAlignment = VerticalAlignment.Center
+                }
+                .Children(cancel, backupAndClear, confirm)
+                .Grid_Column(1))
+        };
+        confirmation.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(SettingsViewModel.IsClearConfirmationVisible)));
+        return confirmation;
     }
 
     private static Control BuildSaveBar()

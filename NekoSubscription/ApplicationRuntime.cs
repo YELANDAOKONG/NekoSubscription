@@ -3,6 +3,7 @@ using System;
 using Serilog;
 
 using NekoSubscription.Core.Configuration;
+using NekoSubscription.Core.DataManagement;
 using NekoSubscription.Core.Diagnostics;
 using NekoSubscription.Core.Subscriptions;
 
@@ -21,6 +22,7 @@ internal sealed class ApplicationRuntime : IDisposable
 
         Settings = new ApplicationSettingsService(pathsProvider);
         Subscriptions = new SubscriptionService(paths);
+        DataManagement = new DataManagementService(paths);
         Logging = new ApplicationLogging(paths.LogsDirectory);
         CrashReports = new CrashReportService(
             paths.CrashReportsDirectory,
@@ -33,6 +35,8 @@ internal sealed class ApplicationRuntime : IDisposable
     public IApplicationSettingsService Settings { get; }
 
     public ISubscriptionService Subscriptions { get; }
+
+    public IDataManagementService DataManagement { get; }
 
     public ApplicationLogging Logging { get; }
 
@@ -70,6 +74,7 @@ internal sealed class ApplicationRuntime : IDisposable
         }
 
         _diagnostics.Dispose();
+        DataManagement.Dispose();
         Subscriptions.Dispose();
         Settings.Dispose();
         Logging.Dispose();
