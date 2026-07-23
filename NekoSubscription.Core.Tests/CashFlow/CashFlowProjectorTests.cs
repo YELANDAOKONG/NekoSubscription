@@ -75,6 +75,33 @@ public sealed class CashFlowProjectorTests
                 .Select(item => item.ScheduledOn));
     }
 
+    [Theory]
+    [InlineData(14, 2)]
+    [InlineData(30, 5)]
+    [InlineData(90, 13)]
+    public void Project_ExpandsRecurringPaymentsAcrossForecastPeriods(
+        int forecastDayCount,
+        int expectedPaymentCount)
+    {
+        var startsOn = new DateOnly(2026, 1, 1);
+        var weekly = CreateOrdinarySubscription(
+            "range@example.com",
+            CreateRecurringSchedule(
+                BillingIntervalUnit.Week,
+                1,
+                startsOn));
+
+        var projection = _projector.Project(
+            [weekly],
+            startsOn,
+            startsOn.AddDays(forecastDayCount - 1));
+
+        Assert.Equal(expectedPaymentCount, projection.Items.Count);
+        Assert.All(
+            projection.Items,
+            item => Assert.Equal(weekly.Id, item.SubscriptionId));
+    }
+
     [Fact]
     public void Project_PreservesMonthEndAndLeapYearAnchor()
     {

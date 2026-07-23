@@ -23,10 +23,12 @@ public sealed class CalendarView : UserControl
     {
         Content = new ScrollViewer
         {
+            HorizontalContentAlignment = HorizontalAlignment.Stretch,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             Content = new Grid
             {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
                 RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto"),
                 RowSpacing = 10,
                 Margin = new Thickness(0, 0, 8, 14)
@@ -127,6 +129,7 @@ public sealed class CalendarView : UserControl
     {
         var calendar = new ItemsControl
         {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
             ItemsPanel = new FuncTemplate<Panel?>(() => new UniformGrid
             {
                 Columns = 7,

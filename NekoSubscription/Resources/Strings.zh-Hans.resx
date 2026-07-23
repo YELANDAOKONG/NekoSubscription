@@ -249,4 +249,7 @@
   <data name="Editor_ForecastInclusionHint" xml:space="preserve"><value>只有确认状态为“已确认有效”的订阅才会进入预估和日历。</value></data>
   <data name="Editor_Renewal" xml:space="preserve"><value>续订</value></data>
   <data name="Editor_BillingType" xml:space="preserve"><value>计费类型</value></data>
+  <data name="Forecast_OverdueTitle" xml:space="preserve"><value>已逾期</value></data>
+  <data name="Forecast_OverdueDescription" xml:space="preserve"><value>下次扣款日期已经过去的订阅。日期更新前，每项订阅只显示一次。</value></data>
+  <data name="Forecast_DaysOverdue" xml:space="preserve"><value>已逾期 {0} 天</value></data>
 </root>

@@ -249,4 +249,7 @@
   <data name="Editor_ForecastInclusionHint" xml:space="preserve"><value>Only subscriptions with the confirmation status “Confirmed active” are included in forecasts and the calendar.</value></data>
   <data name="Editor_Renewal" xml:space="preserve"><value>Renewal</value></data>
   <data name="Editor_BillingType" xml:space="preserve"><value>Billing type</value></data>
+  <data name="Forecast_OverdueTitle" xml:space="preserve"><value>Overdue</value></data>
+  <data name="Forecast_OverdueDescription" xml:space="preserve"><value>Recorded next billing dates that have passed. Each subscription appears once until its date is updated.</value></data>
+  <data name="Forecast_DaysOverdue" xml:space="preserve"><value>{0} day(s) overdue</value></data>
 </root>

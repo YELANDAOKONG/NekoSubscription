@@ -19,6 +19,7 @@ public partial class DashboardViewModel : ViewModelBase
     private const int SevenDayProjection = 7;
     private const int FourteenDayProjection = 14;
     private const int ThirtyDayProjection = 30;
+    private const int NinetyDayProjection = 90;
 
     private readonly CashFlowProjector _cashFlowProjector;
     private IReadOnlyList<Subscription> _subscriptions = [];
@@ -31,11 +32,15 @@ public partial class DashboardViewModel : ViewModelBase
         BuildForecastPeriods();
     }
 
+    public event Action<Guid>? SubscriptionRequested;
+
     public ObservableCollection<CurrencyTotalViewModel> CurrencyTotals { get; } = [];
 
     public ObservableCollection<ForecastPeriodOptionViewModel> ForecastPeriods { get; } = [];
 
     public ObservableCollection<CashFlowItemViewModel> UpcomingPayments { get; } = [];
+
+    public ObservableCollection<OverduePaymentViewModel> OverduePayments { get; } = [];
 
     public bool HasCurrencyTotals => CurrencyTotals.Count > 0;
 
@@ -44,6 +49,8 @@ public partial class DashboardViewModel : ViewModelBase
     public bool HasUpcomingPayments => UpcomingPayments.Count > 0;
 
     public bool HasNoUpcomingPayments => !HasUpcomingPayments;
+
+    public bool HasOverduePayments => OverduePayments.Count > 0;
 
     public bool HasExcludedSubscriptions => ExcludedSubscriptionCount > 0;
 
@@ -101,6 +108,7 @@ public partial class DashboardViewModel : ViewModelBase
         AddForecastPeriod(SevenDayProjection);
         AddForecastPeriod(FourteenDayProjection);
         AddForecastPeriod(ThirtyDayProjection);
+        AddForecastPeriod(NinetyDayProjection);
     }
 
     private void AddForecastPeriod(int dayCount)
@@ -146,6 +154,22 @@ public partial class DashboardViewModel : ViewModelBase
             !subscription.ParticipatesInBudget);
 
         var projectionStartsOn = DateOnly.FromDateTime(DateTime.Today);
+        var overduePayments = visibleSubscriptions
+            .Where(subscription => subscription.ParticipatesInBudget)
+            .Select(subscription => new
+            {
+                Subscription = subscription,
+                DueOn = GetRecordedDueOnForOverdue(subscription)
+            })
+            .Where(item => item.DueOn is { } dueOn && dueOn < projectionStartsOn)
+            .OrderBy(item => item.DueOn)
+            .Select(item => new OverduePaymentViewModel(
+                item.Subscription,
+                item.DueOn!.Value,
+                projectionStartsOn,
+                OpenSubscription));
+        ReplaceItems(OverduePayments, overduePayments);
+
         var projectionEndsOn = projectionStartsOn.AddDays(_projectionDayCount - 1);
         var projection = _cashFlowProjector.Project(
             visibleSubscriptions,
@@ -169,8 +193,24 @@ public partial class DashboardViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasNoCurrencyTotals));
         OnPropertyChanged(nameof(HasUpcomingPayments));
         OnPropertyChanged(nameof(HasNoUpcomingPayments));
+        OnPropertyChanged(nameof(HasOverduePayments));
         OnPropertyChanged(nameof(HasExcludedSubscriptions));
         OnPropertyChanged(nameof(ExcludedSubscriptionLabel));
+    }
+
+    private void OpenSubscription(Guid subscriptionId) =>
+        SubscriptionRequested?.Invoke(subscriptionId);
+
+    private static DateOnly? GetRecordedDueOnForOverdue(Subscription subscription)
+    {
+        if (subscription.BillingSchedule.NextBillingOn is { } nextBillingOn)
+        {
+            return nextBillingOn;
+        }
+
+        return subscription.BillingSchedule.Cadence is BillingCadence.OneTime or BillingCadence.Manual
+            ? subscription.BillingSchedule.StartsOn
+            : null;
     }
 
     private static void ReplaceItems<T>(ObservableCollection<T> target, IEnumerable<T> items)

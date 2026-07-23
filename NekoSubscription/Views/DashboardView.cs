@@ -26,9 +26,92 @@ public sealed class DashboardView : UserControl
             }
             .Children(
                 BuildForecastHeader(),
+                BuildOverdueCard(),
                 BuildExcludedNotice(),
                 BuildMetrics(),
                 BuildForecastWorkspace())
+        };
+    }
+
+    private static Control BuildOverdueCard()
+    {
+        var payments = new ItemsControl
+        {
+            ItemTemplate = new FuncDataTemplate<OverduePaymentViewModel>(
+                (payment, _) => BuildOverdueRow(payment))
+        };
+        payments.Bind(
+            ItemsControl.ItemsSourceProperty,
+            new Binding(nameof(DashboardViewModel.OverduePayments)));
+
+        var card = UiFactory.Card(
+            new StackPanel
+            {
+                Spacing = 10
+            }
+            .Children(
+                BuildSectionHeader(
+                    AppResources.Get("Forecast_OverdueTitle"),
+                    AppResources.Get("Forecast_OverdueDescription")),
+                payments),
+            new Thickness(14));
+        card.Background = UiPalette.DangerSurface;
+        card.Bind(
+            IsVisibleProperty,
+            new Binding(nameof(DashboardViewModel.HasOverduePayments)));
+        return card;
+    }
+
+    private static Control BuildOverdueRow(OverduePaymentViewModel? payment)
+    {
+        if (payment is null)
+        {
+            return new Border();
+        }
+
+        var open = new Button
+        {
+            Content = AppResources.Get("Calendar_ViewSubscription")
+        };
+        open.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(OverduePaymentViewModel.OpenSubscriptionCommand)));
+
+        return new Border
+        {
+            BorderBrush = UiPalette.Border,
+            BorderThickness = new Thickness(0, 1, 0, 0),
+            Padding = new Thickness(2, 8, 2, 0),
+            Child = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"),
+                ColumnSpacing = 12
+            }
+            .Children(
+                new StackPanel
+                {
+                    Spacing = 2
+                }
+                .Children(
+                    new TextBlock
+                    {
+                        Text = payment.ServiceLabel,
+                        FontWeight = FontWeight.SemiBold
+                    },
+                    new TextBlock
+                    {
+                        Text = $"{payment.DueOnLabel} · {payment.DaysOverdueLabel}",
+                        FontSize = 11,
+                        Opacity = 0.68
+                    }),
+                new TextBlock
+                {
+                    Text = payment.AmountLabel,
+                    FontWeight = FontWeight.Medium,
+                    VerticalAlignment = VerticalAlignment.Center
+                }
+                .Grid_Column(1),
+                open.Grid_Column(2))
         };
     }
 

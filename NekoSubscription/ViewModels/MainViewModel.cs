@@ -37,7 +37,8 @@ public partial class MainViewModel : ViewModelBase
 
         Subscriptions.SnapshotChanged += OnSnapshotChanged;
         Subscriptions.StatusChanged += SetStatus;
-        Calendar.SubscriptionRequested += OnCalendarSubscriptionRequested;
+        Calendar.SubscriptionRequested += OnSubscriptionRequested;
+        Dashboard.SubscriptionRequested += OnSubscriptionRequested;
         Settings.StatusChanged += SetStatus;
         Settings.AppearanceChanged += OnAppearanceChanged;
         Settings.CultureChanged += OnCultureChanged;
@@ -166,7 +167,7 @@ public partial class MainViewModel : ViewModelBase
 
     private void SetStatus(string message) => StatusMessage = message;
 
-    private void OnCalendarSubscriptionRequested(Guid subscriptionId)
+    private void OnSubscriptionRequested(Guid subscriptionId)
     {
         Subscriptions.SelectSubscription(subscriptionId);
         Navigate(Subscriptions);
