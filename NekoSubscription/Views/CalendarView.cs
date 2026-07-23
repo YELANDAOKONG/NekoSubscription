@@ -21,24 +21,19 @@ public sealed class CalendarView : UserControl
 
     public CalendarView()
     {
-        Content = new ScrollViewer
+        Content = new Grid
         {
-            HorizontalContentAlignment = HorizontalAlignment.Stretch,
-            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
-            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
-            Content = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto"),
-                RowSpacing = 10,
-                Margin = new Thickness(0, 0, 8, 14)
-            }
-            .Children(
-                BuildToolbar().Grid_Row(0),
-                BuildWeekdayHeader().Grid_Row(1),
-                BuildCalendar().Grid_Row(2),
-                BuildSelectedDay().Grid_Row(3))
-        };
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto"),
+            RowSpacing = 10,
+            Margin = new Thickness(0, 0, 8, 14)
+        }
+        .Children(
+            BuildToolbar().Grid_Row(0),
+            BuildWeekdayHeader().Grid_Row(1),
+            BuildCalendar().Grid_Row(2),
+            BuildSelectedDay().Grid_Row(3));
     }
 
     private static Control BuildToolbar()
@@ -130,10 +125,13 @@ public sealed class CalendarView : UserControl
         var calendar = new ItemsControl
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
             ItemsPanel = new FuncTemplate<Panel?>(() => new UniformGrid
             {
                 Columns = 7,
-                Rows = 6
+                Rows = 6,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             }),
             ItemTemplate = new FuncDataTemplate<CalendarDayViewModel>(
                 (day, _) => BuildDay(day))
@@ -176,6 +174,8 @@ public sealed class CalendarView : UserControl
             Padding = new Thickness(6),
             Margin = new Thickness(2),
             MinHeight = CalendarDayMinimumHeight,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalContentAlignment = HorizontalAlignment.Stretch,
             VerticalContentAlignment = VerticalAlignment.Top,
             Opacity = day.IsInDisplayedMonth ? 1 : 0.44,

@@ -297,7 +297,11 @@ public partial class MainWindow : Window
             opacity: 0.62,
             textWrapping: TextWrapping.Wrap);
 
-        var pageContent = new ContentControl();
+        var pageContent = new ContentControl
+        {
+            HorizontalContentAlignment = HorizontalAlignment.Stretch,
+            VerticalContentAlignment = VerticalAlignment.Stretch
+        };
         pageContent.Bind(
             ContentControl.ContentProperty,
             new Binding(nameof(MainViewModel.CurrentPage)));
