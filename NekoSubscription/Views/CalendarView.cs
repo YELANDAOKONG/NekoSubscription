@@ -17,7 +17,7 @@ namespace NekoSubscription.Views;
 
 public sealed class CalendarView : UserControl
 {
-    private const double CalendarDayMinimumHeight = 88;
+    private const double SelectedDayMaximumHeight = 160;
 
     public CalendarView()
     {
@@ -124,10 +124,12 @@ public sealed class CalendarView : UserControl
     {
         var calendar = new ItemsControl
         {
+            ClipToBounds = true,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
             ItemsPanel = new FuncTemplate<Panel?>(() => new UniformGrid
             {
+                ClipToBounds = true,
                 Columns = 7,
                 Rows = 6,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -173,7 +175,7 @@ public sealed class CalendarView : UserControl
             CornerRadius = new CornerRadius(8),
             Padding = new Thickness(6),
             Margin = new Thickness(2),
-            MinHeight = CalendarDayMinimumHeight,
+            ClipToBounds = true,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -235,7 +237,15 @@ public sealed class CalendarView : UserControl
         payments.Bind(
             ItemsControl.ItemsSourceProperty,
             new Binding(nameof(CalendarViewModel.SelectedPayments)));
-        payments.Bind(
+
+        var paymentScroll = new ScrollViewer
+        {
+            MaxHeight = SelectedDayMaximumHeight,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            Content = payments
+        };
+        paymentScroll.Bind(
             IsVisibleProperty,
             new Binding(nameof(CalendarViewModel.HasSelectedPayments)));
 
@@ -269,7 +279,7 @@ public sealed class CalendarView : UserControl
                             11,
                             opacity: 0.62)
                         .Grid_Column(1)),
-                payments,
+                paymentScroll,
                 empty),
             new Thickness(14));
     }
