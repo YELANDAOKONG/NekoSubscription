@@ -12,6 +12,9 @@ namespace NekoSubscription.Services;
 
 public sealed class DesktopDataFileDialogService : IDataFileDialogService
 {
+    private const string CsvExtension = ".csv";
+    private const string BackupExtension = ".nekobackup";
+
     public async Task<Stream?> OpenCsvFileAsync(
         string title,
         CancellationToken cancellationToken = default)
@@ -31,16 +34,29 @@ public sealed class DesktopDataFileDialogService : IDataFileDialogService
             [
                 new FilePickerFileType("CSV")
                 {
-                    MimeTypes = ["text/csv", "text/plain"],
-                    Patterns = ["*.csv"]
+                    AppleUniformTypeIdentifiers = ["public.comma-separated-values-text"],
+                    MimeTypes = ["text/csv"],
+                    Patterns = [$"*{CsvExtension}"]
                 }
             ],
             Title = title
         });
         cancellationToken.ThrowIfCancellationRequested();
-        return files.Count == 0
-            ? null
-            : await files[0].OpenReadAsync();
+        if (files.Count == 0)
+        {
+            return null;
+        }
+
+        var file = files[0];
+        if (!string.Equals(
+                Path.GetExtension(file.Name),
+                CsvExtension,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("The selected file must have a .csv extension.");
+        }
+
+        return await file.OpenReadAsync();
     }
 
     public async Task<Stream?> CreateBackupFileAsync(
@@ -64,11 +80,13 @@ public sealed class DesktopDataFileDialogService : IDataFileDialogService
             [
                 new FilePickerFileType(fileTypeName)
                 {
+                    AppleUniformTypeIdentifiers = ["public.data"],
                     MimeTypes = ["application/zip"],
-                    Patterns = ["*.nekobackup"]
+                    Patterns = [$"*{BackupExtension}"]
                 }
             ],
-            SuggestedFileName = $"NekoSubscription-{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}",
+            SuggestedFileName =
+                $"NekoSubscription-{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}{BackupExtension}",
             Title = title
         });
         cancellationToken.ThrowIfCancellationRequested();
