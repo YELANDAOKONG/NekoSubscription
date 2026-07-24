@@ -445,7 +445,8 @@ public sealed class SubscriptionEditorView : UserControl
         var cancel = new Button
         {
             Content = AppResources.Get("Common_Cancel"),
-            MinWidth = 92
+            MinWidth = 92,
+            HorizontalContentAlignment = HorizontalAlignment.Center
         };
         cancel.Bind(
             Button.CommandProperty,

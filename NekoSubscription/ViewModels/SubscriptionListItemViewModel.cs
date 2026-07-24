@@ -72,7 +72,7 @@ public sealed record SubscriptionListItemViewModel(
             nextBillingOn?.ToString("d", CultureInfo.CurrentCulture) ??
                 AppResources.Get("Common_NotScheduled"),
             nextBillingOn,
-            subscription.BillingSchedule.StartsOn.ToString("d", CultureInfo.CurrentCulture),
+            subscription.BillingSchedule.StartsOn?.ToString("d", CultureInfo.CurrentCulture) ?? AppResources.Get("Common_Unknown"),
             FormatImportance(subscription.Importance),
             FormatSchedule(subscription.BillingSchedule),
             subscription.Notes ?? AppResources.Get("Details_NoNotes"),
