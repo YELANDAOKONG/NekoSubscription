@@ -208,23 +208,26 @@ public sealed class DashboardView : UserControl
                     AppResources.Get("Dashboard_MetricPayments"),
                     nameof(DashboardViewModel.ProjectedPaymentCount),
                     AppResources.Get("Dashboard_MetricPaymentsCaption"),
-                    UiPalette.Accent)
+                    UiPalette.Accent,
+                    AppIcons.Metrics)
                 .Grid_Column(0),
             BuildMetricCard(
                     AppResources.Get("Dashboard_MetricActive"),
                     nameof(DashboardViewModel.ActiveSubscriptionCount),
                     AppResources.Get("Dashboard_MetricActiveCaption"),
-                    UiPalette.Success)
+                    UiPalette.Success,
+                    AppIcons.Checkmark)
                 .Grid_Column(1),
             BuildMetricCard(
                     AppResources.Get("Dashboard_MetricTrials"),
                     nameof(DashboardViewModel.TrialSubscriptionCount),
                     AppResources.Get("Dashboard_MetricTrialsCaption"),
-                    UiPalette.Warning)
+                    UiPalette.Warning,
+                    AppIcons.Warning)
                 .Grid_Column(2));
     }
 
-    private static Border BuildMetricCard(string title, string valuePath, string caption, IBrush accent)
+    private static Border BuildMetricCard(string title, string valuePath, string caption, IBrush accent, Geometry iconData)
     {
         return UiFactory.Card(
             new Grid
@@ -235,9 +238,12 @@ public sealed class DashboardView : UserControl
             .Children(
                 new Border
                 {
-                    Width = 5,
+                    Width = 40,
+                    Height = 40,
                     Background = accent,
-                    CornerRadius = new CornerRadius(3)
+                    CornerRadius = new CornerRadius(10),
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Child = UiFactory.Icon(iconData, 18, Brushes.White)
                 },
                 new StackPanel
                 {
@@ -306,9 +312,9 @@ public sealed class DashboardView : UserControl
                 }
                 .Children(
                     BuildColumnHeader(AppResources.Get("Column_Currency")).Grid_Column(0),
-                    BuildColumnHeader(AppResources.Get("Column_Fixed")).Grid_Column(1),
-                    BuildColumnHeader(AppResources.Get("Column_Estimated")).Grid_Column(2),
-                    BuildColumnHeader(AppResources.Get("Column_Total")).Grid_Column(3)),
+                    BuildColumnHeader(AppResources.Get("Column_Fixed"), TextAlignment.Right).Grid_Column(1),
+                    BuildColumnHeader(AppResources.Get("Column_Estimated"), TextAlignment.Right).Grid_Column(2),
+                    BuildColumnHeader(AppResources.Get("Column_Total"), TextAlignment.Right).Grid_Column(3)),
                 totals,
                 emptyState));
     }
@@ -384,12 +390,13 @@ public sealed class DashboardView : UserControl
                     FontWeight = FontWeight.SemiBold
                 }
                 .Grid_Column(0),
-                new TextBlock { Text = total.FixedAmountLabel }.Grid_Column(1),
-                new TextBlock { Text = total.EstimatedAmountLabel }.Grid_Column(2),
+                new TextBlock { Text = total.FixedAmountLabel, TextAlignment = TextAlignment.Right }.Grid_Column(1),
+                new TextBlock { Text = total.EstimatedAmountLabel, TextAlignment = TextAlignment.Right }.Grid_Column(2),
                 new TextBlock
                 {
                     Text = total.TotalAmountLabel,
-                    FontWeight = FontWeight.SemiBold
+                    FontWeight = FontWeight.SemiBold,
+                    TextAlignment = TextAlignment.Right
                 }
                 .Grid_Column(3))
         };
@@ -440,14 +447,15 @@ public sealed class DashboardView : UserControl
         };
     }
 
-    private static TextBlock BuildColumnHeader(string text)
+    private static TextBlock BuildColumnHeader(string text, TextAlignment textAlignment = TextAlignment.Left)
     {
         return new TextBlock
         {
             Text = text.ToUpperInvariant(),
             FontSize = 10,
             FontWeight = FontWeight.Bold,
-            Opacity = 0.58
+            Opacity = 0.58,
+            TextAlignment = textAlignment
         };
     }
 }

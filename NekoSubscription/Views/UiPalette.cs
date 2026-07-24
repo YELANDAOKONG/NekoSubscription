@@ -10,6 +10,8 @@ internal static class UiPalette
 
     public static IBrush Border { get; } = new SolidColorBrush(Color.FromArgb(54, 127, 127, 127));
 
+    public static IBrush Danger { get; } = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+
     public static IBrush DangerSurface { get; } = new SolidColorBrush(Color.FromArgb(40, 239, 68, 68));
 
     public static IBrush SidebarSurface { get; } = new SolidColorBrush(Color.FromArgb(25, 127, 127, 127));

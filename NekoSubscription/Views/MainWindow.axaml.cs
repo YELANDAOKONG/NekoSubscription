@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
 using Avalonia.Media;
@@ -81,7 +82,7 @@ public partial class MainWindow : Window
     {
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions($"{SidebarWidth},*"),
+            ColumnDefinitions = new ColumnDefinitions("Auto,*"),
             RowDefinitions = new RowDefinitions("*,Auto")
         }
         .Children(
@@ -98,30 +99,71 @@ public partial class MainWindow : Window
 
     private static Control BuildSidebar()
     {
-        return new Border
+        var sidebarBorder = new Border
         {
             Background = UiPalette.SidebarSurface,
             BorderBrush = UiPalette.Border,
             BorderThickness = new Thickness(0, 0, 1, 0),
-            Padding = new Thickness(16, 22),
+            Padding = new Thickness(10, 20),
             Child = new Grid
             {
                 RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto"),
-                RowSpacing = 22
+                RowSpacing = 18
             }
             .Children(
                 BuildBrand().Grid_Row(0),
                 BuildNavigation().Grid_Row(1),
                 BuildPrivacyNote().Grid_Row(3))
         };
+
+        sidebarBorder.Bind(
+            WidthProperty,
+            new Binding(nameof(MainViewModel.IsSidebarCollapsed))
+            {
+                Converter = new FuncValueConverter<bool, double>(collapsed => collapsed ? 64 : 224)
+            });
+
+        return sidebarBorder;
     }
 
     private static Control BuildBrand()
     {
+        var toggleButton = new Button
+        {
+            Content = UiFactory.Icon(AppIcons.PanelLeft, 16),
+            Background = Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Padding = new Thickness(6),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        toggleButton.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+
+        var brandText = new StackPanel
+        {
+            Spacing = 1,
+            VerticalAlignment = VerticalAlignment.Center
+        }
+        .Children(
+            new TextBlock
+            {
+                Text = AppResources.Get("App_Name"),
+                FontSize = 15,
+                FontWeight = FontWeight.SemiBold
+            },
+            new TextBlock
+            {
+                Text = AppResources.Get("Brand_LocalPlanner"),
+                FontSize = 9,
+                FontWeight = FontWeight.Bold,
+                Opacity = 0.5
+            });
+        brandText.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("Auto,*"),
-            ColumnSpacing = 11
+            ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
+            ColumnSpacing = 8
         }
         .Children(
             new Border
@@ -140,26 +182,8 @@ public partial class MainWindow : Window
                     VerticalAlignment = VerticalAlignment.Center
                 }
             },
-            new StackPanel
-            {
-                Spacing = 1,
-                VerticalAlignment = VerticalAlignment.Center
-            }
-            .Children(
-                new TextBlock
-                {
-                    Text = AppResources.Get("App_Name"),
-                    FontSize = 15,
-                    FontWeight = FontWeight.SemiBold
-                },
-                new TextBlock
-                {
-                    Text = AppResources.Get("Brand_LocalPlanner"),
-                    FontSize = 9,
-                    FontWeight = FontWeight.Bold,
-                    Opacity = 0.5
-                })
-            .Grid_Column(1));
+            brandText.Grid_Column(1),
+            toggleButton.Grid_Column(2));
     }
 
     private static Control BuildNavigation()
@@ -172,25 +196,25 @@ public partial class MainWindow : Window
             BuildNavigationButton(
                 AppResources.Get("Nav_Overview"),
                 AppResources.Get("Nav_OverviewSubtitle"),
-                "O",
+                AppIcons.Overview,
                 nameof(MainViewModel.IsDashboardSelected),
                 nameof(MainViewModel.ShowDashboardCommand)),
             BuildNavigationButton(
                 AppResources.Get("Nav_Calendar"),
                 AppResources.Get("Nav_CalendarSubtitle"),
-                "C",
+                AppIcons.Calendar,
                 nameof(MainViewModel.IsCalendarSelected),
                 nameof(MainViewModel.ShowCalendarCommand)),
             BuildNavigationButton(
                 AppResources.Get("Nav_Subscriptions"),
                 AppResources.Get("Nav_SubscriptionsSubtitle"),
-                "S",
+                AppIcons.Subscriptions,
                 nameof(MainViewModel.IsSubscriptionsSelected),
                 nameof(MainViewModel.ShowSubscriptionsCommand)),
             BuildNavigationButton(
                 AppResources.Get("Nav_Settings"),
                 AppResources.Get("Nav_SettingsSubtitle"),
-                "A",
+                AppIcons.Settings,
                 nameof(MainViewModel.IsSettingsSelected),
                 nameof(MainViewModel.ShowSettingsCommand)));
     }
@@ -198,15 +222,34 @@ public partial class MainWindow : Window
     private static Control BuildNavigationButton(
         string title,
         string subtitle,
-        string glyph,
+        Geometry iconData,
         string selectedPath,
         string commandPath)
     {
+        var textPanel = new StackPanel
+        {
+            Spacing = 1,
+            VerticalAlignment = VerticalAlignment.Center
+        }
+        .Children(
+            new TextBlock
+            {
+                Text = title,
+                FontWeight = FontWeight.SemiBold
+            },
+            new TextBlock
+            {
+                Text = subtitle,
+                FontSize = 10,
+                Opacity = 0.56
+            });
+        textPanel.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+
         var button = new ToggleButton
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             HorizontalContentAlignment = HorizontalAlignment.Stretch,
-            Padding = new Thickness(10, 9),
+            Padding = new Thickness(8, 9),
             Content = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitions("Auto,*"),
@@ -219,33 +262,9 @@ public partial class MainWindow : Window
                     Height = 28,
                     Background = UiPalette.AccentSurface,
                     CornerRadius = new CornerRadius(8),
-                    Child = new TextBlock
-                    {
-                        Text = glyph,
-                        FontSize = 12,
-                        FontWeight = FontWeight.Bold,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center
-                    }
+                    Child = UiFactory.Icon(iconData, 16, UiPalette.Accent)
                 },
-                new StackPanel
-                {
-                    Spacing = 1,
-                    VerticalAlignment = VerticalAlignment.Center
-                }
-                .Children(
-                    new TextBlock
-                    {
-                        Text = title,
-                        FontWeight = FontWeight.SemiBold
-                    },
-                    new TextBlock
-                    {
-                        Text = subtitle,
-                        FontSize = 10,
-                        Opacity = 0.56
-                    })
-                .Grid_Column(1))
+                textPanel.Grid_Column(1))
         };
         button.Bind(
             ToggleButton.IsCheckedProperty,
@@ -259,7 +278,7 @@ public partial class MainWindow : Window
 
     private static Control BuildPrivacyNote()
     {
-        return new Border
+        var note = new Border
         {
             Background = UiPalette.SuccessSurface,
             CornerRadius = new CornerRadius(10),
@@ -283,6 +302,8 @@ public partial class MainWindow : Window
                     TextWrapping = TextWrapping.Wrap
                 })
         };
+        note.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+        return note;
     }
 
     private static Control BuildWorkspace()

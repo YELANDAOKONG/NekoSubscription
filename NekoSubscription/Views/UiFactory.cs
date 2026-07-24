@@ -11,6 +11,23 @@ internal static class UiFactory
 {
     private const double CardCornerRadius = 14;
 
+    public static PathIcon Icon(Geometry data, double size = 16, IBrush? foreground = null)
+    {
+        var icon = new PathIcon
+        {
+            Data = data,
+            Width = size,
+            Height = size,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        if (foreground is not null)
+        {
+            icon.Foreground = foreground;
+        }
+        return icon;
+    }
+
     public static Border Card(Control child, Thickness? padding = null)
     {
         return new Border
@@ -24,7 +41,7 @@ internal static class UiFactory
         };
     }
 
-    public static Border EmptyState(string title, string description)
+    public static Border EmptyState(string title, string description, Geometry? icon = null)
     {
         return new Border
         {
@@ -49,14 +66,7 @@ internal static class UiFactory
                     Height = 44,
                     Background = UiPalette.AccentSurface,
                     CornerRadius = new CornerRadius(22),
-                    Child = new TextBlock
-                    {
-                        Text = "—",
-                        FontSize = 20,
-                        FontWeight = FontWeight.SemiBold,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center
-                    }
+                    Child = Icon(icon ?? AppIcons.Overview, 20)
                 },
                 new TextBlock
                 {
@@ -75,15 +85,62 @@ internal static class UiFactory
         };
     }
 
-    public static Button PrimaryButton(string text)
+    public static Button PrimaryButton(string text, Geometry? icon = null)
     {
         var button = new Button
         {
-            Content = text,
             HorizontalContentAlignment = HorizontalAlignment.Center,
-            MinWidth = 112
+            MinWidth = 100
         };
         button.Classes.Add("accent");
+
+        if (icon is null)
+        {
+            button.Content = text;
+        }
+        else
+        {
+            button.Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6,
+                HorizontalAlignment = HorizontalAlignment.Center
+            }
+            .Children(
+                Icon(icon, 14, Brushes.White),
+                new TextBlock { Text = text, VerticalAlignment = VerticalAlignment.Center });
+        }
+
+        return button;
+    }
+
+    public static Button DangerButton(string text, Geometry? icon = null)
+    {
+        var button = new Button
+        {
+            Background = UiPalette.DangerSurface,
+            Foreground = UiPalette.Danger,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            MinWidth = 90
+        };
+
+        if (icon is null)
+        {
+            button.Content = text;
+        }
+        else
+        {
+            button.Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6,
+                HorizontalAlignment = HorizontalAlignment.Center
+            }
+            .Children(
+                Icon(icon, 14, UiPalette.Danger),
+                new TextBlock { Text = text, VerticalAlignment = VerticalAlignment.Center });
+        }
+
         return button;
     }
 

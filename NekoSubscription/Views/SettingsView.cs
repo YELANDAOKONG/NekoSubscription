@@ -175,15 +175,7 @@ public sealed class SettingsView : UserControl
                     Height = 46,
                     Background = UiPalette.SuccessSurface,
                     CornerRadius = new CornerRadius(23),
-                    Child = new TextBlock
-                    {
-                        Text = "✓",
-                        Foreground = UiPalette.Success,
-                        FontSize = 20,
-                        FontWeight = FontWeight.Bold,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center
-                    }
+                    Child = UiFactory.Icon(AppIcons.ShieldCheck, 22, UiPalette.Success)
                 },
                 new StackPanel
                 {
@@ -209,21 +201,25 @@ public sealed class SettingsView : UserControl
     {
         var backup = new Button
         {
-            Content = AppResources.Get("Settings_BackupData")
+            Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6
+            }
+            .Children(
+                UiFactory.Icon(AppIcons.Backup, 14),
+                new TextBlock { Text = AppResources.Get("Settings_BackupData"), VerticalAlignment = VerticalAlignment.Center })
         };
         backup.Bind(
             Button.CommandProperty,
             new Binding(nameof(SettingsViewModel.BackupDataCommand)));
 
-        var import = UiFactory.PrimaryButton(AppResources.Get("Settings_ImportCsv"));
+        var import = UiFactory.PrimaryButton(AppResources.Get("Settings_ImportCsv"), AppIcons.Import);
         import.Bind(
             Button.CommandProperty,
             new Binding(nameof(SettingsViewModel.SelectImportCsvCommand)));
 
-        var clear = new Button
-        {
-            Content = AppResources.Get("Settings_ClearData")
-        };
+        var clear = UiFactory.DangerButton(AppResources.Get("Settings_ClearData"), AppIcons.Delete);
         clear.Bind(
             Button.CommandProperty,
             new Binding(nameof(SettingsViewModel.RequestClearDataCommand)));

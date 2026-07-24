@@ -82,6 +82,12 @@ public partial class MainViewModel : ViewModelBase
     public bool IsBusy => Subscriptions.IsBusy || Settings.IsBusy;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSidebarExpanded))]
+    public partial bool IsSidebarCollapsed { get; set; }
+
+    public bool IsSidebarExpanded => !IsSidebarCollapsed;
+
+    [ObservableProperty]
     public partial ViewModelBase CurrentPage { get; private set; }
 
     [ObservableProperty]
@@ -92,6 +98,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial string StatusMessage { get; private set; } = AppResources.Get("Status_Starting");
+
+    [RelayCommand]
+    private void ToggleSidebar() => IsSidebarCollapsed = !IsSidebarCollapsed;
 
     public async Task InitializeAsync(ApplicationSettings settings)
     {

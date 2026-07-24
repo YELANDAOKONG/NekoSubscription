@@ -32,7 +32,12 @@ public sealed class SubscriptionsView : UserControl
         var searchBox = new TextBox
         {
             PlaceholderText = AppResources.Get("Subscriptions_SearchPlaceholder"),
-            MinWidth = 240
+            MinWidth = 240,
+            InnerLeftContent = new Border
+            {
+                Padding = new Thickness(8, 0, 4, 0),
+                Child = UiFactory.Icon(AppIcons.Search, 14)
+            }
         };
         searchBox.Bind(
             TextBox.TextProperty,
@@ -69,13 +74,20 @@ public sealed class SubscriptionsView : UserControl
 
         var refresh = new Button
         {
-            Content = AppResources.Get("Subscriptions_Refresh")
+            Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6
+            }
+            .Children(
+                UiFactory.Icon(AppIcons.Refresh, 14),
+                new TextBlock { Text = AppResources.Get("Subscriptions_Refresh"), VerticalAlignment = VerticalAlignment.Center })
         };
         refresh.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RefreshCommand)));
 
-        var add = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"));
+        var add = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"), AppIcons.Add);
         add.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.AddSubscriptionCommand)));
@@ -258,23 +270,30 @@ public sealed class SubscriptionsView : UserControl
 
     private static Control BuildDetails()
     {
-        var edit = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Edit"));
+        var edit = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Edit"), AppIcons.Edit);
         edit.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.EditSubscriptionCommand)));
 
-        var archive = new Button();
-        archive.Bind(
-            ContentControl.ContentProperty,
-            new Binding(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
+        var archiveText = new TextBlock();
+        archiveText.Bind(TextBlock.TextProperty, new Binding(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
+
+        var archive = new Button
+        {
+            Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6
+            }
+            .Children(
+                UiFactory.Icon(AppIcons.Archive, 14),
+                archiveText)
+        };
         archive.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.ToggleArchiveCommand)));
 
-        var delete = new Button
-        {
-            Content = AppResources.Get("Subscriptions_Delete")
-        };
+        var delete = UiFactory.DangerButton(AppResources.Get("Subscriptions_Delete"), AppIcons.Delete);
         delete.Bind(
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RequestDeleteSubscriptionCommand)));

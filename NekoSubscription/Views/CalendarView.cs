@@ -40,9 +40,9 @@ public sealed class CalendarView : UserControl
     {
         var previous = new Button
         {
-            Content = "‹",
-            FontSize = 20,
-            MinWidth = 42
+            Content = UiFactory.Icon(AppIcons.ChevronLeft, 16),
+            MinWidth = 36,
+            Padding = new Thickness(6, 5)
         };
         previous.Bind(
             Button.CommandProperty,
@@ -50,9 +50,9 @@ public sealed class CalendarView : UserControl
 
         var next = new Button
         {
-            Content = "›",
-            FontSize = 20,
-            MinWidth = 42
+            Content = UiFactory.Icon(AppIcons.ChevronRight, 16),
+            MinWidth = 36,
+            Padding = new Thickness(6, 5)
         };
         next.Bind(
             Button.CommandProperty,
