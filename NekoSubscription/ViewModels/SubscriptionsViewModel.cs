@@ -53,6 +53,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     public bool HasEmptyDetails => !HasSelectedSubscription && !HasEditor;
 
+    public bool IsSidePaneVisible => !HasEmptyDetails;
+
     public string ResultSummary => Subscriptions.Count == 1
         ? AppResources.Get("Subscriptions_CountOne")
         : AppResources.Format("Subscriptions_CountMany", Subscriptions.Count);
@@ -72,6 +74,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasNoEditor))]
     [NotifyPropertyChangedFor(nameof(HasSelectedSubscriptionWithoutEditor))]
     [NotifyPropertyChangedFor(nameof(HasEmptyDetails))]
+    [NotifyPropertyChangedFor(nameof(IsSidePaneVisible))]
     public partial SubscriptionEditorViewModel? CurrentEditor { get; private set; }
 
     [ObservableProperty]
@@ -124,6 +127,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasSelectedSubscription))]
     [NotifyPropertyChangedFor(nameof(HasSelectedSubscriptionWithoutEditor))]
     [NotifyPropertyChangedFor(nameof(HasEmptyDetails))]
+    [NotifyPropertyChangedFor(nameof(IsSidePaneVisible))]
     [NotifyPropertyChangedFor(nameof(ArchiveActionLabel))]
     public partial SubscriptionListItemViewModel? SelectedSubscription { get; set; }
 
@@ -330,8 +334,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
         }
 
         SelectedSubscription = selectedId is { } id
-            ? Subscriptions.FirstOrDefault(subscription => subscription.Id == id) ?? Subscriptions.FirstOrDefault()
-            : Subscriptions.FirstOrDefault();
+            ? Subscriptions.FirstOrDefault(subscription => subscription.Id == id)
+            : null;
         OnPropertyChanged(nameof(HasResults));
         OnPropertyChanged(nameof(HasNoResults));
         OnPropertyChanged(nameof(ResultSummary));

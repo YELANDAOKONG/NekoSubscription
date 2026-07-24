@@ -6,7 +6,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
 using Avalonia.Media;
-
+using Avalonia.Styling;
 using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
 using NekoSubscription.ViewModels;
@@ -139,7 +139,7 @@ public sealed class SubscriptionsView : UserControl
     {
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("1*,1.4*"),
+            ColumnDefinitions = new ColumnDefinitions("*,Auto"),
             ColumnSpacing = 16
         }
         .Children(
@@ -153,9 +153,18 @@ public sealed class SubscriptionsView : UserControl
         {
             ItemTemplate = new FuncDataTemplate<SubscriptionListItemViewModel>(
                 (subscription, _) => BuildSubscriptionRow(subscription)),
-            SelectionMode = SelectionMode.Single,
+            SelectionMode = SelectionMode.Single | SelectionMode.Toggle,
             Background = Brushes.Transparent
         };
+        list.Styles.Add(
+            new Style(x => x.OfType<ListBoxItem>())
+            {
+                Setters =
+                {
+                    new Setter(CornerRadiusProperty, new CornerRadius(12)),
+                    new Setter(MarginProperty, new Thickness(0, 0, 0, 4))
+                }
+            });
         list.Bind(
             ItemsControl.ItemsSourceProperty,
             new Binding(nameof(SubscriptionsViewModel.Subscriptions)));
@@ -190,9 +199,9 @@ public sealed class SubscriptionsView : UserControl
 
         return new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
+            ColumnDefinitions = new ColumnDefinitions("Auto,*,*,Auto"),
             ColumnSpacing = 14,
-            Margin = new Thickness(4, 6)
+            Margin = new Thickness(4, 8)
         }
         .Children(
             BuildAvatar(subscription.ServiceLabel, 40, 18).Grid_Column(0),
@@ -211,13 +220,35 @@ public sealed class SubscriptionsView : UserControl
                 },
                 new TextBlock
                 {
-                    Text = subscription.NextBillingLabel,
+                    Text = subscription.CategoryLabel,
                     FontSize = 11,
                     Opacity = 0.62,
                     TextTrimming = TextTrimming.CharacterEllipsis
                 }
             )
             .Grid_Column(1),
+            new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                Spacing = 2
+            }
+            .Children(
+                new TextBlock
+                {
+                    Text = subscription.AccountLabel,
+                    FontSize = 13,
+                    Opacity = 0.8,
+                    TextTrimming = TextTrimming.CharacterEllipsis
+                },
+                new TextBlock
+                {
+                    Text = subscription.ArchiveStateLabel,
+                    FontSize = 11,
+                    Opacity = 0.5,
+                    TextTrimming = TextTrimming.CharacterEllipsis
+                }
+            )
+            .Grid_Column(2),
             new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Center,
@@ -232,9 +263,18 @@ public sealed class SubscriptionsView : UserControl
                     FontSize = 14,
                     TextAlignment = TextAlignment.Right
                 },
-                BuildStatus(subscription)
+                new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, HorizontalAlignment = HorizontalAlignment.Right }.Children(
+                    new TextBlock
+                    {
+                        Text = subscription.NextBillingLabel,
+                        FontSize = 11,
+                        Opacity = 0.62,
+                        VerticalAlignment = VerticalAlignment.Center
+                    },
+                    BuildStatus(subscription)
+                )
             )
-            .Grid_Column(2));
+            .Grid_Column(3));
     }
 
     private static Control BuildStatus(SubscriptionListItemViewModel subscription)
@@ -267,7 +307,7 @@ public sealed class SubscriptionsView : UserControl
 
     private static Control BuildRightPane()
     {
-        var editor = new ContentControl();
+        var editor = new ContentControl { Width = 380 };
         editor.Bind(
             ContentControl.ContentProperty,
             new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
@@ -277,6 +317,7 @@ public sealed class SubscriptionsView : UserControl
 
         var details = new ScrollViewer
         {
+            Width = 380,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             Content = BuildDetails()
@@ -285,15 +326,12 @@ public sealed class SubscriptionsView : UserControl
             IsVisibleProperty,
             new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscriptionWithoutEditor)));
 
-        var empty = UiFactory.EmptyState(
-            AppResources.Get("Subscriptions_SelectTitle"),
-            AppResources.Get("Subscriptions_SelectDescription"));
-        empty.Bind(
+        var pane = new Grid().Children(editor, details);
+        pane.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasEmptyDetails)));
+            new Binding(nameof(SubscriptionsViewModel.IsSidePaneVisible)));
 
-        return new Grid()
-            .Children(editor, details, empty);
+        return pane;
     }
 
     private static Control BuildDetails()
