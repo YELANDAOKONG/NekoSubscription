@@ -19,6 +19,7 @@ public sealed record SubscriptionListItemViewModel(
     string AmountLabel,
     string NextBillingLabel,
     DateOnly? NextBillingOn,
+    string StartDateLabel,
     string ImportanceLabel,
     string ScheduleLabel,
     string NotesLabel,
@@ -71,6 +72,7 @@ public sealed record SubscriptionListItemViewModel(
             nextBillingOn?.ToString("d", CultureInfo.CurrentCulture) ??
                 AppResources.Get("Common_NotScheduled"),
             nextBillingOn,
+            subscription.BillingSchedule.StartsOn.ToString("d", CultureInfo.CurrentCulture),
             FormatImportance(subscription.Importance),
             FormatSchedule(subscription.BillingSchedule),
             subscription.Notes ?? AppResources.Get("Details_NoNotes"),

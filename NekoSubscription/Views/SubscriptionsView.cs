@@ -307,7 +307,7 @@ public sealed class SubscriptionsView : UserControl
 
     private static Control BuildRightPane()
     {
-        var editor = new ContentControl { Width = 380 };
+        var editor = new ContentControl { Width = 480 };
         editor.Bind(
             ContentControl.ContentProperty,
             new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
@@ -317,7 +317,7 @@ public sealed class SubscriptionsView : UserControl
 
         var details = new ScrollViewer
         {
-            Width = 380,
+            Width = 480,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             Content = BuildDetails()
@@ -422,35 +422,51 @@ public sealed class SubscriptionsView : UserControl
         var attributeGrid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitions("*,*"),
-            RowDefinitions = new RowDefinitions("Auto,Auto,Auto"),
+            RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto,Auto,Auto"),
             ColumnSpacing = 16,
             RowSpacing = 16
         }.Children(
             BuildAttributeCard(
-                AppResources.Get("Column_Status"),
-                SelectedPath(nameof(SubscriptionListItemViewModel.LifecycleLabel)),
-                SelectedPath(nameof(SubscriptionListItemViewModel.StatusLabel))
-            ).Grid_Column(0).Grid_Row(0),
-            BuildAttributeCard(
-                AppResources.Get("Subscriptions_Importance"),
-                SelectedPath(nameof(SubscriptionListItemViewModel.ImportanceLabel)),
-                SelectedPath(nameof(SubscriptionListItemViewModel.CategoryLabel))
-            ).Grid_Column(1).Grid_Row(0),
-            BuildAttributeCard(
                 AppResources.Get("Editor_Account"),
                 SelectedPath(nameof(SubscriptionListItemViewModel.AccountLabel)),
                 SelectedPath(nameof(SubscriptionListItemViewModel.ArchiveStateLabel))
+            ).Grid_ColumnSpan(2).Grid_Row(0),
+            
+            BuildAttributeCard(
+                AppResources.Get("Column_Status"),
+                SelectedPath(nameof(SubscriptionListItemViewModel.LifecycleLabel)),
+                SelectedPath(nameof(SubscriptionListItemViewModel.StatusLabel))
             ).Grid_Column(0).Grid_Row(1),
+            
+            BuildAttributeCard(
+                AppResources.Get("Column_Category"),
+                SelectedPath(nameof(SubscriptionListItemViewModel.CategoryLabel)),
+                SelectedPath(nameof(SubscriptionListItemViewModel.ImportanceLabel))
+            ).Grid_Column(1).Grid_Row(1),
+            
+            BuildAttributeCard(
+                AppResources.Get("Editor_StartDate"),
+                SelectedPath(nameof(SubscriptionListItemViewModel.StartDateLabel)),
+                null
+            ).Grid_ColumnSpan(2).Grid_Row(2),
+            
             BuildAttributeCard(
                 AppResources.Get("Subscriptions_Details"),
                 SelectedPath(nameof(SubscriptionListItemViewModel.SpecializedDetailsLabel)),
-                SelectedPath(nameof(SubscriptionListItemViewModel.ManagementUrlLabel))
-            ).Grid_Column(1).Grid_Row(1),
+                null
+            ).Grid_ColumnSpan(2).Grid_Row(3),
+            
+            BuildAttributeCard(
+                AppResources.Get("Editor_ManagementUrl"),
+                SelectedPath(nameof(SubscriptionListItemViewModel.ManagementUrlLabel)),
+                null
+            ).Grid_ColumnSpan(2).Grid_Row(4),
+            
             BuildAttributeCard(
                 AppResources.Get("Editor_Notes"),
                 SelectedPath(nameof(SubscriptionListItemViewModel.NotesLabel)),
                 null
-            ).Grid_ColumnSpan(2).Grid_Row(2)
+            ).Grid_ColumnSpan(2).Grid_Row(5)
         );
 
         return new StackPanel
