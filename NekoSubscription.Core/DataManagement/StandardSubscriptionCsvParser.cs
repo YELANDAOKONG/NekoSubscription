@@ -75,7 +75,8 @@ internal static class StandardSubscriptionCsvParser
             }
 
             totalRowCount++;
-            if (fields.Length != ColumnCount)
+            if (fields.Length < ColumnCount ||
+                fields.Skip(ColumnCount).Any(field => !string.IsNullOrWhiteSpace(field)))
             {
                 issues.Add(new CsvImportIssue(
                     rowNumber,

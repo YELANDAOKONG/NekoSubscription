@@ -56,6 +56,40 @@ public sealed class DataManagementServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task PreviewSubscriptionCsvAsync_IgnoresDelimiterOnlyRowsAndTrailingEmptyColumns()
+    {
+        const string delimiterOnlyRow = ",,,,,,,,,,,,,,,,";
+        var csv = CreateCsv(
+        [
+            "A,B,C,D,E,F,G,H,I,J,K,L,M,Unused header",
+            ..Enumerable.Repeat(delimiterOnlyRow, 2_048),
+            "Provider,Plan,account,10.00,USD,M,2026-01-01,2026-02-01,,TRUE,DIRECT,-,Note,,,,",
+            ..Enumerable.Repeat(delimiterOnlyRow, 2_048)
+        ]);
+
+        var preview = await PreviewAsync(csv);
+
+        Assert.True(preview.CanImport);
+        Assert.Equal(1, preview.TotalRowCount);
+        Assert.Equal(1, preview.ValidRowCount);
+        Assert.Empty(preview.Issues);
+    }
+
+    [Fact]
+    public async Task PreviewSubscriptionCsvAsync_RejectsNonEmptyTrailingColumns()
+    {
+        var csv = CreateCsv(
+            "A,B,C,D,E,F,G,H,I,J,K,L,M,Unused header",
+            "Provider,Plan,account,10.00,USD,M,2026-01-01,2026-02-01,,TRUE,DIRECT,-,Note,Unexpected");
+
+        var preview = await PreviewAsync(csv);
+
+        var issue = Assert.Single(preview.Issues);
+        Assert.False(preview.CanImport);
+        Assert.Equal(CsvImportIssueCode.InvalidColumnCount, issue.Code);
+    }
+
+    [Fact]
     public async Task ImportSubscriptionCsvAsync_ImportsMappingsAndMissingMoney()
     {
         var csv = CreateCsv(
