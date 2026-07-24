@@ -149,7 +149,8 @@ internal static class UiFactory
         double fontSize = 14,
         FontWeight? fontWeight = null,
         double opacity = 1,
-        TextWrapping textWrapping = TextWrapping.NoWrap)
+        TextWrapping textWrapping = TextWrapping.NoWrap,
+        TextAlignment? textAlignment = null)
     {
         var textBlock = new TextBlock
         {
@@ -158,6 +159,10 @@ internal static class UiFactory
             Opacity = opacity,
             TextWrapping = textWrapping
         };
+        if (textAlignment.HasValue)
+        {
+            textBlock.TextAlignment = textAlignment.Value;
+        }
         textBlock.Bind(TextBlock.TextProperty, new Binding(path));
         return textBlock;
     }
