@@ -128,42 +128,28 @@ public partial class MainWindow : Window
 
     private static Control BuildBrand()
     {
-        var toggleButton = new Button
+        // 1. Expanded Header Layout (Logo + Title + Toggle Button on right)
+        var expandedToggle = new Button
         {
             Content = UiFactory.Icon(AppIcons.PanelLeft, 16),
-            Background = Brushes.Transparent,
+            Background = UiPalette.SurfaceStrong,
             BorderThickness = new Thickness(0),
-            Padding = new Thickness(6),
+            CornerRadius = new CornerRadius(8),
+            Width = 32,
+            Height = 32,
+            Padding = new Thickness(0),
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center
         };
-        toggleButton.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+        expandedToggle.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+        ToolTip.SetTip(expandedToggle, AppResources.Get("Brand_LocalPlanner"));
 
-        var brandText = new StackPanel
-        {
-            Spacing = 1,
-            VerticalAlignment = VerticalAlignment.Center
-        }
-        .Children(
-            new TextBlock
-            {
-                Text = AppResources.Get("App_Name"),
-                FontSize = 15,
-                FontWeight = FontWeight.SemiBold
-            },
-            new TextBlock
-            {
-                Text = AppResources.Get("Brand_LocalPlanner"),
-                FontSize = 9,
-                FontWeight = FontWeight.Bold,
-                Opacity = 0.5
-            });
-        brandText.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
-
-        return new Grid
+        var expandedHeader = new Grid
         {
             ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
-            ColumnSpacing = 8
+            ColumnSpacing = 10
         }
         .Children(
             new Border
@@ -181,9 +167,58 @@ public partial class MainWindow : Window
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 }
-            },
-            brandText.Grid_Column(1),
-            toggleButton.Grid_Column(2));
+            }.Grid_Column(0),
+            new StackPanel
+            {
+                Spacing = 1,
+                VerticalAlignment = VerticalAlignment.Center
+            }
+            .Children(
+                new TextBlock
+                {
+                    Text = AppResources.Get("App_Name"),
+                    FontSize = 15,
+                    FontWeight = FontWeight.SemiBold
+                },
+                new TextBlock
+                {
+                    Text = AppResources.Get("Brand_LocalPlanner"),
+                    FontSize = 9,
+                    FontWeight = FontWeight.Bold,
+                    Opacity = 0.5
+                })
+            .Grid_Column(1),
+            expandedToggle.Grid_Column(2));
+        expandedHeader.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+
+        // 2. Collapsed Header Layout (Single Centered Toggle Button)
+        var collapsedToggle = new Button
+        {
+            Content = UiFactory.Icon(AppIcons.PanelLeft, 18),
+            Background = UiPalette.AccentSurface,
+            BorderThickness = new Thickness(0),
+            CornerRadius = new CornerRadius(10),
+            Width = 40,
+            Height = 40,
+            Padding = new Thickness(0),
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        collapsedToggle.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+        ToolTip.SetTip(collapsedToggle, AppResources.Get("App_Name"));
+
+        var collapsedHeader = new Grid
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Center
+        }
+        .Children(collapsedToggle);
+        collapsedHeader.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarCollapsed)));
+
+        return new Grid()
+            .Children(expandedHeader, collapsedHeader);
     }
 
     private static Control BuildNavigation()
@@ -245,26 +280,35 @@ public partial class MainWindow : Window
             });
         textPanel.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
 
+        var buttonContent = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+            ColumnSpacing = 10
+        }
+        .Children(
+            new Border
+            {
+                Width = 28,
+                Height = 28,
+                Background = UiPalette.AccentSurface,
+                CornerRadius = new CornerRadius(8),
+                Child = UiFactory.Icon(iconData, 16, UiPalette.Accent)
+            }.Grid_Column(0),
+            textPanel.Grid_Column(1));
+
+        buttonContent.Bind(
+            HorizontalAlignmentProperty,
+            new Binding(nameof(MainViewModel.IsSidebarCollapsed))
+            {
+                Converter = new FuncValueConverter<bool, HorizontalAlignment>(
+                    collapsed => collapsed ? HorizontalAlignment.Center : HorizontalAlignment.Stretch)
+            });
+
         var button = new ToggleButton
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            HorizontalContentAlignment = HorizontalAlignment.Stretch,
             Padding = new Thickness(8, 9),
-            Content = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitions("Auto,*"),
-                ColumnSpacing = 10
-            }
-            .Children(
-                new Border
-                {
-                    Width = 28,
-                    Height = 28,
-                    Background = UiPalette.AccentSurface,
-                    CornerRadius = new CornerRadius(8),
-                    Child = UiFactory.Icon(iconData, 16, UiPalette.Accent)
-                },
-                textPanel.Grid_Column(1))
+            Content = buttonContent
         };
         button.Bind(
             ToggleButton.IsCheckedProperty,
@@ -273,6 +317,7 @@ public partial class MainWindow : Window
                 Mode = BindingMode.OneWay
             });
         button.Bind(Button.CommandProperty, new Binding(commandPath));
+        ToolTip.SetTip(button, title);
         return button;
     }
 
