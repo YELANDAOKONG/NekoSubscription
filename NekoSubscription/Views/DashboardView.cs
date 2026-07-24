@@ -95,7 +95,7 @@ public sealed class DashboardView : UserControl
                 .Children(
                     new TextBlock
                     {
-                        Text = payment.ServiceLabel,
+                        Text = string.IsNullOrEmpty(payment.ProviderLabel) ? payment.ServiceLabel : $"{payment.ProviderLabel} {payment.ServiceLabel}",
                         FontWeight = FontWeight.SemiBold
                     },
                     new TextBlock
@@ -164,7 +164,9 @@ public sealed class DashboardView : UserControl
         var button = new Avalonia.Controls.Primitives.ToggleButton
         {
             Content = period.Label,
-            MinWidth = 64
+            MinWidth = 64,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center
         };
         button.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
@@ -427,7 +429,7 @@ public sealed class DashboardView : UserControl
                 .Children(
                     new TextBlock
                     {
-                        Text = payment.ServiceLabel,
+                        Text = string.IsNullOrEmpty(payment.ProviderLabel) ? payment.ServiceLabel : $"{payment.ProviderLabel} {payment.ServiceLabel}",
                         FontWeight = FontWeight.SemiBold,
                         TextTrimming = TextTrimming.CharacterEllipsis
                     },

@@ -308,6 +308,7 @@ public partial class MainWindow : Window
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Padding = new Thickness(8, 9),
+            CornerRadius = new CornerRadius(8),
             Content = buttonContent
         };
         button.Bind(

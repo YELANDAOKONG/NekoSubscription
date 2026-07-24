@@ -61,7 +61,9 @@ public sealed class CalendarView : UserControl
         var today = new Button
         {
             Content = AppResources.Get("Calendar_Today"),
-            MinWidth = 76
+            MinWidth = 76,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center
         };
         today.Bind(
             Button.CommandProperty,
@@ -206,6 +208,7 @@ public sealed class CalendarView : UserControl
 
     private static Control BuildDayPayment(CalendarPaymentViewModel payment)
     {
+        var serviceName = string.IsNullOrEmpty(payment.Item.ProviderLabel) ? payment.Item.ServiceLabel : $"{payment.Item.ProviderLabel} {payment.Item.ServiceLabel}";
         return new Border
         {
             Background = payment.Item.IsEstimate
@@ -218,9 +221,9 @@ public sealed class CalendarView : UserControl
                 Text = payment.Item.IsEstimate
                     ? AppResources.Format(
                         "Calendar_EstimatedPaymentCompact",
-                        payment.Item.ServiceLabel,
+                        serviceName,
                         payment.Item.AmountLabel)
-                    : $"{payment.Item.ServiceLabel} · {payment.Item.AmountLabel}",
+                    : $"{serviceName} · {payment.Item.AmountLabel}",
                 FontSize = 10,
                 TextTrimming = TextTrimming.CharacterEllipsis
             }
@@ -318,12 +321,12 @@ public sealed class CalendarView : UserControl
                 .Children(
                     new TextBlock
                     {
-                        Text = payment.Item.ServiceLabel,
+                        Text = string.IsNullOrEmpty(payment.Item.ProviderLabel) ? payment.Item.ServiceLabel : $"{payment.Item.ProviderLabel} {payment.Item.ServiceLabel}",
                         FontWeight = FontWeight.SemiBold
                     },
                     new TextBlock
                     {
-                        Text = $"{payment.Item.ProviderLabel} · {payment.Item.AmountKindLabel}",
+                        Text = payment.Item.AmountKindLabel,
                         FontSize = 11,
                         Opacity = 0.62
                     }),
