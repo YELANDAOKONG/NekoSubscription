@@ -50,6 +50,9 @@ public sealed class SubscriptionsView : UserControl
             Button.CommandProperty,
             new Binding(nameof(SubscriptionsViewModel.RefreshCommand)));
 
+        var title = UiFactory.SectionTitle(AppResources.Get("Subscriptions_All"));
+        title.TextWrapping = TextWrapping.Wrap;
+
         var headerRow = new Grid
         {
             ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"),
@@ -63,8 +66,8 @@ public sealed class SubscriptionsView : UserControl
                 VerticalAlignment = VerticalAlignment.Center
             }
             .Children(
-                UiFactory.SectionTitle(AppResources.Get("Subscriptions_All")),
-                UiFactory.BoundText(nameof(SubscriptionsViewModel.ResultSummary), 12, opacity: 0.62)
+                title,
+                UiFactory.BoundText(nameof(SubscriptionsViewModel.ResultSummary), 12, opacity: 0.62, textWrapping: TextWrapping.Wrap)
             ),
             refresh.Grid_Column(1),
             add.Grid_Column(2));
@@ -74,6 +77,7 @@ public sealed class SubscriptionsView : UserControl
             PlaceholderText = AppResources.Get("Subscriptions_SearchPlaceholder"),
             MinWidth = 260,
             CornerRadius = new CornerRadius(8),
+            Margin = new Thickness(0, 0, 12, 12),
             InnerLeftContent = new Border
             {
                 Padding = new Thickness(10, 0, 6, 0),
@@ -90,7 +94,8 @@ public sealed class SubscriptionsView : UserControl
         var categoryFilter = new ComboBox
         {
             MinWidth = 160,
-            CornerRadius = new CornerRadius(8)
+            CornerRadius = new CornerRadius(8),
+            Margin = new Thickness(0, 0, 12, 12)
         };
         categoryFilter.Bind(
             ItemsControl.ItemsSourceProperty,
@@ -105,7 +110,8 @@ public sealed class SubscriptionsView : UserControl
         var sortFilter = new ComboBox
         {
             MinWidth = 180,
-            CornerRadius = new CornerRadius(8)
+            CornerRadius = new CornerRadius(8),
+            Margin = new Thickness(0, 0, 12, 12)
         };
         sortFilter.Bind(
             ItemsControl.ItemsSourceProperty,
@@ -129,22 +135,21 @@ public sealed class SubscriptionsView : UserControl
                 Mode = BindingMode.TwoWay
             });
 
-        var filterRow = new Grid
+        var filterRow = new WrapPanel
         {
-            ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto,*"),
-            ColumnSpacing = 12
+            Orientation = Orientation.Horizontal,
+            Margin = new Thickness(0, 0, -12, -12)
         }
         .Children(
-            searchBox.Grid_Column(0),
-            categoryFilter.Grid_Column(1),
-            sortFilter.Grid_Column(2),
+            searchBox,
+            categoryFilter,
+            sortFilter,
             new StackPanel
             {
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 12, 12)
             }
-            .Children(includeArchived)
-            .Grid_Column(3));
+            .Children(includeArchived));
 
         return UiFactory.Card(
             new StackPanel().Children(headerRow, filterRow),
