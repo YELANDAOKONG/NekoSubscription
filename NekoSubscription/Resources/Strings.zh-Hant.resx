@@ -212,6 +212,7 @@
   <data name="Settings_DataManagementDescription" xml:space="preserve"><value>備份所有本機資料庫、從標準 13 欄 CSV 匯入訂閱，或清空訂閱資料並保留應用程式設定。</value></data>
   <data name="Settings_BackupData" xml:space="preserve"><value>備份資料</value></data>
   <data name="Settings_ImportCsv" xml:space="preserve"><value>匯入 CSV</value></data>
+  <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>欄位：服務商, 方案, 帳戶, 金額, 幣種, 週期, 開始日期, 下次扣款日, [保留空欄位], 是否啟用, 支付管道, 支付帳戶, 備註</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>清空資料</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>確認匯入</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>備份並清空</value></data>

@@ -212,6 +212,7 @@
   <data name="Settings_DataManagementDescription" xml:space="preserve"><value>Back up all local databases, import subscriptions from the standard 13-column CSV format, or clear subscription data while keeping application settings.</value></data>
   <data name="Settings_BackupData" xml:space="preserve"><value>Back up data</value></data>
   <data name="Settings_ImportCsv" xml:space="preserve"><value>Import CSV</value></data>
+  <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>Columns: Provider, Plan, Account, Amount, Currency, Interval, Start Date, Next Billing Date, [Unused], Is Active, Payment Channel, Payment Account, Notes</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>Clear data</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>Import</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>Back up and clear</value></data>

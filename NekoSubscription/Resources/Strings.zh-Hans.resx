@@ -212,6 +212,7 @@
   <data name="Settings_DataManagementDescription" xml:space="preserve"><value>备份所有本地数据库、从标准 13 列 CSV 导入订阅，或清空订阅数据并保留应用设置。</value></data>
   <data name="Settings_BackupData" xml:space="preserve"><value>备份数据</value></data>
   <data name="Settings_ImportCsv" xml:space="preserve"><value>导入 CSV</value></data>
+  <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>列：服务商, 计划, 账户, 金额, 币种, 周期, 开始日期, 下次扣款日, [保留空列], 是否激活, 支付渠道, 支付账户, 备注</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>清空数据</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>确认导入</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>备份并清空</value></data>

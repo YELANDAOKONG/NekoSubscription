@@ -215,6 +215,7 @@ public sealed class SettingsView : UserControl
             new Binding(nameof(SettingsViewModel.BackupDataCommand)));
 
         var import = UiFactory.PrimaryButton(AppResources.Get("Settings_ImportCsv"), AppIcons.Import);
+        ToolTip.SetTip(import, AppResources.Get("Settings_ImportCsvToolTip"));
         import.Bind(
             Button.CommandProperty,
             new Binding(nameof(SettingsViewModel.SelectImportCsvCommand)));
