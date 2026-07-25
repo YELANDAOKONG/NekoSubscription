@@ -12,17 +12,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         configuration: [Release]
         include:
           - os: ubuntu-latest
             rid: linux-x64
           - os: windows-latest
             rid: win-x64
-          - os: macos-13
-            rid: osx-x64
           - os: macos-latest
-            rid: osx-arm64
+            rid: osx-x64
 
     steps:
       - name: Checkout repository
