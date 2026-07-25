@@ -215,7 +215,7 @@
   <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>Columns: Provider, Plan, Account, Amount, Currency, Interval, Start Date, Next Billing Date, [Unused], Is Active, Payment Channel, Payment Account, Notes</value></data>
   <data name="Settings_ExportCsv" xml:space="preserve"><value>Export CSV</value></data>
   <data name="Settings_ExportCsvToolTip" xml:space="preserve"><value>Export visible subscriptions with fixed uppercase English headers.</value></data>
-  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>Mask account identifiers and payment accounts with *** when exporting</value></data>
+  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>Mask account name information when exporting</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>Clear data</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>Import</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>Back up and clear</value></data>

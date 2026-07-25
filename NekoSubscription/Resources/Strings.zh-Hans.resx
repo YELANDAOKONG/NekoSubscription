@@ -215,7 +215,7 @@
   <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>列：服务商, 计划, 账户, 金额, 币种, 周期, 开始日期, 下次扣款日, [保留空列], 是否激活, 支付渠道, 支付账户, 备注</value></data>
   <data name="Settings_ExportCsv" xml:space="preserve"><value>导出 CSV</value></data>
   <data name="Settings_ExportCsvToolTip" xml:space="preserve"><value>使用固定的英文全大写表头导出可见订阅。</value></data>
-  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>导出时用 *** 遮罩账户标识和付款账户</value></data>
+  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>导出时遮罩账户名称信息</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>清空数据</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>确认导入</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>备份并清空</value></data>
