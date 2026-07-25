@@ -95,6 +95,42 @@ public sealed class DesktopDataFileDialogService : IDataFileDialogService
             : await file.OpenWriteAsync();
     }
 
+    public async Task<Stream?> CreateCsvFileAsync(
+        string title,
+        string fileTypeName,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileTypeName);
+        cancellationToken.ThrowIfCancellationRequested();
+        var storageProvider = GetStorageProvider();
+        if (!storageProvider.CanSave)
+        {
+            throw new NotSupportedException("Saving files is not supported on this platform.");
+        }
+
+        var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            DefaultExtension = "csv",
+            FileTypeChoices =
+            [
+                new FilePickerFileType(fileTypeName)
+                {
+                    AppleUniformTypeIdentifiers = ["public.comma-separated-values-text"],
+                    MimeTypes = ["text/csv"],
+                    Patterns = [$"*{CsvExtension}"]
+                }
+            ],
+            SuggestedFileName =
+                $"NekoSubscription-subscriptions-{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}{CsvExtension}",
+            Title = title
+        });
+        cancellationToken.ThrowIfCancellationRequested();
+        return file is null
+            ? null
+            : await file.OpenWriteAsync();
+    }
+
     private static IStorageProvider GetStorageProvider()
     {
         if (Application.Current?.ApplicationLifetime is

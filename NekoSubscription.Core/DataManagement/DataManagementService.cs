@@ -155,6 +155,48 @@ public sealed class DataManagementService : IDataManagementService
             .ConfigureAwait(false);
     }
 
+    public async Task<CsvExportResult> ExportSubscriptionCsvAsync(
+        Stream destination,
+        bool maskAccountIdentifiers,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (!destination.CanWrite)
+        {
+            throw new ArgumentException("The CSV destination must be writable.", nameof(destination));
+        }
+
+        return await ExecuteExclusiveAsync(
+                async operationCancellationToken =>
+                {
+                    await EnsureDatabasesInitializedAsync(operationCancellationToken).ConfigureAwait(false);
+
+                    var options = SubscriptionDbContextOptions.Create(_paths.DataDatabasePath);
+                    await using var context = new SubscriptionDbContext(options);
+                    var subscriptions = await context.Subscriptions
+                        .AsNoTracking()
+                        .Include(subscription => subscription.PaymentProfile)
+                        .Where(subscription => !subscription.IsArchived)
+                        .OrderBy(subscription => subscription.ProviderName)
+                        .ThenBy(subscription => subscription.ServiceName)
+                        .ThenBy(subscription => subscription.AccountName)
+                        .ThenBy(subscription => subscription.Id)
+                        .ToListAsync(operationCancellationToken)
+                        .ConfigureAwait(false);
+
+                    await StandardSubscriptionCsvWriter.WriteAsync(
+                            destination,
+                            subscriptions,
+                            maskAccountIdentifiers,
+                            operationCancellationToken)
+                        .ConfigureAwait(false);
+
+                    return new CsvExportResult(subscriptions.Count);
+                },
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<DataClearResult> ClearSubscriptionDataAsync(
         CancellationToken cancellationToken = default)
     {

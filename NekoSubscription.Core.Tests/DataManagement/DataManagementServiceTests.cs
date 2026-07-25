@@ -139,6 +139,62 @@ public sealed class DataManagementServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExportSubscriptionCsvAsync_WritesStandardUppercaseHeadersAndValues()
+    {
+        var csv = CreateCsv(
+            "A,B,C,D,E,F,G,H,I,J,K,L,M",
+            "Provider,Plan,member@example.com,10.00,USD,Q,2026-01-01,2026-04-01,,TRUE,GOOGLE,payer@example.com,\"Note, \"\"quoted\"\"\"");
+        await using (var source = CreateStream(csv))
+        {
+            await _dataManagementService.ImportSubscriptionCsvAsync(source);
+        }
+
+        await using var destination = new MemoryStream();
+        var result = await _dataManagementService.ExportSubscriptionCsvAsync(
+            destination,
+            maskAccountIdentifiers: false);
+        var exportedCsv = Encoding.UTF8.GetString(destination.ToArray()).TrimStart('\uFEFF');
+        var rows = exportedCsv.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.Equal(1, result.ExportedSubscriptionCount);
+        Assert.Equal(
+            "SERVICE NAME,MEMBERSHIP NAME,ACCOUNT IDENTIFIER,PERIODIC FEE,CURRENCY,PAYMENT CYCLE,EFFECTIVE DATE,EXPIRATION DATE,REMAINING VALIDITY,SUBSCRIPTION MARKER,PAYMENT METHOD,PAYMENT ACCOUNT,NOTES",
+            rows[0]);
+        Assert.Contains(
+            "Provider,Plan,member@example.com,10,USD,Q,2026-01-01,2026-04-01,,TRUE,GOOGLE,payer@example.com",
+            rows[1],
+            StringComparison.Ordinal);
+        Assert.EndsWith("\"Note, \"\"quoted\"\"\"", rows[1], StringComparison.Ordinal);
+
+        var preview = await PreviewAsync(exportedCsv);
+        Assert.True(preview.CanImport);
+        Assert.Equal(1, preview.ValidRowCount);
+    }
+
+    [Fact]
+    public async Task ExportSubscriptionCsvAsync_MasksSubscriptionAndPaymentAccounts()
+    {
+        var csv = CreateCsv(
+            "A,B,C,D,E,F,G,H,I,J,K,L,M",
+            "Provider,Plan,member@example.com,10.00,USD,M,2026-01-01,2026-02-01,,TRUE,GOOGLE,payer@example.com,");
+        await using (var source = CreateStream(csv))
+        {
+            await _dataManagementService.ImportSubscriptionCsvAsync(source);
+        }
+
+        await using var destination = new MemoryStream();
+        await _dataManagementService.ExportSubscriptionCsvAsync(
+            destination,
+            maskAccountIdentifiers: true);
+        var exportedCsv = Encoding.UTF8.GetString(destination.ToArray());
+
+        Assert.DoesNotContain("member@example.com", exportedCsv, StringComparison.Ordinal);
+        Assert.DoesNotContain("payer@example.com", exportedCsv, StringComparison.Ordinal);
+        Assert.Contains("Provider,Plan,***,10,USD,M", exportedCsv, StringComparison.Ordinal);
+        Assert.Contains(",GOOGLE,***,", exportedCsv, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ClearSubscriptionDataAsync_DeletesSubscriptionsProfilesAndTags()
     {
         var csv = CreateCsv(

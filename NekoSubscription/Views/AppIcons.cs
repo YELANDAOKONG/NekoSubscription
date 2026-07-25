@@ -60,4 +60,7 @@ internal static class AppIcons
 
     public static Geometry Import { get; } = StreamGeometry.Parse(
         "M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM12 17l-5-5h3V8h4v4h3l-5 5z");
+
+    public static Geometry Export { get; } = StreamGeometry.Parse(
+        "M5 20h14v-2H5v2zm7-18L5.33 8.67l1.41 1.41L11 5.83V16h2V5.83l4.26 4.25 1.41-1.41L12 2z");
 }

@@ -96,6 +96,9 @@ public partial class SettingsViewModel : ViewModelBase
     public partial bool IsClearConfirmationVisible { get; private set; }
 
     [ObservableProperty]
+    public partial bool MaskAccountIdentifiersOnExport { get; set; }
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasImportIssues))]
     public partial string ImportIssueSummary { get; private set; } = string.Empty;
 
@@ -221,6 +224,50 @@ public partial class SettingsViewModel : ViewModelBase
             ClearImportPreview();
             _logger.Error(exception, "Failed to preview a subscription CSV import.");
             StatusChanged?.Invoke(AppResources.Get("Status_CsvPreviewFailed"));
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExportCsvAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+
+        try
+        {
+            await using var destination = await _fileDialogService.CreateCsvFileAsync(
+                AppResources.Get("Settings_ExportDialogTitle"),
+                AppResources.Get("Settings_ExportFileType"));
+            if (destination is null)
+            {
+                return;
+            }
+
+            if (destination.CanSeek)
+            {
+                destination.SetLength(0);
+            }
+
+            var result = await _dataManagementService.ExportSubscriptionCsvAsync(
+                destination,
+                MaskAccountIdentifiersOnExport);
+            await destination.FlushAsync();
+            StatusChanged?.Invoke(AppResources.Format(
+                "Status_CsvExportCompleted",
+                result.ExportedSubscriptionCount));
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to export subscriptions to CSV.");
+            StatusChanged?.Invoke(AppResources.Get("Status_CsvExportFailed"));
         }
         finally
         {

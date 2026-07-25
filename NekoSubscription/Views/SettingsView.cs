@@ -220,6 +220,37 @@ public sealed class SettingsView : UserControl
             Button.CommandProperty,
             new Binding(nameof(SettingsViewModel.SelectImportCsvCommand)));
 
+        var export = new Button
+        {
+            Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6
+            }
+            .Children(
+                UiFactory.Icon(AppIcons.Export, 14),
+                new TextBlock
+                {
+                    Text = AppResources.Get("Settings_ExportCsv"),
+                    VerticalAlignment = VerticalAlignment.Center
+                })
+        };
+        ToolTip.SetTip(export, AppResources.Get("Settings_ExportCsvToolTip"));
+        export.Bind(
+            Button.CommandProperty,
+            new Binding(nameof(SettingsViewModel.ExportCsvCommand)));
+
+        var maskAccounts = new CheckBox
+        {
+            Content = AppResources.Get("Settings_MaskAccountsOnExport")
+        };
+        maskAccounts.Bind(
+            Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
+            new Binding(nameof(SettingsViewModel.MaskAccountIdentifiersOnExport))
+            {
+                Mode = BindingMode.TwoWay
+            });
+
         var clear = UiFactory.DangerButton(AppResources.Get("Settings_ClearData"), AppIcons.Delete);
         clear.Bind(
             Button.CommandProperty,
@@ -239,7 +270,8 @@ public sealed class SettingsView : UserControl
                     Orientation = Orientation.Horizontal,
                     Spacing = 8
                 }
-                .Children(backup, import, clear),
+                .Children(backup, import, export, clear),
+                maskAccounts,
                 BuildImportPreview(),
                 BuildClearConfirmation()));
     }

@@ -18,6 +18,11 @@ public interface IDataManagementService : IDisposable
         Stream source,
         CancellationToken cancellationToken = default);
 
+    Task<CsvExportResult> ExportSubscriptionCsvAsync(
+        Stream destination,
+        bool maskAccountIdentifiers,
+        CancellationToken cancellationToken = default);
+
     Task<DataClearResult> ClearSubscriptionDataAsync(
         CancellationToken cancellationToken = default);
 }

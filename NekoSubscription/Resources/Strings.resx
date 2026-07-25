@@ -209,10 +209,13 @@
   <data name="Settings_SaveDescription" xml:space="preserve"><value>Save to use the same settings the next time the app starts.</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>Save changes</value></data>
   <data name="Settings_DataManagementTitle" xml:space="preserve"><value>Data management</value></data>
-  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>Back up all local databases, import subscriptions from the standard 13-column CSV format, or clear subscription data while keeping application settings.</value></data>
+  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>Back up all local databases, import or export subscriptions in the standard 13-column CSV format, or clear subscription data while keeping application settings.</value></data>
   <data name="Settings_BackupData" xml:space="preserve"><value>Back up data</value></data>
   <data name="Settings_ImportCsv" xml:space="preserve"><value>Import CSV</value></data>
   <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>Columns: Provider, Plan, Account, Amount, Currency, Interval, Start Date, Next Billing Date, [Unused], Is Active, Payment Channel, Payment Account, Notes</value></data>
+  <data name="Settings_ExportCsv" xml:space="preserve"><value>Export CSV</value></data>
+  <data name="Settings_ExportCsvToolTip" xml:space="preserve"><value>Export visible subscriptions with fixed uppercase English headers.</value></data>
+  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>Mask account identifiers and payment accounts with *** when exporting</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>Clear data</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>Import</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>Back up and clear</value></data>
@@ -224,11 +227,15 @@
   <data name="Settings_BackupDialogTitle" xml:space="preserve"><value>Back up NekoSubscription data</value></data>
   <data name="Settings_BackupFileType" xml:space="preserve"><value>NekoSubscription backup</value></data>
   <data name="Settings_ImportDialogTitle" xml:space="preserve"><value>Import subscriptions from CSV</value></data>
+  <data name="Settings_ExportDialogTitle" xml:space="preserve"><value>Export subscriptions to CSV</value></data>
+  <data name="Settings_ExportFileType" xml:space="preserve"><value>CSV spreadsheet</value></data>
   <data name="Status_DataBackupCreated" xml:space="preserve"><value>Data backup created.</value></data>
   <data name="Status_DataBackupFailed" xml:space="preserve"><value>Unable to create the data backup.</value></data>
   <data name="Status_CsvPreviewFailed" xml:space="preserve"><value>Unable to read or validate the CSV file.</value></data>
   <data name="Status_CsvImportCompleted" xml:space="preserve"><value>Imported {0} subscription(s).</value></data>
   <data name="Status_CsvImportFailed" xml:space="preserve"><value>Unable to import the CSV file. No rows were added.</value></data>
+  <data name="Status_CsvExportCompleted" xml:space="preserve"><value>Exported {0} subscription(s).</value></data>
+  <data name="Status_CsvExportFailed" xml:space="preserve"><value>Unable to export the CSV file.</value></data>
   <data name="Status_DataCleared" xml:space="preserve"><value>Cleared {0} subscription(s).</value></data>
   <data name="Status_ClearDataFailed" xml:space="preserve"><value>Unable to clear subscription data.</value></data>
   <data name="ImportIssue_MalformedCsv" xml:space="preserve"><value>malformed CSV quoting or delimiters</value></data>

@@ -209,10 +209,13 @@
   <data name="Settings_SaveDescription" xml:space="preserve"><value>保存后，下次启动应用时将继续使用相同设置。</value></data>
   <data name="Settings_SaveChanges" xml:space="preserve"><value>保存更改</value></data>
   <data name="Settings_DataManagementTitle" xml:space="preserve"><value>数据管理</value></data>
-  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>备份所有本地数据库、从标准 13 列 CSV 导入订阅，或清空订阅数据并保留应用设置。</value></data>
+  <data name="Settings_DataManagementDescription" xml:space="preserve"><value>备份所有本地数据库、通过标准 13 列 CSV 导入或导出订阅，或清空订阅数据并保留应用设置。</value></data>
   <data name="Settings_BackupData" xml:space="preserve"><value>备份数据</value></data>
   <data name="Settings_ImportCsv" xml:space="preserve"><value>导入 CSV</value></data>
   <data name="Settings_ImportCsvToolTip" xml:space="preserve"><value>列：服务商, 计划, 账户, 金额, 币种, 周期, 开始日期, 下次扣款日, [保留空列], 是否激活, 支付渠道, 支付账户, 备注</value></data>
+  <data name="Settings_ExportCsv" xml:space="preserve"><value>导出 CSV</value></data>
+  <data name="Settings_ExportCsvToolTip" xml:space="preserve"><value>使用固定的英文全大写表头导出可见订阅。</value></data>
+  <data name="Settings_MaskAccountsOnExport" xml:space="preserve"><value>导出时用 *** 遮罩账户标识和付款账户</value></data>
   <data name="Settings_ClearData" xml:space="preserve"><value>清空数据</value></data>
   <data name="Settings_ConfirmImport" xml:space="preserve"><value>确认导入</value></data>
   <data name="Settings_BackupAndClear" xml:space="preserve"><value>备份并清空</value></data>
@@ -224,11 +227,15 @@
   <data name="Settings_BackupDialogTitle" xml:space="preserve"><value>备份 NekoSubscription 数据</value></data>
   <data name="Settings_BackupFileType" xml:space="preserve"><value>NekoSubscription 备份</value></data>
   <data name="Settings_ImportDialogTitle" xml:space="preserve"><value>从 CSV 导入订阅</value></data>
+  <data name="Settings_ExportDialogTitle" xml:space="preserve"><value>将订阅导出为 CSV</value></data>
+  <data name="Settings_ExportFileType" xml:space="preserve"><value>CSV 表格</value></data>
   <data name="Status_DataBackupCreated" xml:space="preserve"><value>数据备份已创建。</value></data>
   <data name="Status_DataBackupFailed" xml:space="preserve"><value>无法创建数据备份。</value></data>
   <data name="Status_CsvPreviewFailed" xml:space="preserve"><value>无法读取或验证 CSV 文件。</value></data>
   <data name="Status_CsvImportCompleted" xml:space="preserve"><value>已导入 {0} 项订阅。</value></data>
   <data name="Status_CsvImportFailed" xml:space="preserve"><value>无法导入 CSV，未添加任何数据。</value></data>
+  <data name="Status_CsvExportCompleted" xml:space="preserve"><value>已导出 {0} 项订阅。</value></data>
+  <data name="Status_CsvExportFailed" xml:space="preserve"><value>无法导出 CSV 文件。</value></data>
   <data name="Status_DataCleared" xml:space="preserve"><value>已清空 {0} 项订阅。</value></data>
   <data name="Status_ClearDataFailed" xml:space="preserve"><value>无法清空订阅数据。</value></data>
   <data name="ImportIssue_MalformedCsv" xml:space="preserve"><value>CSV 引号或分隔符格式错误</value></data>

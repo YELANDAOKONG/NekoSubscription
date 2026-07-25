@@ -10,6 +10,11 @@ public interface IDataFileDialogService
         string title,
         CancellationToken cancellationToken = default);
 
+    Task<Stream?> CreateCsvFileAsync(
+        string title,
+        string fileTypeName,
+        CancellationToken cancellationToken = default);
+
     Task<Stream?> CreateBackupFileAsync(
         string title,
         string fileTypeName,
