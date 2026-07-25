@@ -27,7 +27,7 @@ public sealed class SubscriptionEditorView : UserControl
             BuildFooter().Grid_Row(2));
         content.Bind(
             IsEnabledProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsReady)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsReady)));
 
         Content = content;
     }
@@ -85,7 +85,7 @@ public sealed class SubscriptionEditorView : UserControl
             nameof(SubscriptionEditorViewModel.SelectedCategoryOption));
         category.Bind(
             IsEnabledProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.CanChangeCategory)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.CanChangeCategory)));
 
         var categoryHint = new Border
         {
@@ -101,7 +101,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         categoryHint.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsEditing)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsEditing)));
 
         return BuildTabBody(
             AppResources.Get("Editor_IdentitySection"),
@@ -134,10 +134,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         amount.Bind(
             NumericUpDown.ValueProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.Amount))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.Amount), BindingMode.TwoWay));
 
         var intervalCount = new NumericUpDown
         {
@@ -148,10 +145,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         intervalCount.Bind(
             NumericUpDown.ValueProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IntervalCount))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IntervalCount), BindingMode.TwoWay));
 
         var interval = BuildField(
             AppResources.Get("Editor_Interval"),
@@ -168,7 +162,7 @@ public sealed class SubscriptionEditorView : UserControl
                     .Grid_Column(1)));
         interval.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsRecurring)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsRecurring)));
 
         var renews = new CheckBox
         {
@@ -176,14 +170,11 @@ public sealed class SubscriptionEditorView : UserControl
         };
         renews.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.AutomaticallyRenews))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.AutomaticallyRenews), BindingMode.TwoWay));
         var renewsField = BuildField(AppResources.Get("Editor_Renewal"), renews);
         renewsField.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsRecurring)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsRecurring)));
 
         return BuildTabBody(
             AppResources.Get("Editor_BillingSection"),
@@ -270,10 +261,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         prepaid.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsPrepaid))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsPrepaid), BindingMode.TwoWay));
 
         var panel = BuildSection(
             AppResources.Get("Editor_PhoneSection"),
@@ -295,7 +283,7 @@ public sealed class SubscriptionEditorView : UserControl
                 BuildField(AppResources.Get("Editor_BillingType"), prepaid)));
         panel.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsPhoneNumber)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsPhoneNumber)));
         return panel;
     }
 
@@ -315,7 +303,7 @@ public sealed class SubscriptionEditorView : UserControl
                     BuildDatePicker(nameof(SubscriptionEditorViewModel.DomainExpiresOn)))));
         panel.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsDomain)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsDomain)));
         return panel;
     }
 
@@ -337,7 +325,7 @@ public sealed class SubscriptionEditorView : UserControl
                     BuildTextBox(nameof(SubscriptionEditorViewModel.ProjectIdentifier)))));
         panel.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsCloudService)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsCloudService)));
         return panel;
     }
 
@@ -450,12 +438,12 @@ public sealed class SubscriptionEditorView : UserControl
         };
         cancel.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.CancelCommand)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.CancelCommand)));
 
         var save = UiFactory.PrimaryButton(AppResources.Get("Common_Save"));
         save.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.SaveCommand)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.SaveCommand)));
 
         var error = new Border
         {
@@ -469,7 +457,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         error.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.HasError)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.HasError)));
 
         var progress = new ProgressBar
         {
@@ -478,7 +466,7 @@ public sealed class SubscriptionEditorView : UserControl
         };
         progress.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionEditorViewModel.IsBusy)));
+            AotBinding.Path(nameof(SubscriptionEditorViewModel.IsBusy)));
 
         return new Border
         {
@@ -512,10 +500,7 @@ public sealed class SubscriptionEditorView : UserControl
         var textBox = new TextBox();
         textBox.Bind(
             TextBox.TextProperty,
-            new Binding(propertyPath)
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(propertyPath, BindingMode.TwoWay));
         return textBox;
     }
 
@@ -524,13 +509,10 @@ public sealed class SubscriptionEditorView : UserControl
         var comboBox = new ComboBox();
         comboBox.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(itemsPath));
+            AotBinding.Path(itemsPath));
         comboBox.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(selectedItemPath)
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(selectedItemPath, BindingMode.TwoWay));
         return comboBox;
     }
 
@@ -539,10 +521,7 @@ public sealed class SubscriptionEditorView : UserControl
         var datePicker = new DatePicker();
         datePicker.Bind(
             DatePicker.SelectedDateProperty,
-            new Binding(propertyPath)
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(propertyPath, BindingMode.TwoWay));
         return datePicker;
     }
 }

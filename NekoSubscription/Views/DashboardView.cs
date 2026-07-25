@@ -42,7 +42,7 @@ public sealed class DashboardView : UserControl
         };
         payments.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(DashboardViewModel.OverduePayments)));
+            AotBinding.Path(nameof(DashboardViewModel.OverduePayments)));
 
         var card = UiFactory.Card(
             new StackPanel
@@ -58,7 +58,7 @@ public sealed class DashboardView : UserControl
         card.Background = UiPalette.DangerSurface;
         card.Bind(
             IsVisibleProperty,
-            new Binding(nameof(DashboardViewModel.HasOverduePayments)));
+            AotBinding.Path(nameof(DashboardViewModel.HasOverduePayments)));
         return card;
     }
 
@@ -75,7 +75,7 @@ public sealed class DashboardView : UserControl
         };
         open.Bind(
             Button.CommandProperty,
-            new Binding(nameof(OverduePaymentViewModel.OpenSubscriptionCommand)));
+            AotBinding.Path(nameof(OverduePaymentViewModel.OpenSubscriptionCommand)));
 
         return new Border
         {
@@ -130,7 +130,7 @@ public sealed class DashboardView : UserControl
         };
         periods.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(DashboardViewModel.ForecastPeriods)));
+            AotBinding.Path(nameof(DashboardViewModel.ForecastPeriods)));
 
         return UiFactory.Card(
             new Grid
@@ -170,13 +170,10 @@ public sealed class DashboardView : UserControl
         };
         button.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
-            new Binding(nameof(ForecastPeriodOptionViewModel.IsSelected))
-            {
-                Mode = BindingMode.OneWay
-            });
+            AotBinding.Path(nameof(ForecastPeriodOptionViewModel.IsSelected), BindingMode.OneWay));
         button.Bind(
             Button.CommandProperty,
-            new Binding(nameof(ForecastPeriodOptionViewModel.SelectCommand)));
+            AotBinding.Path(nameof(ForecastPeriodOptionViewModel.SelectCommand)));
         return button;
     }
 
@@ -194,7 +191,7 @@ public sealed class DashboardView : UserControl
         };
         notice.Bind(
             IsVisibleProperty,
-            new Binding(nameof(DashboardViewModel.HasExcludedSubscriptions)));
+            AotBinding.Path(nameof(DashboardViewModel.HasExcludedSubscriptions)));
         return notice;
     }
 
@@ -288,14 +285,14 @@ public sealed class DashboardView : UserControl
             ItemTemplate = new FuncDataTemplate<CurrencyTotalViewModel>(
                 (total, _) => BuildCurrencyTotal(total))
         };
-        totals.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(DashboardViewModel.CurrencyTotals)));
-        totals.Bind(IsVisibleProperty, new Binding(nameof(DashboardViewModel.HasCurrencyTotals)));
+        totals.Bind(ItemsControl.ItemsSourceProperty, AotBinding.Path(nameof(DashboardViewModel.CurrencyTotals)));
+        totals.Bind(IsVisibleProperty, AotBinding.Path(nameof(DashboardViewModel.HasCurrencyTotals)));
 
         var emptyState = UiFactory.EmptyState(
             AppResources.Get("Dashboard_EmptyCashTitle"),
             AppResources.Get("Dashboard_EmptyCashDescription"));
         emptyState.MinHeight = 190;
-        emptyState.Bind(IsVisibleProperty, new Binding(nameof(DashboardViewModel.HasNoCurrencyTotals)));
+        emptyState.Bind(IsVisibleProperty, AotBinding.Path(nameof(DashboardViewModel.HasNoCurrencyTotals)));
 
         return UiFactory.Card(
             new StackPanel
@@ -328,14 +325,14 @@ public sealed class DashboardView : UserControl
             ItemTemplate = new FuncDataTemplate<CashFlowItemViewModel>(
                 (payment, _) => BuildUpcomingRow(payment))
         };
-        list.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(DashboardViewModel.UpcomingPayments)));
-        list.Bind(IsVisibleProperty, new Binding(nameof(DashboardViewModel.HasUpcomingPayments)));
+        list.Bind(ItemsControl.ItemsSourceProperty, AotBinding.Path(nameof(DashboardViewModel.UpcomingPayments)));
+        list.Bind(IsVisibleProperty, AotBinding.Path(nameof(DashboardViewModel.HasUpcomingPayments)));
 
         var emptyState = UiFactory.EmptyState(
             AppResources.Get("Dashboard_EmptyUpcomingTitle"),
             AppResources.Get("Dashboard_EmptyUpcomingDescription"));
         emptyState.MinHeight = 190;
-        emptyState.Bind(IsVisibleProperty, new Binding(nameof(DashboardViewModel.HasNoUpcomingPayments)));
+        emptyState.Bind(IsVisibleProperty, AotBinding.Path(nameof(DashboardViewModel.HasNoUpcomingPayments)));
 
         return UiFactory.Card(
             new StackPanel

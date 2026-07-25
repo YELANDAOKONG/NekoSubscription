@@ -33,7 +33,7 @@ public sealed class SubscriptionsView : UserControl
         var add = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Add"), AppIcons.Add);
         add.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.AddSubscriptionCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.AddSubscriptionCommand)));
 
         var refresh = new Button
         {
@@ -48,7 +48,7 @@ public sealed class SubscriptionsView : UserControl
         };
         refresh.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.RefreshCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.RefreshCommand)));
 
         var title = UiFactory.SectionTitle(AppResources.Get("Subscriptions_All"));
         title.TextWrapping = TextWrapping.Wrap;
@@ -86,10 +86,7 @@ public sealed class SubscriptionsView : UserControl
         };
         searchBox.Bind(
             TextBox.TextProperty,
-            new Binding(nameof(SubscriptionsViewModel.SearchText))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionsViewModel.SearchText), BindingMode.TwoWay));
 
         var categoryFilter = new ComboBox
         {
@@ -99,13 +96,10 @@ public sealed class SubscriptionsView : UserControl
         };
         categoryFilter.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SubscriptionsViewModel.CategoryFilters)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.CategoryFilters)));
         categoryFilter.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SubscriptionsViewModel.SelectedCategoryFilter))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionsViewModel.SelectedCategoryFilter), BindingMode.TwoWay));
 
         var sortFilter = new ComboBox
         {
@@ -115,13 +109,10 @@ public sealed class SubscriptionsView : UserControl
         };
         sortFilter.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SubscriptionsViewModel.SortOptions)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.SortOptions)));
         sortFilter.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SubscriptionsViewModel.SelectedSortOption))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionsViewModel.SelectedSortOption), BindingMode.TwoWay));
 
         var includeArchived = new CheckBox
         {
@@ -130,10 +121,7 @@ public sealed class SubscriptionsView : UserControl
         };
         includeArchived.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
-            new Binding(nameof(SubscriptionsViewModel.IncludeArchived))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionsViewModel.IncludeArchived), BindingMode.TwoWay));
 
         var filterRow = new WrapPanel
         {
@@ -188,20 +176,17 @@ public sealed class SubscriptionsView : UserControl
             });
         list.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SubscriptionsViewModel.Subscriptions)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.Subscriptions)));
         list.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SubscriptionsViewModel.SelectedSubscription))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SubscriptionsViewModel.SelectedSubscription), BindingMode.TwoWay));
 
         var empty = UiFactory.EmptyState(
             AppResources.Get("Subscriptions_EmptyTitle"),
             AppResources.Get("Subscriptions_EmptyDescription"));
         empty.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasNoResults)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.HasNoResults)));
 
         return UiFactory.Card(
             new Grid()
@@ -331,10 +316,10 @@ public sealed class SubscriptionsView : UserControl
         var editor = new ContentControl { MaxWidth = 460, MinWidth = 340 };
         editor.Bind(
             ContentControl.ContentProperty,
-            new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.CurrentEditor)));
         editor.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasEditor)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.HasEditor)));
 
         var details = new ScrollViewer
         {
@@ -346,12 +331,12 @@ public sealed class SubscriptionsView : UserControl
         };
         details.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.HasSelectedSubscriptionWithoutEditor)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.HasSelectedSubscriptionWithoutEditor)));
 
         var pane = new Grid().Children(editor, details);
         pane.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.IsSidePaneVisible)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.IsSidePaneVisible)));
 
         return pane;
     }
@@ -361,10 +346,10 @@ public sealed class SubscriptionsView : UserControl
         var edit = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_Edit"), AppIcons.Edit);
         edit.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.EditSubscriptionCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.EditSubscriptionCommand)));
 
         var archiveText = new TextBlock();
-        archiveText.Bind(TextBlock.TextProperty, new Binding(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
+        archiveText.Bind(TextBlock.TextProperty, AotBinding.Path(nameof(SubscriptionsViewModel.ArchiveActionLabel)));
 
         var archive = new Button
         {
@@ -379,12 +364,12 @@ public sealed class SubscriptionsView : UserControl
         };
         archive.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.ToggleArchiveCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.ToggleArchiveCommand)));
 
         var delete = UiFactory.DangerButton(AppResources.Get("Subscriptions_Delete"), AppIcons.Delete);
         delete.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.RequestDeleteSubscriptionCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.RequestDeleteSubscriptionCommand)));
 
         var actionBar = new StackPanel
         {
@@ -591,11 +576,10 @@ public sealed class SubscriptionsView : UserControl
         };
         letterBlock.Bind(
             TextBlock.TextProperty,
-            new Binding(propertyPath)
-            {
-                Converter = new FuncValueConverter<string?, string>(s => 
-                    string.IsNullOrWhiteSpace(s) ? "?" : s.Substring(0, 1).ToUpperInvariant())
-            });
+            AotBinding.Path(
+                propertyPath,
+                new FuncValueConverter<string?, string>(s => 
+                    string.IsNullOrWhiteSpace(s) ? "?" : s.Substring(0, 1).ToUpperInvariant())));
 
         return new Border
         {
@@ -637,12 +621,12 @@ public sealed class SubscriptionsView : UserControl
         };
         cancel.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.CancelDeleteSubscriptionCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.CancelDeleteSubscriptionCommand)));
 
         var confirm = UiFactory.PrimaryButton(AppResources.Get("Subscriptions_ConfirmDelete"));
         confirm.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SubscriptionsViewModel.ConfirmDeleteSubscriptionCommand)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.ConfirmDeleteSubscriptionCommand)));
 
         var confirmation = new Border
         {
@@ -667,7 +651,7 @@ public sealed class SubscriptionsView : UserControl
         };
         confirmation.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SubscriptionsViewModel.IsDeleteConfirmationVisible)));
+            AotBinding.Path(nameof(SubscriptionsViewModel.IsDeleteConfirmationVisible)));
         return confirmation;
     }
 

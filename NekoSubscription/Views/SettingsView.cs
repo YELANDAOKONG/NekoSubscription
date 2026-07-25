@@ -44,13 +44,10 @@ public sealed class SettingsView : UserControl
         };
         languageSelector.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SettingsViewModel.Languages)));
+            AotBinding.Path(nameof(SettingsViewModel.Languages)));
         languageSelector.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SettingsViewModel.SelectedLanguageOption))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SettingsViewModel.SelectedLanguageOption), BindingMode.TwoWay));
 
         return BuildSettingsCard(
             AppResources.Get("Settings_LanguageTitle"),
@@ -66,13 +63,10 @@ public sealed class SettingsView : UserControl
         };
         themeSelector.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SettingsViewModel.Themes)));
+            AotBinding.Path(nameof(SettingsViewModel.Themes)));
         themeSelector.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SettingsViewModel.SelectedThemeOption))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SettingsViewModel.SelectedThemeOption), BindingMode.TwoWay));
 
         return BuildSettingsCard(
             AppResources.Get("Settings_ColorThemeTitle"),
@@ -88,13 +82,10 @@ public sealed class SettingsView : UserControl
         };
         styleSelector.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(SettingsViewModel.VisualStyles)));
+            AotBinding.Path(nameof(SettingsViewModel.VisualStyles)));
         styleSelector.Bind(
             Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
-            new Binding(nameof(SettingsViewModel.SelectedVisualStyleOption))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SettingsViewModel.SelectedVisualStyleOption), BindingMode.TwoWay));
 
         var opacitySlider = new Slider
         {
@@ -107,13 +98,10 @@ public sealed class SettingsView : UserControl
         };
         opacitySlider.Bind(
             Avalonia.Controls.Primitives.RangeBase.ValueProperty,
-            new Binding(nameof(SettingsViewModel.AcrylicOpacity))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SettingsViewModel.AcrylicOpacity), BindingMode.TwoWay));
         opacitySlider.Bind(
             IsEnabledProperty,
-            new Binding(nameof(SettingsViewModel.IsAcrylicSelected)));
+            AotBinding.Path(nameof(SettingsViewModel.IsAcrylicSelected)));
 
         var opacityLabel = UiFactory.BoundText(
             nameof(SettingsViewModel.AcrylicOpacityLabel),
@@ -212,13 +200,13 @@ public sealed class SettingsView : UserControl
         };
         backup.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.BackupDataCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.BackupDataCommand)));
 
         var import = UiFactory.PrimaryButton(AppResources.Get("Settings_ImportCsv"), AppIcons.Import);
         ToolTip.SetTip(import, AppResources.Get("Settings_ImportCsvToolTip"));
         import.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.SelectImportCsvCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.SelectImportCsvCommand)));
 
         var export = new Button
         {
@@ -238,7 +226,7 @@ public sealed class SettingsView : UserControl
         ToolTip.SetTip(export, AppResources.Get("Settings_ExportCsvToolTip"));
         export.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.ExportCsvCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.ExportCsvCommand)));
 
         var maskAccounts = new CheckBox
         {
@@ -246,15 +234,12 @@ public sealed class SettingsView : UserControl
         };
         maskAccounts.Bind(
             Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
-            new Binding(nameof(SettingsViewModel.MaskAccountIdentifiersOnExport))
-            {
-                Mode = BindingMode.TwoWay
-            });
+            AotBinding.Path(nameof(SettingsViewModel.MaskAccountIdentifiersOnExport), BindingMode.TwoWay));
 
         var clear = UiFactory.DangerButton(AppResources.Get("Settings_ClearData"), AppIcons.Delete);
         clear.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.RequestClearDataCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.RequestClearDataCommand)));
 
         return UiFactory.Card(
             new StackPanel
@@ -284,15 +269,15 @@ public sealed class SettingsView : UserControl
         };
         cancel.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.CancelImportCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.CancelImportCommand)));
 
         var confirm = UiFactory.PrimaryButton(AppResources.Get("Settings_ConfirmImport"));
         confirm.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.ConfirmImportCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.ConfirmImportCommand)));
         confirm.Bind(
             IsEnabledProperty,
-            new Binding(nameof(SettingsViewModel.CanImport)));
+            AotBinding.Path(nameof(SettingsViewModel.CanImport)));
 
         var issues = UiFactory.BoundText(
             nameof(SettingsViewModel.ImportIssueSummary),
@@ -301,7 +286,7 @@ public sealed class SettingsView : UserControl
             textWrapping: TextWrapping.Wrap);
         issues.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SettingsViewModel.HasImportIssues)));
+            AotBinding.Path(nameof(SettingsViewModel.HasImportIssues)));
 
         var preview = new Border
         {
@@ -336,7 +321,7 @@ public sealed class SettingsView : UserControl
         };
         preview.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SettingsViewModel.HasImportPreview)));
+            AotBinding.Path(nameof(SettingsViewModel.HasImportPreview)));
         return preview;
     }
 
@@ -348,7 +333,7 @@ public sealed class SettingsView : UserControl
         };
         cancel.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.CancelClearDataCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.CancelClearDataCommand)));
 
         var backupAndClear = new Button
         {
@@ -356,12 +341,12 @@ public sealed class SettingsView : UserControl
         };
         backupAndClear.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.BackupAndClearDataCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.BackupAndClearDataCommand)));
 
         var confirm = UiFactory.PrimaryButton(AppResources.Get("Settings_ConfirmClear"));
         confirm.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.ConfirmClearDataCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.ConfirmClearDataCommand)));
 
         var confirmation = new Border
         {
@@ -401,7 +386,7 @@ public sealed class SettingsView : UserControl
         };
         confirmation.Bind(
             IsVisibleProperty,
-            new Binding(nameof(SettingsViewModel.IsClearConfirmationVisible)));
+            AotBinding.Path(nameof(SettingsViewModel.IsClearConfirmationVisible)));
         return confirmation;
     }
 
@@ -410,10 +395,10 @@ public sealed class SettingsView : UserControl
         var saveButton = UiFactory.PrimaryButton(AppResources.Get("Settings_SaveChanges"));
         saveButton.Bind(
             Button.CommandProperty,
-            new Binding(nameof(SettingsViewModel.SaveCommand)));
+            AotBinding.Path(nameof(SettingsViewModel.SaveCommand)));
         saveButton.Bind(
             IsEnabledProperty,
-            new Binding(nameof(SettingsViewModel.HasUnsavedChanges)));
+            AotBinding.Path(nameof(SettingsViewModel.HasUnsavedChanges)));
 
         return new Grid
         {

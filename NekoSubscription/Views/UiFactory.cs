@@ -163,7 +163,7 @@ internal static class UiFactory
         {
             textBlock.TextAlignment = textAlignment.Value;
         }
-        textBlock.Bind(TextBlock.TextProperty, new Binding(path));
+        textBlock.Bind(TextBlock.TextProperty, AotBinding.Path(path));
         return textBlock;
     }
 

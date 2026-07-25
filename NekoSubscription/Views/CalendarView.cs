@@ -46,7 +46,7 @@ public sealed class CalendarView : UserControl
         };
         previous.Bind(
             Button.CommandProperty,
-            new Binding(nameof(CalendarViewModel.GoToPreviousMonthCommand)));
+            AotBinding.Path(nameof(CalendarViewModel.GoToPreviousMonthCommand)));
 
         var next = new Button
         {
@@ -56,7 +56,7 @@ public sealed class CalendarView : UserControl
         };
         next.Bind(
             Button.CommandProperty,
-            new Binding(nameof(CalendarViewModel.GoToNextMonthCommand)));
+            AotBinding.Path(nameof(CalendarViewModel.GoToNextMonthCommand)));
 
         var today = new Button
         {
@@ -67,7 +67,7 @@ public sealed class CalendarView : UserControl
         };
         today.Bind(
             Button.CommandProperty,
-            new Binding(nameof(CalendarViewModel.GoToTodayCommand)));
+            AotBinding.Path(nameof(CalendarViewModel.GoToTodayCommand)));
 
         var monthLabel = UiFactory.BoundText(
             nameof(CalendarViewModel.MonthLabel),
@@ -142,7 +142,7 @@ public sealed class CalendarView : UserControl
         };
         calendar.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(CalendarViewModel.Days)));
+            AotBinding.Path(nameof(CalendarViewModel.Days)));
         return calendar;
     }
 
@@ -191,7 +191,7 @@ public sealed class CalendarView : UserControl
         };
         button.Bind(
             Button.CommandProperty,
-            new Binding(nameof(CalendarDayViewModel.SelectCommand)));
+            AotBinding.Path(nameof(CalendarDayViewModel.SelectCommand)));
         return button;
     }
 
@@ -239,7 +239,7 @@ public sealed class CalendarView : UserControl
         };
         payments.Bind(
             ItemsControl.ItemsSourceProperty,
-            new Binding(nameof(CalendarViewModel.SelectedPayments)));
+            AotBinding.Path(nameof(CalendarViewModel.SelectedPayments)));
 
         var paymentScroll = new ScrollViewer
         {
@@ -250,7 +250,7 @@ public sealed class CalendarView : UserControl
         };
         paymentScroll.Bind(
             IsVisibleProperty,
-            new Binding(nameof(CalendarViewModel.HasSelectedPayments)));
+            AotBinding.Path(nameof(CalendarViewModel.HasSelectedPayments)));
 
         var empty = new TextBlock
         {
@@ -260,7 +260,7 @@ public sealed class CalendarView : UserControl
         };
         empty.Bind(
             IsVisibleProperty,
-            new Binding(nameof(CalendarViewModel.HasNoSelectedPayments)));
+            AotBinding.Path(nameof(CalendarViewModel.HasNoSelectedPayments)));
 
         return UiFactory.Card(
             new StackPanel
@@ -300,7 +300,7 @@ public sealed class CalendarView : UserControl
         };
         open.Bind(
             Button.CommandProperty,
-            new Binding(nameof(CalendarPaymentViewModel.OpenSubscriptionCommand)));
+            AotBinding.Path(nameof(CalendarPaymentViewModel.OpenSubscriptionCommand)));
 
         return new Border
         {

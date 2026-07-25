@@ -418,16 +418,19 @@ public sealed class DataManagementService : IDataManagementService
         ZipArchive archive,
         CancellationToken cancellationToken)
     {
-        var manifest = new
-        {
-            Format = "NekoSubscriptionBackup",
-            Version = 1,
-            CreatedAtUtc = DateTimeOffset.UtcNow,
-            Files = new[] { "data.db", "configuration.db" }
-        };
+        var manifest = new BackupManifest(
+            Format: "NekoSubscriptionBackup",
+            Version: 1,
+            CreatedAtUtc: DateTimeOffset.UtcNow,
+            Files: new[] { "data.db", "configuration.db" }
+        );
         var entry = archive.CreateEntry("manifest.json", CompressionLevel.Optimal);
         await using var destination = entry.Open();
-        await JsonSerializer.SerializeAsync(destination, manifest, cancellationToken: cancellationToken)
+        await JsonSerializer.SerializeAsync(
+            destination, 
+            manifest, 
+            BackupManifestJsonContext.Default.BackupManifest, 
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
     }
 

@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 using NekoSubscription.Entities.Subscriptions;
 
 namespace NekoSubscription.Core.Subscriptions;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public sealed class SubscriptionDbContext(DbContextOptions<SubscriptionDbContext> options) : DbContext(options)
 {
     public DbSet<Subscription> Subscriptions => Set<Subscription>();

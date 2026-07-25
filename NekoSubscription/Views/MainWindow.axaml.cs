@@ -103,10 +103,9 @@ public partial class MainWindow : Window
 
         sidebarBorder.Bind(
             WidthProperty,
-            new Binding(nameof(MainViewModel.IsSidebarCollapsed))
-            {
-                Converter = new FuncValueConverter<bool, double>(collapsed => collapsed ? 64 : 224)
-            });
+            AotBinding.Path(
+                nameof(MainViewModel.IsSidebarCollapsed),
+                new FuncValueConverter<bool, double>(collapsed => collapsed ? 64 : 224)));
 
         return sidebarBorder;
     }
@@ -128,7 +127,7 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center
         };
-        expandedToggle.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+        expandedToggle.Bind(Button.CommandProperty, AotBinding.Path(nameof(MainViewModel.ToggleSidebarCommand)));
         ToolTip.SetTip(expandedToggle, AppResources.Get("Brand_LocalPlanner"));
 
         var expandedHeader = new Grid
@@ -174,7 +173,7 @@ public partial class MainWindow : Window
                 })
             .Grid_Column(1),
             expandedToggle.Grid_Column(2));
-        expandedHeader.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+        expandedHeader.Bind(IsVisibleProperty, AotBinding.Path(nameof(MainViewModel.IsSidebarExpanded)));
 
         // 2. Collapsed Header Layout (Single Centered Toggle Button)
         var collapsedToggle = new Button
@@ -191,7 +190,7 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        collapsedToggle.Bind(Button.CommandProperty, new Binding(nameof(MainViewModel.ToggleSidebarCommand)));
+        collapsedToggle.Bind(Button.CommandProperty, AotBinding.Path(nameof(MainViewModel.ToggleSidebarCommand)));
         ToolTip.SetTip(collapsedToggle, AppResources.Get("App_Name"));
 
         var collapsedHeader = new Grid
@@ -200,7 +199,7 @@ public partial class MainWindow : Window
             VerticalAlignment = VerticalAlignment.Center
         }
         .Children(collapsedToggle);
-        collapsedHeader.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarCollapsed)));
+        collapsedHeader.Bind(IsVisibleProperty, AotBinding.Path(nameof(MainViewModel.IsSidebarCollapsed)));
 
         return new Grid()
             .Children(expandedHeader, collapsedHeader);
@@ -263,7 +262,7 @@ public partial class MainWindow : Window
                 FontSize = 10,
                 Opacity = 0.56
             });
-        textPanel.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+        textPanel.Bind(IsVisibleProperty, AotBinding.Path(nameof(MainViewModel.IsSidebarExpanded)));
 
         var buttonContent = new Grid
         {
@@ -283,11 +282,10 @@ public partial class MainWindow : Window
 
         buttonContent.Bind(
             HorizontalAlignmentProperty,
-            new Binding(nameof(MainViewModel.IsSidebarCollapsed))
-            {
-                Converter = new FuncValueConverter<bool, HorizontalAlignment>(
-                    collapsed => collapsed ? HorizontalAlignment.Center : HorizontalAlignment.Stretch)
-            });
+            AotBinding.Path(
+                nameof(MainViewModel.IsSidebarCollapsed),
+                new FuncValueConverter<bool, HorizontalAlignment>(
+                    collapsed => collapsed ? HorizontalAlignment.Center : HorizontalAlignment.Stretch)));
 
         var button = new ToggleButton
         {
@@ -298,11 +296,8 @@ public partial class MainWindow : Window
         };
         button.Bind(
             ToggleButton.IsCheckedProperty,
-            new Binding(selectedPath)
-            {
-                Mode = BindingMode.OneWay
-            });
-        button.Bind(Button.CommandProperty, new Binding(commandPath));
+            AotBinding.Path(selectedPath, BindingMode.OneWay));
+        button.Bind(Button.CommandProperty, AotBinding.Path(commandPath));
         ToolTip.SetTip(button, title);
         return button;
     }
@@ -333,7 +328,7 @@ public partial class MainWindow : Window
                     TextWrapping = TextWrapping.Wrap
                 })
         };
-        note.Bind(IsVisibleProperty, new Binding(nameof(MainViewModel.IsSidebarExpanded)));
+        note.Bind(IsVisibleProperty, AotBinding.Path(nameof(MainViewModel.IsSidebarExpanded)));
         return note;
     }
 
@@ -356,7 +351,7 @@ public partial class MainWindow : Window
         };
         pageContent.Bind(
             ContentControl.ContentProperty,
-            new Binding(nameof(MainViewModel.CurrentPage)));
+            AotBinding.Path(nameof(MainViewModel.CurrentPage)));
 
         var progressBar = new ProgressBar
         {
@@ -366,7 +361,7 @@ public partial class MainWindow : Window
         };
         progressBar.Bind(
             IsVisibleProperty,
-            new Binding(nameof(MainViewModel.IsBusy)));
+            AotBinding.Path(nameof(MainViewModel.IsBusy)));
 
         return new Grid
         {

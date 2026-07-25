@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace NekoSubscription.Core.Configuration;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public sealed class ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options) : DbContext(options)
 {
     public DbSet<ApplicationSettings> Settings => Set<ApplicationSettings>();
