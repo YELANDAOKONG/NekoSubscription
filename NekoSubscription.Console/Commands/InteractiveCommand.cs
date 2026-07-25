@@ -45,34 +45,33 @@ public sealed class InteractiveCommand : AsyncCommand<GlobalCommandSettings>
                 break;
             }
 
-            string[] subArgs = choice switch
+            List<string> subArgs = choice switch
             {
-                var c when c.StartsWith("📊") => new[] { "dashboard" },
-                var c when c.StartsWith("📋") => new[] { "list" },
-                var c when c.StartsWith("➕") => new[] { "add" },
-                var c when c.StartsWith("💰") => new[] { "cashflow" },
-                var c when c.StartsWith("🏷️") => new[] { "tag", "list" },
-                var c when c.StartsWith("💳") => new[] { "profile", "list" },
-                var c when c.StartsWith("📤") => new[] { "export" },
-                var c when c.StartsWith("📥") => new[] { "import" },
-                var c when c.StartsWith("💾") => new[] { "backup" },
-                var c when c.StartsWith("⚙️") => new[] { "settings", "get" },
-                _ => Array.Empty<string>()
+                var c when c.StartsWith("📊") => PromptDashboardArgs(),
+                var c when c.StartsWith("📋") => new List<string> { "list" },
+                var c when c.StartsWith("➕") => new List<string> { "add" },
+                var c when c.StartsWith("💰") => new List<string> { "cashflow" },
+                var c when c.StartsWith("🏷️") => new List<string> { "tag", "list" },
+                var c when c.StartsWith("💳") => new List<string> { "profile", "list" },
+                var c when c.StartsWith("📤") => new List<string> { "export" },
+                var c when c.StartsWith("📥") => new List<string> { "import" },
+                var c when c.StartsWith("💾") => new List<string> { "backup" },
+                var c when c.StartsWith("⚙️") => new List<string> { "settings", "get" },
+                _ => new List<string>()
             };
 
-            if (subArgs.Length > 0)
+            if (subArgs.Count > 0)
             {
-                var fullArgs = new List<string>(subArgs);
                 if (!string.IsNullOrWhiteSpace(settings.DataRoot))
                 {
-                    fullArgs.Add("-d");
-                    fullArgs.Add(settings.DataRoot);
+                    subArgs.Add("-d");
+                    subArgs.Add(settings.DataRoot);
                 }
 
                 try
                 {
                     var app = Program.CreateApp();
-                    await app.RunAsync(fullArgs.ToArray());
+                    await app.RunAsync(subArgs.ToArray());
                 }
                 catch (Exception ex)
                 {
@@ -84,5 +83,24 @@ public sealed class InteractiveCommand : AsyncCommand<GlobalCommandSettings>
         }
 
         return 0;
+    }
+
+    private static List<string> PromptDashboardArgs()
+    {
+        var period = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Select [bold green]Forecast Period[/]:")
+                .AddChoices("7 Days (Default)", "3 Days", "14 Days", "30 Days", "90 Days"));
+
+        var daysStr = period switch
+        {
+            "3 Days" => "3",
+            "14 Days" => "14",
+            "30 Days" => "30",
+            "90 Days" => "90",
+            _ => "7"
+        };
+
+        return new List<string> { "dashboard", "--days", daysStr };
     }
 }
