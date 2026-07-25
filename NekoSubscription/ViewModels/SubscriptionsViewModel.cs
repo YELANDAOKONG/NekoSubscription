@@ -39,6 +39,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     public ObservableCollection<SubscriptionCategoryFilter> CategoryFilters { get; } = [];
 
+    public ObservableCollection<SubscriptionSortOption> SortOptions { get; } = [];
+
     public bool HasResults => Subscriptions.Count > 0;
 
     public bool HasNoResults => !HasResults;
@@ -86,6 +88,9 @@ public partial class SubscriptionsViewModel : ViewModelBase
     [ObservableProperty]
     public partial SubscriptionCategoryFilter SelectedCategoryFilter { get; set; } = null!;
 
+    [ObservableProperty]
+    public partial SubscriptionSortOption SelectedSortOption { get; set; } = null!;
+
     public void RefreshLocalization()
     {
         var selectedCategory = SelectedCategoryFilter?.Category;
@@ -107,6 +112,17 @@ public partial class SubscriptionsViewModel : ViewModelBase
             AppResources.Get("Category_Custom"),
             SubscriptionCategory.Custom));
         SelectedCategoryFilter = CategoryFilters.First(filter => filter.Category == selectedCategory);
+
+        var selectedSortType = SelectedSortOption?.SortType ?? SubscriptionSortType.NextBillingAscending;
+        SortOptions.Clear();
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_NextBillingAsc"), SubscriptionSortType.NextBillingAscending));
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_NextBillingDesc"), SubscriptionSortType.NextBillingDescending));
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_AmountDesc"), SubscriptionSortType.AmountDescending));
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_AmountAsc"), SubscriptionSortType.AmountAscending));
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_NameAsc"), SubscriptionSortType.NameAscending));
+        SortOptions.Add(new SubscriptionSortOption(AppResources.Get("Sort_NameDesc"), SubscriptionSortType.NameDescending));
+        SelectedSortOption = SortOptions.First(option => option.SortType == selectedSortType);
+
         CurrentEditor?.RefreshLocalization();
         OnPropertyChanged(nameof(ResultSummary));
         OnPropertyChanged(nameof(ArchiveActionLabel));
@@ -300,6 +316,8 @@ public partial class SubscriptionsViewModel : ViewModelBase
 
     partial void OnSelectedCategoryFilterChanged(SubscriptionCategoryFilter value) => ApplyFilters();
 
+    partial void OnSelectedSortOptionChanged(SubscriptionSortOption value) => ApplyFilters();
+
     partial void OnSelectedSubscriptionChanged(SubscriptionListItemViewModel? value)
     {
         IsDeleteConfirmationVisible = false;
@@ -322,13 +340,36 @@ public partial class SubscriptionsViewModel : ViewModelBase
         var selectedId = SelectedSubscription?.Id;
         var normalizedSearchText = SearchText.Trim();
         var category = SelectedCategoryFilter?.Category;
-        var filteredSubscriptions = _allSubscriptions.Where(subscription =>
+        IEnumerable<SubscriptionListItemViewModel> query = _allSubscriptions.Where(subscription =>
             (IncludeArchived || !subscription.IsArchived) &&
             (category is null || subscription.Category == category) &&
             (normalizedSearchText.Length == 0 || subscription.Matches(normalizedSearchText)));
 
+        query = SelectedSortOption?.SortType switch
+        {
+            SubscriptionSortType.NextBillingAscending => query
+                .OrderBy(s => s.NextBillingOn.HasValue ? 0 : 1)
+                .ThenBy(s => s.NextBillingOn)
+                .ThenBy(s => s.ServiceLabel),
+            SubscriptionSortType.NextBillingDescending => query
+                .OrderBy(s => s.NextBillingOn.HasValue ? 0 : 1)
+                .ThenByDescending(s => s.NextBillingOn)
+                .ThenBy(s => s.ServiceLabel),
+            SubscriptionSortType.AmountDescending => query
+                .OrderByDescending(s => s.Amount)
+                .ThenBy(s => s.ServiceLabel),
+            SubscriptionSortType.AmountAscending => query
+                .OrderBy(s => s.Amount)
+                .ThenBy(s => s.ServiceLabel),
+            SubscriptionSortType.NameAscending => query
+                .OrderBy(s => s.ServiceLabel, StringComparer.CurrentCultureIgnoreCase),
+            SubscriptionSortType.NameDescending => query
+                .OrderByDescending(s => s.ServiceLabel, StringComparer.CurrentCultureIgnoreCase),
+            _ => query
+        };
+
         Subscriptions.Clear();
-        foreach (var subscription in filteredSubscriptions)
+        foreach (var subscription in query)
         {
             Subscriptions.Add(subscription);
         }

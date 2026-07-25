@@ -293,4 +293,10 @@
   <data name="Forecast_OverdueTitle" xml:space="preserve"><value>Overdue</value></data>
   <data name="Forecast_OverdueDescription" xml:space="preserve"><value>Recorded next billing dates that have passed. Each subscription appears once until its date is updated.</value></data>
   <data name="Forecast_DaysOverdue" xml:space="preserve"><value>{0} day(s) overdue</value></data>
+  <data name="Sort_NextBillingAsc" xml:space="preserve"><value>Next Billing (Earliest)</value></data>
+  <data name="Sort_NextBillingDesc" xml:space="preserve"><value>Next Billing (Latest)</value></data>
+  <data name="Sort_AmountDesc" xml:space="preserve"><value>Amount (High to Low)</value></data>
+  <data name="Sort_AmountAsc" xml:space="preserve"><value>Amount (Low to High)</value></data>
+  <data name="Sort_NameAsc" xml:space="preserve"><value>Name (A - Z)</value></data>
+  <data name="Sort_NameDesc" xml:space="preserve"><value>Name (Z - A)</value></data>
 </root>

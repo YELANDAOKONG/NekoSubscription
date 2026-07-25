@@ -16,6 +16,7 @@ public sealed record SubscriptionListItemViewModel(
     string CategoryLabel,
     string StatusLabel,
     string LifecycleLabel,
+    decimal Amount,
     string AmountLabel,
     string NextBillingLabel,
     DateOnly? NextBillingOn,
@@ -68,6 +69,7 @@ public sealed record SubscriptionListItemViewModel(
             FormatCategory(subscription.Category),
             FormatConfirmationStatus(subscription.ConfirmationStatus, subscription.IsArchived),
             FormatLifecycleStatus(subscription.LifecycleStatus),
+            subscription.BillingAmount.Amount,
             FormatAmount(subscription.BillingAmount),
             nextBillingOn?.ToString("d", CultureInfo.CurrentCulture) ??
                 AppResources.Get("Common_NotScheduled"),

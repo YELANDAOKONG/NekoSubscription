@@ -293,4 +293,10 @@
   <data name="Forecast_OverdueTitle" xml:space="preserve"><value>已逾期</value></data>
   <data name="Forecast_OverdueDescription" xml:space="preserve"><value>下次扣款日期已經過去的訂閱。日期更新前，每項訂閱只顯示一次。</value></data>
   <data name="Forecast_DaysOverdue" xml:space="preserve"><value>已逾期 {0} 天</value></data>
+  <data name="Sort_NextBillingAsc" xml:space="preserve"><value>下次扣款日（最近優先）</value></data>
+  <data name="Sort_NextBillingDesc" xml:space="preserve"><value>下次扣款日（較遠優先）</value></data>
+  <data name="Sort_AmountDesc" xml:space="preserve"><value>金額（由高到低）</value></data>
+  <data name="Sort_AmountAsc" xml:space="preserve"><value>金額（由低到高）</value></data>
+  <data name="Sort_NameAsc" xml:space="preserve"><value>服務名稱（A - Z）</value></data>
+  <data name="Sort_NameDesc" xml:space="preserve"><value>服務名稱（Z - A）</value></data>
 </root>

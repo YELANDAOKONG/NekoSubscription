@@ -102,6 +102,21 @@ public sealed class SubscriptionsView : UserControl
                 Mode = BindingMode.TwoWay
             });
 
+        var sortFilter = new ComboBox
+        {
+            MinWidth = 180,
+            CornerRadius = new CornerRadius(8)
+        };
+        sortFilter.Bind(
+            ItemsControl.ItemsSourceProperty,
+            new Binding(nameof(SubscriptionsViewModel.SortOptions)));
+        sortFilter.Bind(
+            Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
+            new Binding(nameof(SubscriptionsViewModel.SelectedSortOption))
+            {
+                Mode = BindingMode.TwoWay
+            });
+
         var includeArchived = new CheckBox
         {
             Content = AppResources.Get("Subscriptions_ShowArchived"),
@@ -116,19 +131,20 @@ public sealed class SubscriptionsView : UserControl
 
         var filterRow = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("Auto,Auto,*"),
+            ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto,*"),
             ColumnSpacing = 12
         }
         .Children(
             searchBox.Grid_Column(0),
             categoryFilter.Grid_Column(1),
+            sortFilter.Grid_Column(2),
             new StackPanel
             {
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center
             }
             .Children(includeArchived)
-            .Grid_Column(2));
+            .Grid_Column(3));
 
         return UiFactory.Card(
             new StackPanel().Children(headerRow, filterRow),
@@ -307,7 +323,7 @@ public sealed class SubscriptionsView : UserControl
 
     private static Control BuildRightPane()
     {
-        var editor = new ContentControl { Width = 480 };
+        var editor = new ContentControl { MaxWidth = 460, MinWidth = 340 };
         editor.Bind(
             ContentControl.ContentProperty,
             new Binding(nameof(SubscriptionsViewModel.CurrentEditor)));
@@ -317,7 +333,8 @@ public sealed class SubscriptionsView : UserControl
 
         var details = new ScrollViewer
         {
-            Width = 480,
+            MaxWidth = 460,
+            MinWidth = 340,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             Content = BuildDetails()
