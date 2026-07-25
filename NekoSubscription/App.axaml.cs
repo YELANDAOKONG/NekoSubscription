@@ -48,16 +48,6 @@ public partial class App : Application
             throw new InvalidOperationException("The application runtime has not been configured.");
         }
 
-        var viewModel = new MainViewModel(
-            _runtime.Subscriptions,
-            _runtime.Settings,
-            _runtime.DataManagement,
-            new DesktopDataFileDialogService(),
-            new CashFlowProjector(),
-            _runtime.Logger);
-        desktop.MainWindow = new MainWindow(viewModel);
-        base.OnFrameworkInitializationCompleted();
-
         var settings = new ApplicationSettings();
         try
         {
@@ -83,7 +73,18 @@ public partial class App : Application
             _runtime.Logger.Error(exception, "Failed to initialize the subscription database.");
         }
 
+        var viewModel = new MainViewModel(
+            _runtime.Subscriptions,
+            _runtime.Settings,
+            _runtime.DataManagement,
+            new DesktopDataFileDialogService(),
+            new CashFlowProjector(),
+            _runtime.Logger);
+            
         await viewModel.InitializeAsync(settings);
+
+        desktop.MainWindow = new MainWindow(viewModel);
+        base.OnFrameworkInitializationCompleted();
     }
 
     private void ApplySettings(ApplicationSettings settings)

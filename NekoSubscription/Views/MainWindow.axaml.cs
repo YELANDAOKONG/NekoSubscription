@@ -24,8 +24,7 @@ public partial class MainWindow : Window
     private const double MinimumWindowWidth = 980;
     private const double SidebarWidth = 224;
 
-    private readonly ExperimentalAcrylicBorder _acrylicBorder;
-    private readonly ExperimentalAcrylicMaterial _acrylicMaterial;
+
     private readonly Border _contentHost;
     private readonly MainViewModel _viewModel;
 
@@ -43,31 +42,16 @@ public partial class MainWindow : Window
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         TransparencyBackgroundFallback = new SolidColorBrush(Color.FromRgb(244, 244, 248));
 
-        _acrylicMaterial = new ExperimentalAcrylicMaterial
-        {
-            BackgroundSource = AcrylicBackgroundSource.Digger,
-            TintColor = Colors.White,
-            TintOpacity = 0.12,
-            FallbackColor = Color.FromRgb(244, 244, 248),
-            MaterialOpacity = ApplicationSettings.DefaultAcrylicOpacity
-        };
-        _acrylicBorder = new ExperimentalAcrylicBorder
-        {
-            IsHitTestVisible = false,
-            Material = _acrylicMaterial
-        };
         _contentHost = new Border
         {
             Child = BuildShell()
         };
 
-        Content = new Grid()
-            .Children(
-                _acrylicBorder,
-                _contentHost);
+        Content = _contentHost;
 
         _viewModel.AppearanceChanged += OnAppearanceChanged;
         _viewModel.LanguageChanged += OnLanguageChanged;
+        ActualThemeVariantChanged += OnActualThemeVariantChanged;
         ApplyAppearance();
     }
 
@@ -75,6 +59,7 @@ public partial class MainWindow : Window
     {
         _viewModel.AppearanceChanged -= OnAppearanceChanged;
         _viewModel.LanguageChanged -= OnLanguageChanged;
+        ActualThemeVariantChanged -= OnActualThemeVariantChanged;
         base.OnClosed(e);
     }
 
@@ -432,6 +417,8 @@ public partial class MainWindow : Window
 
     private void OnAppearanceChanged(object? sender, EventArgs e) => ApplyAppearance();
 
+    private void OnActualThemeVariantChanged(object? sender, EventArgs e) => ApplyAppearance();
+
     private void OnLanguageChanged(object? sender, EventArgs e)
     {
         Title = AppResources.Get("App_Name");
@@ -455,24 +442,24 @@ public partial class MainWindow : Window
         {
             application.RequestedThemeVariant = themeVariant;
         }
+        RequestedThemeVariant = themeVariant;
 
         var usesAcrylic = settings.SelectedVisualStyle == ApplicationVisualStyle.Acrylic;
         var usesDarkTheme = settings.SelectedTheme == ApplicationTheme.Dark ||
             (settings.SelectedTheme == ApplicationTheme.System && ActualThemeVariant == ThemeVariant.Dark);
+        
         var standardBackground = new SolidColorBrush(
             usesDarkTheme ? Color.FromRgb(25, 25, 30) : Color.FromRgb(244, 244, 248));
-        _acrylicMaterial.TintColor = usesDarkTheme ? Colors.Black : Colors.White;
-        _acrylicMaterial.FallbackColor = standardBackground.Color;
-        _acrylicMaterial.MaterialOpacity = settings.AcrylicOpacity;
-        _acrylicBorder.IsVisible = usesAcrylic;
+        
         TransparencyBackgroundFallback = standardBackground;
         Background = Brushes.Transparent;
 
         if (usesAcrylic)
         {
             TransparencyLevelHint =
-                [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur];
-            _contentHost.Background = Brushes.Transparent;
+                [WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur];
+            
+            _contentHost.Background = new SolidColorBrush(standardBackground.Color, settings.AcrylicOpacity);
             return;
         }
 
