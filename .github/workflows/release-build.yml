@@ -33,6 +33,10 @@ jobs:
           cache: true
           cache-dependency-path: '**/packages.lock.json'
 
+      - name: Clear NuGet global packages cache on Ubuntu
+        if: runner.os == 'Linux'
+        run: dotnet nuget locals global-packages --clear
+
       - name: Restore dependencies
         run: dotnet restore NekoSubscription.sln
 
