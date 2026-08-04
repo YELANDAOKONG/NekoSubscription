@@ -234,13 +234,13 @@ public partial class MainWindow : Window
              BuildNavigationButton(
                  AppResources.Get("Nav_PaymentAndTags"),
                  AppResources.Get("Nav_PaymentAndTagsSubtitle"),
-                 AppIcons.Settings,
+                 AppIcons.Payment,
                  nameof(MainViewModel.IsPaymentProfilesSelected),
                  nameof(MainViewModel.ShowPaymentProfilesCommand)),
              BuildNavigationButton(
                  AppResources.Get("Nav_Tags"),
                  AppResources.Get("Nav_TagsSubtitle"),
-                 AppIcons.Settings,
+                 AppIcons.Tags,
                  nameof(MainViewModel.IsTagsSelected),
                  nameof(MainViewModel.ShowTagsCommand)),
              BuildNavigationButton(
