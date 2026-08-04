@@ -1,9 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
+using Avalonia.Media;
+using Avalonia.Styling;
 
+using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
 using NekoSubscription.ViewModels;
 
@@ -13,30 +17,99 @@ public sealed class TagsView : UserControl
 {
     public TagsView()
     {
-        var list = new ListBox { MinHeight = 260 };
+        Content = new Grid { RowDefinitions = new RowDefinitions("Auto,*"), RowSpacing = 16, Margin = new Thickness(0, 0, 8, 14) }
+            .Children(BuildToolbar().Grid_Row(0), BuildWorkspace().Grid_Row(1));
+    }
+
+    private static Control BuildToolbar()
+    {
+        var add = UiFactory.PrimaryButton(AppResources.Get("Settings_AddTag"), AppIcons.Add);
+        add.Bind(Button.CommandProperty, new Binding(nameof(TagsViewModel.AddTagCommand)));
+        var refresh = new Button
+        {
+            Content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 }.Children(
+                UiFactory.Icon(AppIcons.Refresh, 14),
+                new TextBlock { Text = AppResources.Get("Common_Refresh"), VerticalAlignment = VerticalAlignment.Center })
+        };
+        refresh.Bind(Button.CommandProperty, new Binding(nameof(TagsViewModel.RefreshCommand)));
+
+        return UiFactory.Card(new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto"), ColumnSpacing = 10 }.Children(
+            new StackPanel { Spacing = 4 }.Children(
+                UiFactory.SectionTitle(AppResources.Get("Nav_Tags")),
+                new TextBlock { Text = AppResources.Get("Settings_TagsDescription"), Opacity = 0.66, TextWrapping = TextWrapping.Wrap }),
+            refresh.Grid_Column(1), add.Grid_Column(2)), new Thickness(16));
+    }
+
+    private static Control BuildWorkspace()
+    {
+        return new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), ColumnSpacing = 16 }.Children(
+            BuildList().Grid_Column(0), BuildEditorPane().Grid_Column(1));
+    }
+
+    private static Control BuildList()
+    {
+        var list = new ListBox
+        {
+            ItemTemplate = new FuncDataTemplate<Tag>((tag, _) => BuildRow(tag)),
+            Background = Brushes.Transparent,
+            SelectionMode = SelectionMode.Single | SelectionMode.Toggle
+        };
+        list.Styles.Add(new Style(x => x.OfType<ListBoxItem>())
+        {
+            Setters = { new Setter(CornerRadiusProperty, new CornerRadius(12)), new Setter(MarginProperty, new Thickness(0, 0, 0, 4)) }
+        });
         list.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(TagsViewModel.Tags)));
-        list.Bind(Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty, new Binding(nameof(TagsViewModel.SelectedTag)) { Mode = BindingMode.TwoWay });
-        var name = new TextBox { PlaceholderText = AppResources.Get("Editor_Tags") };
+        list.Bind(Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
+            new Binding(nameof(TagsViewModel.SelectedTag)) { Mode = BindingMode.TwoWay });
+        return UiFactory.Card(new Grid().Children(list), new Thickness(4));
+    }
+
+    private static Control BuildRow(Tag? tag)
+    {
+        if (tag is null)
+        {
+            return new TextBlock { Text = AppResources.Get("Common_Unknown") };
+        }
+
+        return new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), ColumnSpacing = 14, Margin = new Thickness(4, 8) }.Children(
+            BuildAvatar(tag.Name).Grid_Column(0),
+            new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center }.Children(
+                new TextBlock { Text = tag.Name, FontWeight = FontWeight.SemiBold, FontSize = 14, TextTrimming = TextTrimming.CharacterEllipsis },
+                new TextBlock { Text = AppResources.Get("Nav_Tags"), FontSize = 11, Opacity = 0.62 }).Grid_Column(1),
+            UiFactory.StatusPill(AppResources.Get("Settings_Tags"), UiPalette.AccentSurface).Grid_Column(2));
+    }
+
+    private static Control BuildEditorPane()
+    {
+        var editor = new ScrollViewer { MaxWidth = 460, MinWidth = 340,
+            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
+            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            Content = UiFactory.Card(BuildEditor(), new Thickness(24)) };
+        editor.Bind(IsVisibleProperty, new Binding(nameof(TagsViewModel.HasEditor)));
+        return editor;
+    }
+
+    private static Control BuildEditor()
+    {
+        var name = new TextBox { PlaceholderText = AppResources.Get("Editor_Tags"), CornerRadius = new CornerRadius(8) };
         name.Bind(TextBox.TextProperty, new Binding(nameof(TagsViewModel.Name)) { Mode = BindingMode.TwoWay });
         var save = UiFactory.PrimaryButton(AppResources.Get("Common_Save"));
         save.Bind(Button.CommandProperty, new Binding(nameof(TagsViewModel.SaveCommand)));
-        var refresh = new Button { Content = AppResources.Get("Common_Refresh") };
-        refresh.Bind(Button.CommandProperty, new Binding(nameof(TagsViewModel.RefreshCommand)));
 
-        Content = new ScrollViewer
-        {
-            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
-            Content = UiFactory.Card(
-                new StackPanel { Spacing = 14 }.Children(
-                    new StackPanel { Spacing = 4 }.Children(
-                        UiFactory.SectionTitle(AppResources.Get("Nav_Tags")),
-                        new TextBlock { Text = AppResources.Get("Settings_TagsDescription"), Opacity = 0.66 }),
-                    new Grid { ColumnDefinitions = new ColumnDefinitions("240,*"), ColumnSpacing = 18 }.Children(
-                        list,
-                        new StackPanel { Spacing = 8 }.Children(
-                            name,
-                            new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 }.Children(save, refresh)).Grid_Column(1))),
-                new Thickness(16))
-        };
+        return new StackPanel { Spacing = 16 }.Children(
+            new StackPanel { Spacing = 4 }.Children(
+                UiFactory.BoundText(nameof(TagsViewModel.Name), 24, FontWeight.Bold),
+                new TextBlock { Text = AppResources.Get("Settings_TagsDescription"), FontSize = 13, Opacity = 0.62, TextWrapping = TextWrapping.Wrap }),
+            new StackPanel { Spacing = 5 }.Children(
+                new TextBlock { Text = AppResources.Get("Editor_Tags"), FontSize = 11, FontWeight = FontWeight.Medium, Opacity = 0.72 }, name),
+            new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right }.Children(save));
+    }
+
+    private static Control BuildAvatar(string name)
+    {
+        var letter = string.IsNullOrWhiteSpace(name) ? "?" : name.Substring(0, 1).ToUpperInvariant();
+        return new Border { Width = 40, Height = 40, CornerRadius = new CornerRadius(20), Background = UiPalette.AccentSurface,
+            Child = new TextBlock { Text = letter, Foreground = UiPalette.Accent, FontSize = 18, FontWeight = FontWeight.Bold,
+                HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center } };
     }
 }

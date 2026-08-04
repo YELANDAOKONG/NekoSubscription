@@ -34,6 +34,8 @@ public partial class PaymentProfilesViewModel : ViewModelBase
 
     public bool HasSelection => SelectedProfile is not null;
 
+    public bool HasEditor => HasSelection || IsAdding;
+
     public string ArchiveActionLabel => SelectedProfile?.IsArchived == true
         ? AppResources.Get("Settings_RestorePaymentProfile")
         : AppResources.Get("Settings_ArchivePaymentProfile");
@@ -42,6 +44,10 @@ public partial class PaymentProfilesViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasSelection))]
     [NotifyPropertyChangedFor(nameof(ArchiveActionLabel))]
     public partial PaymentProfile? SelectedProfile { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasEditor))]
+    public partial bool IsAdding { get; private set; }
 
     [ObservableProperty]
     public partial string DisplayName { get; set; } = string.Empty;
@@ -91,6 +97,16 @@ public partial class PaymentProfilesViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddPaymentProfile()
+    {
+        if (!IsBusy)
+        {
+            SelectedProfile = null;
+            IsAdding = true;
+        }
+    }
+
+    [RelayCommand]
     private async Task SaveAsync()
     {
         if (IsBusy)
@@ -115,6 +131,7 @@ public partial class PaymentProfilesViewModel : ViewModelBase
             }
 
             IsBusy = false;
+            IsAdding = false;
             await RefreshAsync();
         }
         catch (Exception exception)

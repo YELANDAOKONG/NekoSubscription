@@ -31,9 +31,15 @@ public partial class TagsViewModel : ViewModelBase
 
     public bool HasSelection => SelectedTag is not null;
 
+    public bool HasEditor => HasSelection || IsAdding;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
     public partial Tag? SelectedTag { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasEditor))]
+    public partial bool IsAdding { get; private set; }
 
     [ObservableProperty]
     public partial string Name { get; set; } = string.Empty;
@@ -74,6 +80,16 @@ public partial class TagsViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddTag()
+    {
+        if (!IsBusy)
+        {
+            SelectedTag = null;
+            IsAdding = true;
+        }
+    }
+
+    [RelayCommand]
     private async Task SaveAsync()
     {
         if (IsBusy)
@@ -96,6 +112,7 @@ public partial class TagsViewModel : ViewModelBase
             }
 
             IsBusy = false;
+            IsAdding = false;
             await RefreshAsync();
         }
         catch (Exception exception)
