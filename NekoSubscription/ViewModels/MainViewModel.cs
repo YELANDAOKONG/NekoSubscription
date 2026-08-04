@@ -211,6 +211,7 @@ public partial class MainViewModel : ViewModelBase
         Dashboard.RefreshLocalization();
         Calendar.RefreshLocalization();
         PaymentProfiles.RefreshLocalization();
+        Tags.RefreshLocalization();
         RefreshPageMetadata();
         StatusMessage = AppResources.Get("Status_Starting");
         LanguageChanged?.Invoke(this, EventArgs.Empty);

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
 using Avalonia.Media;
@@ -88,6 +89,7 @@ public sealed class PaymentProfilesView : UserControl
         var status = profile.IsArchived
             ? UiFactory.StatusPill(AppResources.Get("Settings_ArchivePaymentProfile"), UiPalette.SurfaceStrong)
             : UiFactory.StatusPill(AppResources.Get("Payment_" + profile.Channel), UiPalette.SuccessSurface);
+        status.VerticalAlignment = VerticalAlignment.Center;
 
         return new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), ColumnSpacing = 14, Margin = new Thickness(4, 8) }.Children(
             BuildAvatar(profile.DisplayName).Grid_Column(0),
@@ -113,25 +115,114 @@ public sealed class PaymentProfilesView : UserControl
 
     private static Control BuildEditor()
     {
-        var save = UiFactory.PrimaryButton(AppResources.Get("Common_Save"));
-        save.Bind(Button.CommandProperty, new Binding(nameof(PaymentProfilesViewModel.SaveCommand)));
-        var archive = new Button();
+        var cancel = new Button
+        {
+            Content = AppResources.Get("Common_Cancel"),
+            MinWidth = 92,
+            HorizontalContentAlignment = HorizontalAlignment.Center
+        };
+        cancel.Bind(Button.CommandProperty, new Binding(nameof(PaymentProfilesViewModel.CancelEditCommand)));
+
+        var archive = new Button
+        {
+            MinWidth = 92,
+            HorizontalContentAlignment = HorizontalAlignment.Center
+        };
         archive.Bind(Button.ContentProperty, new Binding(nameof(PaymentProfilesViewModel.ArchiveActionLabel)));
         archive.Bind(Button.CommandProperty, new Binding(nameof(PaymentProfilesViewModel.ToggleArchiveCommand)));
+        archive.Bind(IsVisibleProperty, new Binding(nameof(PaymentProfilesViewModel.HasSelection)));
 
-        return new StackPanel { Spacing = 16 }.Children(
-            new StackPanel { Spacing = 4 }.Children(
-                UiFactory.BoundText(nameof(PaymentProfilesViewModel.DisplayName), 24, FontWeight.Bold),
-                UiFactory.BoundText(nameof(PaymentProfilesViewModel.ProviderName), 13, opacity: 0.62)),
-            BuildField(AppResources.Get("Editor_PaymentProfile"), BuildTextBox(nameof(PaymentProfilesViewModel.DisplayName), "Editor_PaymentProfile")),
-            BuildField(AppResources.Get("Editor_Provider"), BuildTextBox(nameof(PaymentProfilesViewModel.ProviderName), "Editor_Provider")),
-            BuildField(AppResources.Get("Editor_PaymentAccount"), BuildTextBox(nameof(PaymentProfilesViewModel.AccountIdentifier), "Editor_PaymentAccount")),
-            BuildField(AppResources.Get("Editor_PaymentProfile"), BuildComboBox()),
-            new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, HorizontalAlignment = HorizontalAlignment.Right }.Children(save, archive));
+        var save = UiFactory.PrimaryButton(AppResources.Get("Common_Save"));
+        save.Bind(Button.CommandProperty, new Binding(nameof(PaymentProfilesViewModel.SaveCommand)));
+
+        var heroHeader = new StackPanel
+        {
+            Spacing = 16,
+            HorizontalAlignment = HorizontalAlignment.Center
+        }.Children(
+            BuildBoundAvatar(nameof(PaymentProfilesViewModel.DisplayName), 64, 28),
+            new StackPanel
+            {
+                Spacing = 4,
+                HorizontalAlignment = HorizontalAlignment.Center
+            }.Children(
+                UiFactory.BoundText(
+                    nameof(PaymentProfilesViewModel.EditorTitle),
+                    24,
+                    FontWeight.Bold,
+                    textAlignment: TextAlignment.Center),
+                UiFactory.BoundText(
+                    nameof(PaymentProfilesViewModel.EditorSubtitle),
+                    13,
+                    opacity: 0.62,
+                    textAlignment: TextAlignment.Center)));
+
+        var fields = BuildFieldGrid(
+            BuildField(
+                AppResources.Get("Editor_PaymentProfile"),
+                BuildTextBox(nameof(PaymentProfilesViewModel.DisplayName), "Editor_PaymentProfile")),
+            BuildField(
+                AppResources.Get("Editor_Provider"),
+                BuildTextBox(nameof(PaymentProfilesViewModel.ProviderName), "Editor_Provider")),
+            BuildField(
+                AppResources.Get("Editor_PaymentAccount"),
+                BuildTextBox(nameof(PaymentProfilesViewModel.AccountIdentifier), "Editor_PaymentAccount")),
+            BuildField(
+                AppResources.Get("Editor_PaymentChannel"),
+                BuildComboBox()));
+
+        var actionBar = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 8,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Margin = new Thickness(0, 8, 0, 0)
+        }.Children(cancel, archive, save);
+
+        return new StackPanel { Spacing = 20 }.Children(heroHeader, fields, actionBar);
     }
 
-    private static Control BuildField(string label, Control editor) => new StackPanel { Spacing = 5 }.Children(
-        new TextBlock { Text = label, FontSize = 11, FontWeight = FontWeight.Medium, Opacity = 0.72 }, editor);
+    private static Control BuildFieldGrid(params Control[] fields)
+    {
+        var grid = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("*,*"),
+            RowSpacing = 11,
+            ColumnSpacing = 12
+        };
+
+        for (var index = 0; index < fields.Length; index++)
+        {
+            var row = index / 2;
+            if (grid.RowDefinitions.Count <= row)
+            {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            }
+
+            grid.Children.Add(fields[index]
+                .Grid_Column(index % 2)
+                .Grid_Row(row));
+        }
+
+        return grid;
+    }
+
+    private static Control BuildField(string label, Control editor)
+    {
+        return new StackPanel
+        {
+            Spacing = 5
+        }.Children(
+            new Label
+            {
+                Content = label,
+                Target = editor,
+                FontSize = 11,
+                FontWeight = FontWeight.Medium,
+                Padding = new Thickness(0)
+            },
+            editor);
+    }
 
     private static Control BuildTextBox(string path, string placeholderKey)
     {
@@ -147,6 +238,35 @@ public sealed class PaymentProfilesView : UserControl
         comboBox.Bind(Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty,
             new Binding(nameof(PaymentProfilesViewModel.SelectedChannel)) { Mode = BindingMode.TwoWay });
         return comboBox;
+    }
+
+    private static Control BuildBoundAvatar(string propertyPath, double size, double fontSize)
+    {
+        var letterBlock = new TextBlock
+        {
+            Foreground = UiPalette.Accent,
+            FontSize = fontSize,
+            FontWeight = FontWeight.Bold,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        letterBlock.Bind(
+            TextBlock.TextProperty,
+            new Binding(propertyPath)
+            {
+                Converter = new FuncValueConverter<string?, string>(value =>
+                    string.IsNullOrWhiteSpace(value) ? "?" : value.Substring(0, 1).ToUpperInvariant())
+            });
+
+        return new Border
+        {
+            Width = size,
+            Height = size,
+            CornerRadius = new CornerRadius(size / 2),
+            Background = UiPalette.AccentSurface,
+            Child = letterBlock,
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
     }
 
     private static Control BuildAvatar(string name)

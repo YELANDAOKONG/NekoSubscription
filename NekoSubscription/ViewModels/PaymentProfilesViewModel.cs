@@ -36,23 +36,38 @@ public partial class PaymentProfilesViewModel : ViewModelBase
 
     public bool HasEditor => HasSelection || IsAdding;
 
+    public string EditorTitle => IsAdding
+        ? AppResources.Get("Settings_AddPaymentProfile")
+        : DisplayName;
+
+    public string EditorSubtitle => IsAdding
+        ? AppResources.Get("Page_PaymentAndTagsSubtitle")
+        : ProviderName;
+
     public string ArchiveActionLabel => SelectedProfile?.IsArchived == true
         ? AppResources.Get("Settings_RestorePaymentProfile")
         : AppResources.Get("Settings_ArchivePaymentProfile");
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
+    [NotifyPropertyChangedFor(nameof(HasEditor))]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
+    [NotifyPropertyChangedFor(nameof(EditorSubtitle))]
     [NotifyPropertyChangedFor(nameof(ArchiveActionLabel))]
     public partial PaymentProfile? SelectedProfile { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasEditor))]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
+    [NotifyPropertyChangedFor(nameof(EditorSubtitle))]
     public partial bool IsAdding { get; private set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
     public partial string DisplayName { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EditorSubtitle))]
     public partial string ProviderName { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -104,6 +119,19 @@ public partial class PaymentProfilesViewModel : ViewModelBase
             SelectedProfile = null;
             IsAdding = true;
         }
+    }
+
+    [RelayCommand]
+    private void CancelEdit()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsAdding = false;
+        SelectedProfile = null;
+        LoadFields();
     }
 
     [RelayCommand]
@@ -170,9 +198,22 @@ public partial class PaymentProfilesViewModel : ViewModelBase
         }
     }
 
-    public void RefreshLocalization() => RefreshChannels();
+    public void RefreshLocalization()
+    {
+        RefreshChannels();
+        OnPropertyChanged(nameof(EditorTitle));
+        OnPropertyChanged(nameof(EditorSubtitle));
+    }
 
-    partial void OnSelectedProfileChanged(PaymentProfile? value) => LoadFields();
+    partial void OnSelectedProfileChanged(PaymentProfile? value)
+    {
+        if (value is not null)
+        {
+            IsAdding = false;
+        }
+
+        LoadFields();
+    }
 
     private void LoadFields()
     {

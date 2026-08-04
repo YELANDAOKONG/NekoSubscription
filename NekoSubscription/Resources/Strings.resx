@@ -311,6 +311,7 @@
   <data name="Payment_Other" xml:space="preserve"><value>Other</value></data>
   <data name="Editor_PaymentAndTagsSection" xml:space="preserve"><value>Payment and tags</value></data>
   <data name="Editor_PaymentProfile" xml:space="preserve"><value>Payment profile</value></data>
+  <data name="Editor_PaymentChannel" xml:space="preserve"><value>Payment channel</value></data>
   <data name="Editor_PaymentAccount" xml:space="preserve"><value>Payment account</value></data>
   <data name="Editor_Tags" xml:space="preserve"><value>Tags</value></data>
   <data name="Settings_PaymentAndTagsTitle" xml:space="preserve"><value>Payment methods and tags</value></data>

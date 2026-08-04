@@ -33,19 +33,29 @@ public partial class TagsViewModel : ViewModelBase
 
     public bool HasEditor => HasSelection || IsAdding;
 
+    public string EditorTitle => IsAdding
+        ? AppResources.Get("Settings_AddTag")
+        : Name;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
+    [NotifyPropertyChangedFor(nameof(HasEditor))]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
     public partial Tag? SelectedTag { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasEditor))]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
     public partial bool IsAdding { get; private set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EditorTitle))]
     public partial string Name { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsBusy { get; private set; }
+
+    public void RefreshLocalization() => OnPropertyChanged(nameof(EditorTitle));
 
     [RelayCommand]
     public async Task RefreshAsync()
@@ -90,6 +100,19 @@ public partial class TagsViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void CancelEdit()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsAdding = false;
+        SelectedTag = null;
+        Name = string.Empty;
+    }
+
+    [RelayCommand]
     private async Task SaveAsync()
     {
         if (IsBusy)
@@ -123,5 +146,13 @@ public partial class TagsViewModel : ViewModelBase
         }
     }
 
-    partial void OnSelectedTagChanged(Tag? value) => Name = value?.Name ?? string.Empty;
+    partial void OnSelectedTagChanged(Tag? value)
+    {
+        if (value is not null)
+        {
+            IsAdding = false;
+        }
+
+        Name = value?.Name ?? string.Empty;
+    }
 }
