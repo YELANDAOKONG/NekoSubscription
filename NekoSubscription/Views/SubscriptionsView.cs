@@ -444,7 +444,7 @@ public sealed class SubscriptionsView : UserControl
         var attributeGrid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitions("*,*"),
-            RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto,Auto,Auto"),
+             RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto,Auto,Auto,Auto"),
             ColumnSpacing = 16,
             RowSpacing = 16
         }.Children(

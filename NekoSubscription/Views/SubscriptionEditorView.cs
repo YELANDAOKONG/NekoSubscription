@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
@@ -259,7 +260,34 @@ public sealed class SubscriptionEditorView : UserControl
             BuildPhonePanel(),
             BuildDomainPanel(),
             BuildCloudPanel(),
+            BuildPaymentAndTagsPanel(),
             BuildNotesPanel());
+    }
+
+    private static Control BuildPaymentAndTagsPanel()
+    {
+        var tags = new ItemsControl
+        {
+            ItemTemplate = new FuncDataTemplate<TagSelectionOption>((tag, _) =>
+            {
+                var checkBox = new CheckBox { Content = tag?.Name };
+                checkBox.Bind(
+                    Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty,
+                    new Binding(nameof(TagSelectionOption.IsSelected)) { Mode = BindingMode.TwoWay });
+                return checkBox;
+            })
+        };
+        tags.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(SubscriptionEditorViewModel.TagOptions)));
+
+        return BuildSection(
+            AppResources.Get("Editor_PaymentAndTagsSection"),
+            BuildFieldGrid(
+                BuildField(
+                    AppResources.Get("Editor_PaymentProfile"),
+                    BuildComboBox(
+                        nameof(SubscriptionEditorViewModel.PaymentProfiles),
+                        nameof(SubscriptionEditorViewModel.SelectedPaymentProfileOption))),
+                BuildField(AppResources.Get("Editor_Tags"), tags)));
     }
 
     private static Control BuildPhonePanel()

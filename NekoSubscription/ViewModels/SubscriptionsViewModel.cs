@@ -181,7 +181,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void AddSubscription()
+    private async Task AddSubscriptionAsync()
     {
         if (IsBusy)
         {
@@ -193,6 +193,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
             _logger,
             OnEditorSavedAsync,
             CloseEditor);
+        await LoadEditorReferencesAsync();
     }
 
     [RelayCommand]
@@ -219,6 +220,7 @@ public partial class SubscriptionsViewModel : ViewModelBase
                 OnEditorSavedAsync,
                 CloseEditor,
                 subscription);
+            await LoadEditorReferencesAsync();
         }
         catch (Exception exception)
         {
@@ -334,6 +336,20 @@ public partial class SubscriptionsViewModel : ViewModelBase
     }
 
     private void CloseEditor() => CurrentEditor = null;
+
+    private async Task LoadEditorReferencesAsync()
+    {
+        try
+        {
+            await CurrentEditor!.LoadReferencesAsync();
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to load payment profiles and tags for the editor.");
+            CloseEditor();
+            StatusChanged?.Invoke(AppResources.Get("Status_LoadReferencesFailed"));
+        }
+    }
 
     private void ApplyFilters()
     {

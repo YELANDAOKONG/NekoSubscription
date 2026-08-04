@@ -124,6 +124,22 @@ public sealed class DataManagementServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ImportSubscriptionCsvAsync_ParsesSlashSeparatedYearFirstDates()
+    {
+        var csv = CreateCsv(
+            "A,B,C,D,E,F,G,H,I,J,K,L,M",
+            "Provider,Plan,account,10.00,USD,M,2026/01/02,2026/02/03,,TRUE,DIRECT,-,Note");
+
+        await using var source = CreateStream(csv);
+        var result = await _dataManagementService.ImportSubscriptionCsvAsync(source);
+        var subscription = Assert.Single(await _subscriptionService.GetSubscriptionsAsync());
+
+        Assert.Equal(1, result.ImportedSubscriptionCount);
+        Assert.Equal(new DateOnly(2026, 1, 2), subscription.BillingSchedule.StartsOn);
+        Assert.Equal(new DateOnly(2026, 2, 3), subscription.BillingSchedule.NextBillingOn);
+    }
+
+    [Fact]
     public async Task ImportSubscriptionCsvAsync_DoesNotWriteWhenAnyRowIsInvalid()
     {
         var csv = CreateCsv(

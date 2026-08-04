@@ -23,7 +23,9 @@ internal static class StandardSubscriptionCsvParser
         "M/d/yyyy",
         "M/d/yy",
         "yyyy-M-d",
-        "yyyy-MM-dd"
+        "yyyy-MM-dd",
+        "yyyy/M/d",
+        "yyyy/MM/dd"
     ];
 
     public static (IReadOnlyList<ImportedSubscriptionRow> Rows, CsvImportPreview Preview) Parse(

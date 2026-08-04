@@ -1,11 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Declarative;
 using Avalonia.Media;
 
 using NekoSubscription.Core.Configuration;
+using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
 using NekoSubscription.ViewModels;
 
@@ -30,6 +32,7 @@ public sealed class SettingsView : UserControl
                 BuildLanguageCard(),
                 BuildAppearanceCard(),
                 BuildMaterialCard(),
+                BuildPaymentAndTagsCard(),
                 BuildDataManagementCard(),
                 BuildPrivacyCard(),
                 BuildSaveBar())
@@ -274,6 +277,41 @@ public sealed class SettingsView : UserControl
                 maskAccounts,
                 BuildImportPreview(),
                 BuildClearConfirmation()));
+    }
+
+    private static Control BuildPaymentAndTagsCard()
+    {
+        var paymentName = new TextBox { PlaceholderText = AppResources.Get("Editor_PaymentProfile") };
+        paymentName.Bind(TextBox.TextProperty, new Binding(nameof(SettingsViewModel.NewPaymentProfileName)) { Mode = BindingMode.TwoWay });
+        var provider = new TextBox { PlaceholderText = AppResources.Get("Editor_Provider") };
+        provider.Bind(TextBox.TextProperty, new Binding(nameof(SettingsViewModel.NewPaymentProviderName)) { Mode = BindingMode.TwoWay });
+        var account = new TextBox { PlaceholderText = AppResources.Get("Editor_PaymentAccount") };
+        account.Bind(TextBox.TextProperty, new Binding(nameof(SettingsViewModel.NewPaymentAccountIdentifier)) { Mode = BindingMode.TwoWay });
+        var channel = new ComboBox { MinWidth = 160 };
+        channel.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(SettingsViewModel.PaymentChannels)));
+        channel.Bind(Avalonia.Controls.Primitives.SelectingItemsControl.SelectedItemProperty, new Binding(nameof(SettingsViewModel.SelectedPaymentChannel)) { Mode = BindingMode.TwoWay });
+        var addPayment = UiFactory.PrimaryButton(AppResources.Get("Settings_AddPaymentProfile"));
+        addPayment.Bind(Button.CommandProperty, new Binding(nameof(SettingsViewModel.AddPaymentProfileCommand)));
+
+        var tagName = new TextBox { PlaceholderText = AppResources.Get("Editor_Tags") };
+        tagName.Bind(TextBox.TextProperty, new Binding(nameof(SettingsViewModel.NewTagName)) { Mode = BindingMode.TwoWay });
+        var addTag = new Button { Content = AppResources.Get("Settings_AddTag") };
+        addTag.Bind(Button.CommandProperty, new Binding(nameof(SettingsViewModel.AddTagCommand)));
+
+        var profiles = new ItemsControl { ItemTemplate = new FuncDataTemplate<PaymentProfile>((profile, _) => new TextBlock { Text = profile?.DisplayName }) };
+        profiles.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(SettingsViewModel.PaymentProfiles)));
+        var tags = new ItemsControl { ItemTemplate = new FuncDataTemplate<Tag>((tag, _) => new TextBlock { Text = tag?.Name }) };
+        tags.Bind(ItemsControl.ItemsSourceProperty, new Binding(nameof(SettingsViewModel.Tags)));
+
+        return UiFactory.Card(
+            new StackPanel { Spacing = 12 }.Children(
+                BuildSettingsHeading(AppResources.Get("Settings_PaymentAndTagsTitle"), AppResources.Get("Settings_PaymentAndTagsDescription")),
+                new WrapPanel { Orientation = Orientation.Horizontal }.Children(paymentName, provider, account, channel, addPayment),
+                new WrapPanel { Orientation = Orientation.Horizontal }.Children(tagName, addTag),
+                new Grid { ColumnDefinitions = new ColumnDefinitions("*,*") }.Children(
+                    new StackPanel { Spacing = 4 }.Children(new TextBlock { Text = AppResources.Get("Settings_PaymentProfiles"), FontWeight = FontWeight.SemiBold }, profiles),
+                    new StackPanel { Spacing = 4 }.Children(new TextBlock { Text = AppResources.Get("Settings_Tags"), FontWeight = FontWeight.SemiBold }, tags).Grid_Column(1))),
+            new Thickness(16));
     }
 
     private static Control BuildImportPreview()

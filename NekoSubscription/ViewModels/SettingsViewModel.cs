@@ -14,6 +14,8 @@ using Serilog;
 
 using NekoSubscription.Core.Configuration;
 using NekoSubscription.Core.DataManagement;
+using NekoSubscription.Core.Subscriptions;
+using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
 using NekoSubscription.Services;
 
@@ -29,6 +31,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly ILogger _logger;
     private readonly Func<Task> _subscriptionDataChanged;
     private readonly IApplicationSettingsService _settingsService;
+    private readonly ISubscriptionService _subscriptionService;
     private byte[]? _pendingCsvData;
     private ApplicationSettings _settings = new();
     private bool _isApplyingSettings;
@@ -38,23 +41,94 @@ public partial class SettingsViewModel : ViewModelBase
         IDataManagementService dataManagementService,
         IDataFileDialogService fileDialogService,
         ILogger logger,
+        ISubscriptionService subscriptionService,
         Func<Task> subscriptionDataChanged)
     {
         ArgumentNullException.ThrowIfNull(settingsService);
         ArgumentNullException.ThrowIfNull(dataManagementService);
         ArgumentNullException.ThrowIfNull(fileDialogService);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(subscriptionService);
         ArgumentNullException.ThrowIfNull(subscriptionDataChanged);
 
         _settingsService = settingsService;
         _dataManagementService = dataManagementService;
         _fileDialogService = fileDialogService;
         _logger = logger;
+        _subscriptionService = subscriptionService;
         _subscriptionDataChanged = subscriptionDataChanged;
         RefreshLocalizedOptions(
             ApplicationTheme.System,
             ApplicationVisualStyle.Standard,
             null);
+        RefreshPaymentOptions();
+    }
+
+    public async Task LoadPaymentDataAsync()
+    {
+        ReplaceCollection(PaymentProfiles, await _subscriptionService.GetPaymentProfilesAsync());
+        ReplaceCollection(Tags, await _subscriptionService.GetTagsAsync());
+    }
+
+    [RelayCommand]
+    private async Task AddPaymentProfileAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            await _subscriptionService.AddPaymentProfileAsync(new PaymentProfile(
+                NewPaymentProfileName,
+                SelectedPaymentChannel.Value,
+                NewPaymentAccountIdentifier,
+                NewPaymentProviderName,
+                null));
+            NewPaymentProfileName = string.Empty;
+            NewPaymentProviderName = string.Empty;
+            NewPaymentAccountIdentifier = string.Empty;
+            await LoadPaymentDataAsync();
+            StatusChanged?.Invoke(AppResources.Get("Status_PaymentProfileAdded"));
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to add a payment profile.");
+            StatusChanged?.Invoke(AppResources.Get("Status_PaymentProfileFailed"));
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddTagAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            await _subscriptionService.AddTagAsync(new Tag(NewTagName));
+            NewTagName = string.Empty;
+            await LoadPaymentDataAsync();
+            StatusChanged?.Invoke(AppResources.Get("Status_TagAdded"));
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception, "Failed to add a tag.");
+            StatusChanged?.Invoke(AppResources.Get("Status_TagFailed"));
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     public event EventHandler? AppearanceChanged;
@@ -68,6 +142,12 @@ public partial class SettingsViewModel : ViewModelBase
     public ObservableCollection<SelectionOption<ApplicationVisualStyle>> VisualStyles { get; } = [];
 
     public ObservableCollection<SelectionOption<string?>> Languages { get; } = [];
+
+    public ObservableCollection<PaymentProfile> PaymentProfiles { get; } = [];
+
+    public ObservableCollection<Tag> Tags { get; } = [];
+
+    public ObservableCollection<SelectionOption<PaymentChannel>> PaymentChannels { get; } = [];
 
     public ApplicationTheme SelectedTheme => SelectedThemeOption.Value;
 
@@ -118,6 +198,21 @@ public partial class SettingsViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial SelectionOption<ApplicationVisualStyle> SelectedVisualStyleOption { get; set; } = null!;
+
+    [ObservableProperty]
+    public partial string NewPaymentProfileName { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string NewPaymentProviderName { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string NewPaymentAccountIdentifier { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial SelectionOption<PaymentChannel> SelectedPaymentChannel { get; set; } = null!;
+
+    [ObservableProperty]
+    public partial string NewTagName { get; set; } = string.Empty;
 
     public void Initialize(ApplicationSettings settings)
     {
@@ -485,6 +580,38 @@ public partial class SettingsViewModel : ViewModelBase
             target.Add(option);
         }
     }
+
+    private void RefreshPaymentOptions()
+    {
+        ReplaceOptions(
+            PaymentChannels,
+            Enum.GetValues<PaymentChannel>().Select(channel =>
+                new SelectionOption<PaymentChannel>(FormatPaymentChannel(channel), channel)));
+        SelectedPaymentChannel = PaymentChannels[0];
+    }
+
+    private static void ReplaceCollection<T>(ObservableCollection<T> target, IEnumerable<T> items)
+    {
+        target.Clear();
+        foreach (var item in items)
+        {
+            target.Add(item);
+        }
+    }
+
+    private static string FormatPaymentChannel(PaymentChannel channel) => channel switch
+    {
+        PaymentChannel.Direct => AppResources.Get("Payment_Direct"),
+        PaymentChannel.AppleAppStore => AppResources.Get("Payment_AppleAppStore"),
+        PaymentChannel.GooglePlay => AppResources.Get("Payment_GooglePlay"),
+        PaymentChannel.PayPal => AppResources.Get("Payment_PayPal"),
+        PaymentChannel.BankTransfer => AppResources.Get("Payment_BankTransfer"),
+        PaymentChannel.CreditCard => AppResources.Get("Payment_CreditCard"),
+        PaymentChannel.DebitCard => AppResources.Get("Payment_DebitCard"),
+        PaymentChannel.Cash => AppResources.Get("Payment_Cash"),
+        PaymentChannel.Other => AppResources.Get("Payment_Other"),
+        _ => AppResources.Get("Common_Unknown")
+    };
 
     private async Task<bool> TryCreateBackupAsync()
     {

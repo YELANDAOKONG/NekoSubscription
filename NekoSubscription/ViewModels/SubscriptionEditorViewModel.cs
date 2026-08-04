@@ -22,6 +22,7 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
     private readonly ILogger _logger;
     private readonly ISubscriptionService _subscriptionService;
     private readonly Guid? _subscriptionId;
+    private readonly Subscription? _loadedSubscription;
 
     private SubscriptionEditorViewModel(
         ISubscriptionService subscriptionService,
@@ -40,6 +41,7 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
         _saved = saved;
         _cancel = cancel;
         _subscriptionId = subscription?.Id;
+        _loadedSubscription = subscription;
 
         RefreshLocalization();
         Load(subscription);
@@ -62,6 +64,10 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
     public ObservableCollection<SelectionOption<PhoneNumberType>> PhoneNumberTypes { get; } = [];
 
     public ObservableCollection<SelectionOption<SubscriptionCategory>> SubscriptionCategories { get; } = [];
+
+    public ObservableCollection<PaymentProfileOption> PaymentProfiles { get; } = [];
+
+    public ObservableCollection<TagSelectionOption> TagOptions { get; } = [];
 
     public bool CanChangeCategory => !IsEditing;
 
@@ -173,6 +179,9 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
     public partial SelectionOption<SubscriptionCategory> SelectedCategoryOption { get; set; } = null!;
 
     [ObservableProperty]
+    public partial PaymentProfileOption SelectedPaymentProfileOption { get; set; } = null!;
+
+    [ObservableProperty]
     public partial string ServiceName { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -200,6 +209,31 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
     {
         ArgumentNullException.ThrowIfNull(subscription);
         return new SubscriptionEditorViewModel(subscriptionService, logger, saved, cancel, subscription);
+    }
+
+    public async Task LoadReferencesAsync()
+    {
+        var paymentProfiles = await _subscriptionService.GetPaymentProfilesAsync();
+        var tags = await _subscriptionService.GetTagsAsync();
+        var selectedTagIds = _loadedSubscription?.Tags.Select(tag => tag.Id).ToHashSet() ?? [];
+
+        PaymentProfiles.Clear();
+        PaymentProfiles.Add(new PaymentProfileOption(AppResources.Get("Payment_None"), null));
+        foreach (var paymentProfile in paymentProfiles)
+        {
+            PaymentProfiles.Add(new PaymentProfileOption(
+                $"{paymentProfile.DisplayName} · {FormatPaymentChannel(paymentProfile.Channel)}",
+                paymentProfile));
+        }
+
+        TagOptions.Clear();
+        foreach (var tag in tags)
+        {
+            TagOptions.Add(new TagSelectionOption(tag, selectedTagIds.Contains(tag.Id)));
+        }
+
+        SelectedPaymentProfileOption = PaymentProfiles.First(option =>
+            option.Value?.Id == _loadedSubscription?.PaymentProfileId);
     }
 
     public void RefreshLocalization()
@@ -280,7 +314,18 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
             {
                 var subscription = CreateSubscription(billingAmount, billingSchedule);
                 ApplyCommonState(subscription, DateTimeOffset.UtcNow);
+                ApplyReferences(subscription);
                 await _subscriptionService.AddSubscriptionAsync(subscription);
+            }
+
+            if (_subscriptionId is { } savedSubscriptionId)
+            {
+                await _subscriptionService.SetPaymentProfileAsync(
+                    savedSubscriptionId,
+                    SelectedPaymentProfileOption.Value?.Id);
+                await _subscriptionService.SetTagsAsync(
+                    savedSubscriptionId,
+                    TagOptions.Where(option => option.IsSelected).Select(option => option.Tag.Id).ToArray());
             }
 
             await _saved();
@@ -505,6 +550,30 @@ public partial class SubscriptionEditorViewModel : ViewModelBase
         subscription.SetImportance(SelectedImportanceOption.Value, changedAtUtc);
         subscription.UpdateNotesAndManagementUrl(Notes, ManagementUrl, changedAtUtc);
     }
+
+    private void ApplyReferences(Subscription subscription)
+    {
+        subscription.SetPaymentProfile(SelectedPaymentProfileOption.Value, DateTimeOffset.UtcNow);
+        subscription.Tags.Clear();
+        foreach (var option in TagOptions.Where(option => option.IsSelected))
+        {
+            subscription.Tags.Add(option.Tag);
+        }
+    }
+
+    private static string FormatPaymentChannel(PaymentChannel channel) => channel switch
+    {
+        PaymentChannel.Direct => AppResources.Get("Payment_Direct"),
+        PaymentChannel.AppleAppStore => AppResources.Get("Payment_AppleAppStore"),
+        PaymentChannel.GooglePlay => AppResources.Get("Payment_GooglePlay"),
+        PaymentChannel.PayPal => AppResources.Get("Payment_PayPal"),
+        PaymentChannel.BankTransfer => AppResources.Get("Payment_BankTransfer"),
+        PaymentChannel.CreditCard => AppResources.Get("Payment_CreditCard"),
+        PaymentChannel.DebitCard => AppResources.Get("Payment_DebitCard"),
+        PaymentChannel.Cash => AppResources.Get("Payment_Cash"),
+        PaymentChannel.Other => AppResources.Get("Payment_Other"),
+        _ => AppResources.Get("Common_Unknown")
+    };
 
     private int ConvertIntervalCount()
     {

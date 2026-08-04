@@ -43,6 +43,7 @@ public partial class MainViewModel : ViewModelBase
             dataManagementService,
             fileDialogService,
             logger,
+            subscriptionService,
             Subscriptions.RefreshAsync);
         CurrentPage = Dashboard;
 
@@ -111,6 +112,7 @@ public partial class MainViewModel : ViewModelBase
         RefreshPageMetadata();
         LanguageChanged?.Invoke(this, EventArgs.Empty);
         await Subscriptions.RefreshAsync();
+        await Settings.LoadPaymentDataAsync();
     }
 
     [RelayCommand]

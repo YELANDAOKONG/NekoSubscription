@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 
 using NekoSubscription.Entities.Subscriptions;
 using NekoSubscription.Localization;
