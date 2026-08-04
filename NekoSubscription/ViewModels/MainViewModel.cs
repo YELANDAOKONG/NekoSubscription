@@ -38,6 +38,8 @@ public partial class MainViewModel : ViewModelBase
         Dashboard = new DashboardViewModel(cashFlowProjector);
         Calendar = new CalendarViewModel(cashFlowProjector);
         Subscriptions = new SubscriptionsViewModel(subscriptionService, logger);
+        PaymentProfiles = new PaymentProfilesViewModel(subscriptionService, logger);
+        Tags = new TagsViewModel(subscriptionService, logger);
         Settings = new SettingsViewModel(
             settingsService,
             dataManagementService,
@@ -52,10 +54,14 @@ public partial class MainViewModel : ViewModelBase
         Calendar.SubscriptionRequested += OnSubscriptionRequested;
         Dashboard.SubscriptionRequested += OnSubscriptionRequested;
         Settings.StatusChanged += SetStatus;
+        PaymentProfiles.StatusChanged += SetStatus;
+        Tags.StatusChanged += SetStatus;
         Settings.AppearanceChanged += OnAppearanceChanged;
         Settings.CultureChanged += OnCultureChanged;
         Subscriptions.PropertyChanged += OnChildPropertyChanged;
         Settings.PropertyChanged += OnChildPropertyChanged;
+        PaymentProfiles.PropertyChanged += OnChildPropertyChanged;
+        Tags.PropertyChanged += OnChildPropertyChanged;
 
         RefreshPageMetadata();
     }
@@ -72,6 +78,10 @@ public partial class MainViewModel : ViewModelBase
 
     public SettingsViewModel Settings { get; }
 
+    public PaymentProfilesViewModel PaymentProfiles { get; }
+
+    public TagsViewModel Tags { get; }
+
     public bool IsDashboardSelected => CurrentPage == Dashboard;
 
     public bool IsCalendarSelected => CurrentPage == Calendar;
@@ -80,7 +90,11 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsSettingsSelected => CurrentPage == Settings;
 
-    public bool IsBusy => Subscriptions.IsBusy || Settings.IsBusy;
+    public bool IsPaymentProfilesSelected => CurrentPage == PaymentProfiles;
+
+    public bool IsTagsSelected => CurrentPage == Tags;
+
+    public bool IsBusy => Subscriptions.IsBusy || Settings.IsBusy || PaymentProfiles.IsBusy || Tags.IsBusy;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsSidebarExpanded))]
@@ -113,6 +127,8 @@ public partial class MainViewModel : ViewModelBase
         LanguageChanged?.Invoke(this, EventArgs.Empty);
         await Subscriptions.RefreshAsync();
         await Settings.LoadPaymentDataAsync();
+        await PaymentProfiles.RefreshAsync();
+        await Tags.RefreshAsync();
     }
 
     [RelayCommand]
@@ -127,6 +143,12 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void ShowSettings() => Navigate(Settings);
 
+    [RelayCommand]
+    private void ShowPaymentProfiles() => Navigate(PaymentProfiles);
+
+    [RelayCommand]
+    private void ShowTags() => Navigate(Tags);
+
     private void Navigate(ViewModelBase page)
     {
         CurrentPage = page;
@@ -135,6 +157,8 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsCalendarSelected));
         OnPropertyChanged(nameof(IsSubscriptionsSelected));
         OnPropertyChanged(nameof(IsSettingsSelected));
+        OnPropertyChanged(nameof(IsPaymentProfilesSelected));
+        OnPropertyChanged(nameof(IsTagsSelected));
     }
 
     private void RefreshPageMetadata()
@@ -160,6 +184,20 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
+        if (CurrentPage == PaymentProfiles)
+        {
+            PageTitle = AppResources.Get("Nav_PaymentAndTags");
+            PageSubtitle = AppResources.Get("Page_PaymentAndTagsSubtitle");
+            return;
+        }
+
+        if (CurrentPage == Tags)
+        {
+            PageTitle = AppResources.Get("Nav_Tags");
+            PageSubtitle = AppResources.Get("Page_TagsSubtitle");
+            return;
+        }
+
         PageTitle = AppResources.Get("Nav_Settings");
         PageSubtitle = AppResources.Get("Page_SettingsSubtitle");
     }
@@ -172,6 +210,7 @@ public partial class MainViewModel : ViewModelBase
         Subscriptions.RefreshLocalization();
         Dashboard.RefreshLocalization();
         Calendar.RefreshLocalization();
+        PaymentProfiles.RefreshLocalization();
         RefreshPageMetadata();
         StatusMessage = AppResources.Get("Status_Starting");
         LanguageChanged?.Invoke(this, EventArgs.Empty);
@@ -181,7 +220,9 @@ public partial class MainViewModel : ViewModelBase
     private void OnChildPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SubscriptionsViewModel.IsBusy) ||
-            e.PropertyName == nameof(SettingsViewModel.IsBusy))
+            e.PropertyName == nameof(SettingsViewModel.IsBusy) ||
+            e.PropertyName == nameof(PaymentProfilesViewModel.IsBusy) ||
+            e.PropertyName == nameof(TagsViewModel.IsBusy))
         {
             OnPropertyChanged(nameof(IsBusy));
         }

@@ -225,13 +225,25 @@ public partial class MainWindow : Window
                 AppIcons.Calendar,
                 nameof(MainViewModel.IsCalendarSelected),
                 nameof(MainViewModel.ShowCalendarCommand)),
-            BuildNavigationButton(
-                AppResources.Get("Nav_Subscriptions"),
-                AppResources.Get("Nav_SubscriptionsSubtitle"),
-                AppIcons.Subscriptions,
-                nameof(MainViewModel.IsSubscriptionsSelected),
-                nameof(MainViewModel.ShowSubscriptionsCommand)),
-            BuildNavigationButton(
+             BuildNavigationButton(
+                 AppResources.Get("Nav_Subscriptions"),
+                 AppResources.Get("Nav_SubscriptionsSubtitle"),
+                 AppIcons.Subscriptions,
+                 nameof(MainViewModel.IsSubscriptionsSelected),
+                 nameof(MainViewModel.ShowSubscriptionsCommand)),
+             BuildNavigationButton(
+                 AppResources.Get("Nav_PaymentAndTags"),
+                 AppResources.Get("Nav_PaymentAndTagsSubtitle"),
+                 AppIcons.Settings,
+                 nameof(MainViewModel.IsPaymentProfilesSelected),
+                 nameof(MainViewModel.ShowPaymentProfilesCommand)),
+             BuildNavigationButton(
+                 AppResources.Get("Nav_Tags"),
+                 AppResources.Get("Nav_TagsSubtitle"),
+                 AppIcons.Settings,
+                 nameof(MainViewModel.IsTagsSelected),
+                 nameof(MainViewModel.ShowTagsCommand)),
+             BuildNavigationButton(
                 AppResources.Get("Nav_Settings"),
                 AppResources.Get("Nav_SettingsSubtitle"),
                 AppIcons.Settings,

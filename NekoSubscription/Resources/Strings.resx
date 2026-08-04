@@ -326,4 +326,16 @@
   <data name="Status_LoadReferencesFailed" xml:space="preserve"><value>Unable to load payment methods and tags.</value></data>
   <data name="Details_NoPaymentProfile" xml:space="preserve"><value>No payment method</value></data>
   <data name="Details_NoTags" xml:space="preserve"><value>No tags</value></data>
+  <data name="Nav_PaymentAndTags" xml:space="preserve"><value>Payment methods</value></data>
+  <data name="Nav_PaymentAndTagsSubtitle" xml:space="preserve"><value>Payment methods and tags</value></data>
+  <data name="Page_PaymentAndTagsSubtitle" xml:space="preserve"><value>Manage reusable payment methods and subscription tags.</value></data>
+  <data name="Common_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Settings_TagsDescription" xml:space="preserve"><value>Create and rename tags used to organize subscriptions.</value></data>
+  <data name="Settings_ArchivePaymentProfile" xml:space="preserve"><value>Archive</value></data>
+  <data name="Settings_RestorePaymentProfile" xml:space="preserve"><value>Restore</value></data>
+  <data name="Status_PaymentProfileUpdated" xml:space="preserve"><value>Payment method updated.</value></data>
+  <data name="Status_TagUpdated" xml:space="preserve"><value>Tag updated.</value></data>
+  <data name="Nav_Tags" xml:space="preserve"><value>Tags</value></data>
+  <data name="Nav_TagsSubtitle" xml:space="preserve"><value>Organize subscriptions</value></data>
+  <data name="Page_TagsSubtitle" xml:space="preserve"><value>Create and rename tags used across your subscriptions.</value></data>
 </root>

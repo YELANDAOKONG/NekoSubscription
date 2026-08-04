@@ -32,7 +32,6 @@ public sealed class SettingsView : UserControl
                 BuildLanguageCard(),
                 BuildAppearanceCard(),
                 BuildMaterialCard(),
-                BuildPaymentAndTagsCard(),
                 BuildDataManagementCard(),
                 BuildPrivacyCard(),
                 BuildSaveBar())
